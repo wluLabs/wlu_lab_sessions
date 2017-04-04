@@ -1,0 +1,92 @@
+div.container {
+  align-items: center;
+  min-height: 400px;
+  vertical-align: middle;
+ }
+ 
+ .innerDiv{
+ 	text-align: center;
+ 	min-height: 100px;
+ }
+ 
+ .fifty_w_h{
+ 	width:50%;
+ }
+ 
+ .cellContainer{
+ 	text-align: center;
+ 	min-height: 30px;
+ 	width: 100%;
+ 	
+ }
+ 
+ .innercellContainer{
+ 	position: absolute;
+ 	left:35%
+ }
+  
+ .center{
+	text-align: center;
+	
+}
+
+.cellDiv{
+	width: 200px;
+	left: 50%;
+	
+}
+
+.hundred{
+	width: 100%;
+}
+
+.fifty{
+	width: 30%;
+}
+
+.spacer_right{
+	width:25%;
+	height: 10px;
+}
+
+.left25{
+	left: 25%;
+}
+
+.left{
+	float: left;
+}
+
+.right{
+	float: right;
+
+}
+.clear{
+	clear: left;
+	clear: right;
+}
+.spacer_twenty{
+	width: 26%;
+	height:10px;
+}
+
+.hidden{
+	visibility: hidden;
+}
+
+.vertical_spacer_ten{
+	height:10px;	
+}
+
+body{
+	max-width: 900px;
+	min-height: 600px;
+	margin: 0 auto;
+	padding: 5%;
+	font-size: 120%;
+	font-family: 'arial';
+}	
+
+.green{
+	color: green;
+}

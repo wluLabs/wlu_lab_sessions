@@ -1,0 +1,134 @@
+
+<html>
+<head>
+	<title>Demo 1 : Convert All Textareas</title>
+	<link rel="stylesheet" href="/css/login.css" type="text/css" />
+	<link rel="stylesheet" href="/css/button.css" type="text/css" />
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	
+	<script type="text/javascript">
+		
+		// ensure answer is not preselected
+		function refreshPage(){
+			$("input:radio[name='consent']").each(function(i) {
+			  this.checked = false;
+			});
+		}
+		
+		function login2(){
+			var email = $('input[name=consent]:checked', '#response').val();
+			console.log(value);
+			// ensure a value has been selected
+			if(typeof value === 'undefined'){
+				$( "#popup" ).dialog({
+					autoOpen: true,
+					resizable: false,
+					position: { my: "left bottom", at: "left+100 bottom-100", of: '#pb' },
+				    height: 300,
+				    width: 300,
+				    
+				    modal: true,
+				    buttons: {
+				        "OK": function() {
+				          $( this ).dialog( "close" );
+					    }
+				    }
+				});
+				
+				$( "#popup" ).html(
+					'<h5 class="center">Please select option</h5> <p><h4 class="center">' +
+					'"I agree to participate"</h4></p>  <h5 class="center">if you wish to proceed!</h5>'
+				);
+				
+			}else if (value == 1){
+				login();
+			}else{
+				$( "#popup" ).dialog({
+					autoOpen: true,
+					resizable: false,
+					position: { my: "left bottom", at: "left+100 bottom-100", of: '#pb' },
+				    height: 350,
+				    width: 300,
+				    
+				    modal: true,
+				    buttons: {
+				        "OK": function() {
+				          $( this ).dialog( "close" );
+					    }
+				    }
+				});
+				
+				$( "#popup" ).html(
+					'<h5 class="center">You selected</h5> <p><h4 class="center">' +
+					'"I do not wish to participate"</h4></p>  <h5 class="center">Please close your browser!</h5>'
+				);
+			
+			}
+		}
+		
+		function login(){
+			var email = $('#email').val();
+			var password = $('#password').val();
+			console.log('email' + email + ' password ' + password);
+			var location = "<%=sails.getBaseUrl()%>/login/login?email=" + email + '&password=' + password;
+			window.location.href = location ;
+		}
+
+		
+		$( document ).ready(function() {
+	    	refreshPage();
+		});
+		
+		
+	</script>	
+	
+</head>
+<body>
+	<div class='container'>
+		<div class='innerDiv'>
+			<p>
+			<h1>Login</h1>
+			</p>
+		</div>
+	
+	<form method="post" action="../login/login">
+		<div class='cellContainer'>
+			<div class='innercellContainer'>
+				<div class='cellDiv left'>Email: </div><div class='cellDiv left'><input id='email' type="email" name="email"></div>
+			</div>	
+		</div>
+		<div class='clear spacer_twenty'></div>
+		<div class='cellContainer'>
+			<div class='innercellContainer'>
+			<div class='cellDiv left'>Password: </div><div class='cellDiv left'><input id='password' type="password" name="password"></div>
+			</div>
+		</div>
+		<div class='clear spacer_twenty'></div>
+		<div class='clear spacer_twenty'></div>
+		<div class='clear spacer_twenty'></div>
+	</form>
+		<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
+		<div class='cellContainer'>
+			<div class='hundred button_height '>
+				<div class='ninety'>
+				<div class='spacer_right right'></div>		 
+					 <a id='pb' href="#" onclick="login();" class="fifty_w_h  right button dark_grey "><div class="center_text">Login</div></a>
+				</div>
+			</div>
+		</div>
+		
+		<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
+		<div id='popup'></div>
+	
+	</div>
+</body>
+</html>
+

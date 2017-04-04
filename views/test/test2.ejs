@@ -1,0 +1,111 @@
+<html>
+<head>
+	<title>Demo 1 : Convert All Textareas</title>
+	<link rel="stylesheet" href="/css/test1.css" type="text/css" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script type="text/javascript" src="http://js.nicedit.com/nicEdit-latest.js"></script>
+	<script type="text/javascript">
+		var QuestionNumber = 0;
+		var MaxQuestions;
+	
+		bkLib.onDomLoaded(function() { 
+				area2 = new nicEditor({fullPanel : true}).panelInstance('myArea2');
+		});
+		
+	
+		function getQuestion(){
+			if(MaxQuestions && QuestionNumber < MaxQuestions){
+				QuestionNumber = QuestionNumber + 1;
+			}
+			
+			getQuestionNumber(QuestionNumber);		
+		}
+		
+		function previousQuestion(){
+			if(QuestionNumber === 0 || QuestionNumber === 1){
+				QuestionNumber = 1;
+			}else{
+				QuestionNumber = QuestionNumber - 1;
+			}
+			
+			getQuestionNumber(QuestionNumber);		
+		}
+		
+		function countQuestion(){
+				var path = "<%=sails.getBaseUrl()%>" + "/countquestions/count";
+			
+				var request= {
+		            action : path,
+		            rand : Math.floor(Math.random()*100000)
+		        };
+				
+				$.post(path,  request,   function(data, status, xhr){	
+					console.log(data);
+					$('#questionNumber').html(data);
+					MaxQuestions = Number(data);
+					getQuestion();
+				}, "json");	
+			
+		}
+		
+		function getQuestionNumber(number){
+				
+				var path = "<%=sails.getBaseUrl()%>" + "/question/" + number;
+				console.log(path);	
+			
+				var request= {
+		            action : path,
+		            rand : Math.floor(Math.random()*100000)
+		        };
+				
+				$.get(path,  request,   function(data, status, xhr){
+					var question = data.text;	
+					console.log(data);
+			        setQuestion(question);   
+				}, "json");	
+			
+		}
+		
+		function setQuestion(content){
+			console.log(content);
+			area2 = nicEditors.findEditor('myArea2');
+			area2.setContent(content);
+		
+		}
+		
+		$( document ).ready(function() {
+	    	countQuestion()
+		});
+		
+	</script>	
+	
+	
+
+</head>
+<body>
+<div id="sample" class='text600'>
+	<h4>First Textarea</h4>
+	<textarea id='myArea2' class='text600' name="area1" cols="40"></textarea>
+	
+	<br />
+	<button type="button" onclick="getQuestion()">Click Me!</button>
+	
+	<br />
+	<br />
+	<br />
+	<hr>	
+	<br /> 
+	<br />
+
+	<div class='hundred button_height'>
+		 <a href="#" onclick="previousQuestion()" class="fifty left button dark_grey"><div class="center_text">Previous</div></a>
+		
+		 <a href="#" onclick="getQuestion()" class="fifty  right button dark_grey"><div class="center_text">Next</div></a>
+		
+	</div>
+		<div class = 'after_left'></div>
+	</div>
+</div>
+
+</body>
+</html>

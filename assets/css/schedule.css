@@ -1,0 +1,60 @@
+body{
+	max-width: 900px;
+	margin: 0 auto;
+	padding: 5%;
+	font-size: 120%;
+	font-family: 'arial';
+}	
+	
+
+.center{
+	text-align: center;
+	
+}
+
+.hundred{
+	width: 100%;
+}
+.left{
+	float: left;
+}
+
+.left25{
+	position: absolute;
+	left: 35%;
+}
+.right{
+	float: right;
+}
+
+.hidden{
+	visibility: hidden;
+}
+
+.vertical_spacer_ten{
+	height:10px;	
+}
+
+.cell{
+	width: 20%;
+}
+
+.cell2{
+	width: 20%;
+}
+
+.clear{
+	clear:both;
+}
+
+.red{
+	color: red;
+}
+
+.small_txt{
+		font-size: 60%;	
+}
+
+.thirty{
+	max-width: 30%;
+}

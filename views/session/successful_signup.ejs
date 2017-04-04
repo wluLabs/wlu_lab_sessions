@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+	<head>
+	  <meta charset="utf-8">
+	  <meta name="viewport" content="width=device-width, initial-scale=1">
+	  <title>jQuery UI Datepicker - Default functionality</title>
+	  <link rel="stylesheet" href="/css/schedule.css" type="text/css" />
+	  <link rel="stylesheet" href="/css/button.css" type="text/css" />
+	  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+	  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	  <script>
+	  		var email = '<%= req.session.email %>';
+		  	
+		  	function getSessionUser(email){
+				path = "<%=sails.getBaseUrl()%>" + "/sessionuser/find" ;
+				
+				var request= {
+		            action : path,
+		          	email: email,
+		            rand : Math.floor(Math.random()*100000)
+		        };
+				
+				$.post(path,  request,   function(data, status, xhr){
+					console.log(data);
+					getSession(data.id);
+					
+				}, "json");	
+			
+			}
+		  	
+		  	function sendEmail(){
+				path = "<%=sails.getBaseUrl()%>" + "/emailer/sessionMail" ;
+				var to_email = $('#email').text();
+				var session_date = $('#session_date').text();
+				var session_time = $('#session_time').text();
+				var request= {
+		            action : path,
+		            to_email: to_email,
+		            session_date: session_date,
+		            session_time: session_time,
+		            rand : Math.floor(Math.random()*100000)
+		        };
+				
+				$.post(path,  request,   function(data, status, xhr){
+					if(data.message){
+						//console.log(data.message);
+						displayPopup(data.message);
+					}
+					
+				}, "json");	
+			
+			}
+		  	
+		  	function getSession(id){
+		  		
+		  		path = "<%=sails.getBaseUrl()%>" + "/sessionuser/" + id;
+				var request= {
+		            action : path,
+		            rand : Math.floor(Math.random()*100000)
+		        };
+				
+				$.post(path,  request,   function(data, status, xhr){
+					//console.log(data);
+					displaySessionData(data);
+				}, "json");	
+		  		
+		  	}
+		  	
+		  	function displaySessionData(data){
+		  		var email = '<h5 id="email" class="center"> Email provided: ' + data.user_id.email +  '</h5>';
+		  		var session_date = data.session_id.date;
+		  		session_date = session_date.substring(0, 10);
+		  		session_date = '<h5 id="session_date" class="center">Session Date: ' +  session_date  +  '</h5>';
+		  		var session_time = '<h5 id="session_time" class="center">Session Time: ' +  data.session_id.time  +  '</h5>';
+		  		
+		  		$('#session_data').append(email);
+		  		$('#session_data').append(session_date);
+		  		$('#session_data').append(session_time);
+		  	}
+		  	
+		  	function displayPopup(message){
+		  		$( "#popup" ).dialog({
+					autoOpen: true,
+					resizable: false,
+					position: { my: "left bottom", at: "left+100 bottom-100", of: '#emailer' },
+				    height: 350,
+				    width: 300,
+				    
+				    modal: true,
+				    buttons: {
+				        "OK": function() {
+				          $( this ).dialog( "close" );
+					    }
+				    }
+				});
+				
+				$( "#popup" ).html(
+					message
+				);
+		  		
+		  	}
+		  	
+			$( document ).ready(function() {
+				getSessionUser(email);
+				//var aValue = storage.getItem('email');
+				console.log(email);
+			});
+	  </script>
+	</head>
+	<body>
+		<div class='hundred center'><h2>Successful Create Session Aknowledgement Page</h2></div>
+		<div class='vertical_spacer_ten'></div>
+	 	<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
+		<div id='session_info' class='vertical_spacer_ten'></div>
+		<div id='session_data'>
+		</div>
+		<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
+		<div class='hundred center'><h5>Send an email with this info to your email address? Press the send email button.</h5></div>
+		<div class='hundred center'><h5>Otherwise please take note of the following info and close your browser.</h5></div>
+		<div class='vertical_spacer_ten'></div>
+		<div class='hundred button_height '>
+			<div class='hundred left25'>
+				 <a id='emailer' href="#" onclick="sendEmail()" class="thirty fifty_w_h  left button dark_grey "><div class="center_text">Send Email</div></a>
+			</div>
+		</div>
+	 	<div id='popup'>
+		</div>
+	</body>
+</html>

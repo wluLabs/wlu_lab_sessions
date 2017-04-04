@@ -1,0 +1,189 @@
+<html>
+<head>
+	<title>Demo 1 : Convert All Textareas</title>
+	<link rel="stylesheet" href="/css/test1.css" type="text/css" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+	<script type="text/javascript" src="http://js.nicedit.com/nicEdit-latest.js"></script>
+	<script type="text/javascript">
+		var QuestionNumber = 0;
+		var MaxQuestions;
+	
+		bkLib.onDomLoaded(function() { 
+				area2 = new nicEditor({fullPanel : true}).panelInstance('myArea2');
+		});
+		
+		function getAnswer(){
+			var location = "<%=sails.getBaseUrl()%>/page/answer_edit?question="  + QuestionNumber;
+			window.location.href = location ;
+		}
+		
+		function saveQuestion(){
+			updateQuestion(QuestionNumber);
+		}
+	
+		function getQuestion(){
+			if(MaxQuestions && QuestionNumber < MaxQuestions){
+				QuestionNumber = QuestionNumber + 1;
+			}
+			
+			getQuestionNumber(QuestionNumber);		
+		}
+		
+		function previousQuestion(){
+			if(QuestionNumber === 0 || QuestionNumber === 1){
+				QuestionNumber = 1;
+			}else{
+				QuestionNumber = QuestionNumber - 1;
+			}
+			
+			getQuestionNumber(QuestionNumber);		
+		}
+		
+		function countQuestion(){
+				var path = "<%=sails.getBaseUrl()%>" + "/countquestions/count";
+			
+				var request= {
+		            action : path,
+		            rand : Math.floor(Math.random()*100000)
+		        };
+				
+				$.post(path,  request,   function(data, status, xhr){	
+					console.log(data);
+					
+					MaxQuestions = Number(data);
+					getQuestion();
+				}, "json");	
+			
+		}
+		
+		function getQuestionNumber(number){
+				
+				var path = "<%=sails.getBaseUrl()%>" + "/question/" + number;
+				console.log(path);	
+			
+				var request= {
+		            action : path,
+		            rand : Math.floor(Math.random()*100000)
+		        };
+				
+				$.get(path,  request,   function(data, status, xhr){
+					var question = data.text;	
+					$('#questionNumber').html(data.id);
+			        setQuestion(question);   
+				}, "json");	
+			
+		}
+		
+
+		
+		function setQuestion(content){
+			console.log(content);
+			area2 = nicEditors.findEditor('myArea2');
+			area2.setContent(content);
+		}
+		
+		function createQuestion(){
+				console.log("question");
+				var path = "<%=sails.getBaseUrl()%>" + "/question";
+				console.log(path);	
+				var question = getQuestionContent();
+				console.log(question);
+			
+				var request= {
+		            action : path,
+		     		text: question,
+		            rand : Math.floor(Math.random()*100000)
+		        };
+				
+				$.post(path,  request,   function(data, status, xhr){	
+					console.log('done');
+				}, "json");	
+		}
+		
+		function updateQuestion(questionNumber){
+				
+				var question = '?text=' + getQuestionContent();
+				console.log("question");
+				var path = "<%=sails.getBaseUrl()%>" + "/question/update/" + questionNumber + question;
+				console.log(question);
+			
+				var request= {
+		            action : path,
+		     		text: question,
+		            rand : Math.floor(Math.random()*100000)
+		        };
+				
+				$.post(path,  request,   function(data, status, xhr){	
+					console.log('done');
+				}, "json");	
+		}
+		
+		function getQuestionContent(){
+			var entities = [
+		        ['%2B', '+']
+		   ] ;
+		
+			var area2 = new nicEditors.findEditor('myArea2');
+			question = area2.getContent();
+			var str_esc = escape(question);
+			console.log('after escape' + str_esc);
+			str_esc= str_esc.replace(entities[0][1], entities[0][0])
+			return str_esc;
+		}
+		
+		function replaceSpecialCharacters(question){
+			
+		
+			return question;
+		}
+		
+		$( document ).ready(function() {
+	    	countQuestion()
+		});
+		
+	</script>	
+	
+	
+
+</head>
+<body>
+<div id="sample" class='text600'>
+<h4 class='left'>Question <span id='questionNumber'></span>:</h4>
+<div class = 'after_left'></div>
+<br />
+<br />
+<div class='hundred button_height'>
+	<a href="#" onclick="getAnswer()" class="fifty_w_h right button dark_grey"><div class="center_text">Edit Answer</div></a>
+</div>	
+<br />
+<br />
+<textarea id='myArea2' class='text600' name="area1" cols="40"></textarea>
+<br />
+<br />
+
+<div class='hundred button_height'>
+	<div class='spacer_fifty'>&nbsp;</div><a href="#" onclick="saveQuestion()" class="fifty left button dark_grey"><div class="center_text">Save Question</div></a>
+</div>	
+<div class = 'after_left'></div>
+<br />
+<br />	
+<hr>	
+<br /> 
+
+<br />
+<br />
+
+	<div class='hundred button_height'>
+		 <a href="#" onclick="previousQuestion()" class="fifty_w_h left button dark_grey"><div class="center_text">Previous</div></a>
+		
+		 <a href="#" onclick="getQuestion()" class="fifty_w_h  right button dark_grey"><div class="center_text">Next</div></a>
+		
+	</div>
+	<div class = 'after_left'></div>
+	
+<div class = 'after_left'></div>
+<div id='hiddenDiv' class='hidden'></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,191 @@
+
+<html>
+<head>
+	<title>Demo 1 : Convert All Textareas</title>
+	<link rel="stylesheet" href="/css/login.css" type="text/css" />
+	<link rel="stylesheet" href="/css/button.css" type="text/css" />
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	
+	<script type="text/javascript">
+		
+		function createUser(){
+			username = $('#tags').val();
+			email = $('#email').val();
+			password = $('#password').val();
+			confirmPassword  = $('#confirm_password').val();
+			path = "<%=sails.getBaseUrl()%>" + "/user/createUser" ;
+			var request= {
+		            action : path,
+		            email: email,
+		            username: username,
+		            password: password,
+		            confirm_password: confirmPassword,
+		            rand : Math.floor(Math.random()*100000)
+		        };
+				
+				$.post(path,  request,   function(data, status, xhr){	
+					
+					if(data.success_message){
+						console.log(data.message);
+						$('#popup').show()
+						$('#popup').text(data.success_message);
+						setTimeout(function() { $('#popup').fadeOut(3000); }, 3000);
+						setTimeout(function() { nextPage(email); }, 5000);
+					}
+					if(data.error_message){
+						console.log(data.message);
+						$('#popup').show()
+						$('#popup').text(data.error_message);
+						setTimeout(function() { $('#popup').fadeOut(3000); }, 5000);
+					}
+					
+					
+				}, "json");	
+		}
+		
+		
+		function checkAvailability(){
+			username = $('#tags').val();
+			path = "<%=sails.getBaseUrl()%>" + "/user/checkUsernameAvailable" ;
+			var request= {
+		            action : path,
+		            username: username,
+		            rand : Math.floor(Math.random()*100000)
+		        };
+				
+				$.post(path,  request,   function(data, status, xhr){	
+					
+					if(data.message){
+						console.log(data.message);
+						setTimeout(function() { $('#popup').fadeOut(3000); }, 3000);
+					}
+					
+				}, "json");	
+		}
+		
+		function nextPage(email){
+			var location = "<%=sails.getBaseUrl()%>/page/pickSession?email=" + email;
+			window.location.href = location ;
+		}
+	
+	
+	  	$( function() {
+		    var dwarfs = [  
+		    	"Grumpy", "Sleepy", "Sneezy","Doc", "Bashful", "Dopey", "Happy"
+		    	];
+		    var planets = [  
+		    	"Mercury", "Venus", "Earth","Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"
+		    	];
+		    
+		    function randomIntFromInterval(min,max)
+		    {
+		        return Math.floor(Math.random()*(max-min+1)+min);
+		    }
+		    
+		    function generateTags(){
+		    	availableTags = [];
+		    
+		    	for(i = 0; i < 10; i++){
+		    		var dwarf = randomIntFromInterval(0,6);
+			    	var planet = randomIntFromInterval(0,9);
+			    	availableTags.push(dwarfs[dwarf] + planets[planet] + randomIntFromInterval(100,999));
+		    	}
+		    	
+		    	return availableTags;
+		    }
+		    
+		    $( "#tags" ).autocomplete({
+		    	minLength: 0,
+		    	source: function (request, response) {
+		    		availableTags = generateTags();
+		            response(availableTags);
+		        }
+		    });
+		});
+
+		
+		$( document ).ready(function() {
+			$("#tags").bind('focus', function(){
+				  if($(this).val()=="" || $(this).val() != ""){ 
+				     $(this).autocomplete("search");
+				  } 
+			});
+		});
+		
+		
+	</script>	
+	
+</head>
+<body>
+	<div class='container'>
+		<div class='innerDiv'>
+			<p>
+			<h1>Welcome to the generate user page</h1>
+			</p>
+		</div>
+	
+	<form method="post" action="../login/login">
+		<div class='cellContainer'>
+			<div class='innercellContainer'>
+				<div class="ui-widget">
+				  <label for="tags">Select a Username: </label>
+				  <input id="tags">
+				</div>
+			</div>	
+		</div>
+		<div class='cellContainer'>
+			<div class='hundred button_height '>
+				<div class='ninety'>
+				<div class='spacer_right right'></div>		 
+					 <a id='pb' href="#" onclick="checkAvailability();" class="fifty_w_h  right button dark_grey "><div class="center_text">Confirm Username Available</div></a>
+				</div>
+			</div>
+		</div>
+		<div class='clear spacer_twenty'></div>
+		<div class='clear spacer_twenty'></div>
+		<div class='clear spacer_twenty'></div>
+		<div class='cellContainer'>
+			<div class='innercellContainer'>
+				<div class='cellDiv left'>Email: </div><div class='cellDiv left'><input id='email' type="email" name="email"></div>
+			</div>	
+		</div>
+		<div class='clear spacer_twenty'></div>
+		<div class='cellContainer'>
+			<div class='innercellContainer'>
+			<div class='cellDiv left'>Password: </div><div class='cellDiv left'><input id='password' type="password" name="password"></div>
+			</div>
+		</div>
+		<div class='cellContainer'>
+			<div class='innercellContainer'>
+			<div class='cellDiv left'>Confirm Password: </div><div class='cellDiv left'><input id='confirm_password' type="password" name="confirm_password"></div>
+			</div>
+		</div>
+		<div class='clear spacer_twenty'></div>
+		<div class='clear spacer_twenty'></div>
+		<div class='clear spacer_twenty'></div>
+	</form>
+		<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
+		<div class='cellContainer'>
+			<div class='hundred button_height '>
+				<div class='ninety'>
+				<div class='spacer_right right'></div>		 
+					 <a id='pb' href="#" onclick="createUser();" class="fifty_w_h  right button dark_grey "><div class="center_text">Create Account</div></a>
+				</div>
+			</div>
+		</div>
+		
+		<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
+		<div id='popup' class='green'></div>
+	
+	</div>
+</body>
+</html>
+

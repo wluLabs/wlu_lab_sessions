@@ -1,0 +1,191 @@
+<html>
+<head>
+	<link rel="stylesheet" href="/css/answer.css" type="text/css" />
+	<link rel="stylesheet" href="/css/question.css" type="text/css" />
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	
+	<script>
+		// global variables
+		var QuestionNumber = 0;
+		var MaxQuestions;
+		var answered = false;
+		
+		function nextQuestion(){
+			var value = $('input[name=response]:checked', '#response').val();
+
+			//alert(value);
+			if(typeof value === 'undefined'){
+			
+				$( "#popup" ).dialog({
+					dialogClass: "alert",
+					  buttons: [
+					    {
+					      text: "Ok",
+//					      icons: {
+//					        primary: "ui-icon-heart"
+//					      },
+					      click: function() {
+					        $( this ).dialog( "close" );
+					      }
+					 
+					      // Uncommenting the following line would hide the text,
+					      // resulting in the label being used as a tooltip
+					      //showText: false
+					    }
+					  ]
+				});
+				$( "#popup" ).html('Please select one of the eight radio buttons to select a value!');
+				
+				return;
+			}else if (answered === true){
+				updateAnswer(QuestionNumber, value);
+			}else{
+				saveAnswer(QuestionNumber, value);
+			}
+		}
+		
+		function saveAnswer(question, value){
+		
+			path = "<%=sails.getBaseUrl()%>" + "/opinion/save" ;
+			console.log(path);	
+		
+			var request= {
+	            action : path,
+	            question: question,
+	            value: value,
+	            rand : Math.floor(Math.random()*100000)
+	        };
+			
+			$.post(path,  request,   function(data, status, xhr){
+				console.log(data); 
+				findAnswer(question)
+				$("input:radio[name='response']").each(function(i) {
+			       this.checked = false;
+				});
+				getQuestion(); 
+			}, "json");	
+		
+		}
+		
+		
+		
+		function previousQuestion(){
+			if(QuestionNumber === 0 || QuestionNumber === 1){
+				QuestionNumber = 1;
+			}else{
+				QuestionNumber = QuestionNumber - 1;
+			}
+			
+			getQuestionNumber(QuestionNumber);		
+		}
+		
+		function getQuestionNumber(number){
+				
+				var path = "<%=sails.getBaseUrl()%>" + "/question/" + number;
+				console.log(path);	
+			
+				var request= {
+		            action : path,
+		            rand : Math.floor(Math.random()*100000)
+		        };
+				
+				$.get(path,  request,   function(data, status, xhr){
+					var question = data.text;	
+					$('#questionNumber').html(data.id);
+					findAnswer(data.id);
+			        setQuestion(question);   
+				}, "json");	
+			
+		}
+		
+		function setQuestion(content){
+			console.log(content);
+			$('#question').html(content);
+		}
+		
+		function getQuestion(){
+			if(MaxQuestions && QuestionNumber < MaxQuestions){
+				QuestionNumber = QuestionNumber + 1;
+			}
+			
+			getQuestionNumber(QuestionNumber);		
+		}
+		
+		function countQuestion(){
+				var path = "<%=sails.getBaseUrl()%>" + "/countquestions/count";
+			
+				var request= {
+		            action : path,
+		            rand : Math.floor(Math.random()*100000)
+		        };
+				
+				$.post(path,  request,   function(data, status, xhr){	
+					console.log(data);
+					
+					MaxQuestions = Number(data);
+					getQuestion();
+				}, "json");	
+			
+		}
+		
+		function findAnswer(question){
+				path = "<%=sails.getBaseUrl()%>" + "/opinion/find" ;
+				var request= {
+		            action : path,
+		            question: question,
+		            rand : Math.floor(Math.random()*100000)
+		        };
+				
+				$.post(path,  request,   function(data, status, xhr){	
+					var question = data[0].question;
+					console.log('question ' + data[0].question);
+					if (question === QuestionNumber){
+						answered = true;
+					}else{
+						answered = false;
+					}
+					
+				}, "json");	
+			
+		}
+		
+		$( function() {
+		    $( "#dialog" ).dialog();
+		  } );
+		
+		$( document ).ready(function() {
+	    	countQuestion()
+		});
+	
+	
+	</script>
+	
+
+</head>
+<body>
+	<div class = 'text600'>
+		<div id='question' class='question_display_div'>
+		</div>
+		<hr/>
+
+		<%- partial('../../../layout/answer/default_answer') %>
+		<hr/>
+		<br/>
+		<div class='hundred button_height '>
+			<div class='ninety'>
+				 <a href="#" onclick="previousQuestion()" class="fifty_w_h left button dark_grey "><div class="center_text">Previous Question</div></a>
+				
+				 <a href="#" onclick="nextQuestion()" class="fifty_w_h  right button dark_grey "><div class="center_text">Next Question</div></a>
+			</div>
+		</div>
+		<div class = 'after_left'></div>
+		<br/>
+	
+	</div>
+	<div id='popup'>
+		
+	</div>
+</body>
+</html>
