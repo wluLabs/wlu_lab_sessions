@@ -8,7 +8,8 @@
 module.exports = {
 
   attributes: {
-	  	email: {type: 'email', required: 'true' },
+	  	id: {type: 'int', primaryKey: true, autoIncrement: true}, 
+	  	username: {type: 'username', required: 'true' },
 	    question:{ type: 'int', required: true},
 	    value: { type: 'int', required: true}
   }

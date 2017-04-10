@@ -76,19 +76,20 @@ module.exports.connections = {
   ***************************************************************************/
 //   somePostgresqlServer: {
 //     adapter: 'sails-postgresql',
-//     host: 'babar.elephantsql.com',
-//     user: 'kjahqqbf', // optional
-//     password: 'W0wnFz7dugjzcPZvxArAobSX7e0CTCdq', // optional
-//     database: 'kjahqqbf'//, //optional,
-//     //ssl: true
+//     host: 'stampy.db.elephantsql.com',
+//     user: 'rffkjumy', // optional
+//     password: '5-evYRlLB537rjrJwMMGheVdF3fLIyHC', // optional
+//     database: 'rffkjumy',
+//     poolsize: 10,//, //optional,
+//     ssl: true
 //   }
 
   	localPost: {
 	     adapter: 'sails-postgresql',
-	     host: 'localhost',
+	     host: 'www.xyconic.com',
 	     user: 'postgres', // optional
 	     password: 'G#@reg', // optional
-	     database: 'wlu'//, //optional,
+	     database: 'wlu-data'//, //optional,
 	     //ssl: true
 	}
   /***************************************************************************

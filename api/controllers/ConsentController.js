@@ -6,10 +6,8 @@
  */
 
 module.exports = {
-		
-		  cp: function(req, res){
-			  res.view('consent/cp');
-		  }
-	
+  cp: function(req, res){
+	  res.view('consent/cp');
+  }
 };
 

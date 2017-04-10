@@ -10,7 +10,7 @@
 module.exports.policies = {
 
   '*': ['isAuthorized'], // Everything resctricted here
-  'UserController': {
+  	'UserController': {
     'create': true,
     'displayCreateUserPage': true,
     'checkUsernameAvailable': true,
@@ -28,10 +28,8 @@ module.exports.policies = {
   },
   'SessionUserController': {
 	    '*': true // We dont need authorization here, allowing public access
-  },
-  'SessionController': {
-	    '*': true // We dont need authorization here, allowing public access
   }
+  
   ,
   'PageController': {
 	    'pickSession': true,
@@ -39,5 +37,8 @@ module.exports.policies = {
   },
   'WelcomeController': {
 	    'home': true // We dont need authorization here, allowing public access
+  },
+  'SessionController':{
+	  'findSessionsForUser': true
   }
 };

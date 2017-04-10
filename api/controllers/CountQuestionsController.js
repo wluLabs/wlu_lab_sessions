@@ -10,9 +10,6 @@ module.exports = {
 		Question.count().exec(function countCB(error, found){
 			console.log('found: ' + found);
 			return res.json(found);
-			
-			
-			
 		});
 	}
 };

@@ -15,10 +15,8 @@
 		  		var location = "<%=sails.getBaseUrl()%>/consent/cp";
 				window.location.href = location ;
 		  	}
-		  	
-		  	
 			$( document ).ready(function() {
-				getSessionUser();
+				//getSessionUser();
 			});
 	  </script>
 	</head>
@@ -33,7 +31,7 @@
 		
 		<div class='hundred button_height '>
 			<div class='hundred left25'>
-				 <a id='emailer' href="#" onclick="gotoConsent()" class="thirty fifty_w_h  left button dark_grey "><div class="center_text">Proceed to Next Page</div></a>
+				 <a id='proceed' href="#" onclick="gotoConsent()" class="thirty fifty_w_h  left button dark_grey "><div class="center_text">Proceed to Next Page</div></a>
 			</div>
 		</div>
 	 	<div id='popup'>

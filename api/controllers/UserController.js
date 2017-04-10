@@ -6,26 +6,26 @@
  */
 
 module.exports = {
-  create: function (req, res) {
-	  //console.log(req);
-    if (req.query.password !== req.query.confirmPassword) {
-      return res.json(401, {err: 'Password doesn\'t match, What a shame!'});
-    }
-    var user={};
-    console.log(req.query.password);
-    user.password=req.query.password;
-    user.email=req.query.email;
-    User.create(user).exec(function (err, user) {
-      if (err) {
-        return res.json(err.status, {err: err});
-      }
-      // If user created successfuly we return user and token as response
-      if (user) {
-        // NOTE: payload is { id: user.id}
-        res.json(200, {user: user, token: jwToken.issue({id: user.id})});
-      }
-    });
-  },
+//  create: function (req, res) {
+//	  //console.log(req);
+//    if (req.query.password !== req.query.confirmPassword) {
+//      return res.json(401, {err: 'Password doesn\'t match, What a shame!'});
+//    }
+//    var user={};
+//    console.log(req.query.password);
+//    user.password=req.query.password;
+//    user.email=req.query.email;
+//    User.create(user).exec(function (err, user) {
+//      if (err) {
+//        return res.json(err.status, {err: err});
+//      }
+//      // If user created successfuly we return user and token as response
+//      if (user) {
+//        // NOTE: payload is { id: user.id}
+//        res.json(200, {user: user, token: jwToken.issue({id: user.id})});
+//      }
+//    });
+//  },
   createUser: function (req, res) {
 	  var email = req.param('email');
 	  var password = req.param('password');
@@ -48,7 +48,7 @@ module.exports = {
 	    }else if (password !== confirm_password) {
 	      return res.json(200, {error_message: 'Password doesn\'t match, What a shame!'});
 	    }else{
-	    	User.create(user).exec(function (err, user) {
+	    	Uzer.create(user).exec(function (err, user) {
 	  	      if (err) {
 	  	        return res.json(200, {error_message: 'Invalid parameter: ' + err});
 	  	      }
@@ -67,7 +67,7 @@ module.exports = {
   checkUsernameAvailable: function(req, res){
 	  var username = req.param('username');
 	  if(username){
-		  User.findOne({username: username}).exec(function (err, record) {
+		  Uzer.findOne({username: username}).exec(function (err, record) {
 			  if(record){
 				  res.json(200, {message: 'This username is not available!'});
 			  }else{

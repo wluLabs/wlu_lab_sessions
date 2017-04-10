@@ -7,38 +7,58 @@
 
 module.exports = {
 	save: function(req, res){
-		email = req.session.email;
+		username = req.session.username;
 		question = req.param('question');
 		value = req.param('value');
-		
-		Opinion.create({email: email, question: question, value: value}).exec(function createCB(error, opinion){
+		message = 'username: ' + username + ' question: ' + question + ' choice:' + value;
+		console.log(message);
+		Opinion.findOne({username: username, question: question}).exec(function findCB(error, opinion){
 			if(error){
-				message = 'email: ' + email + ' question: ' + question + ' choice:' + value;
+				message = 'username: ' + username + ' question: ' + question + ' choice:' + value;
 				console.log(message);
+			}if(opinion){
+				console.log('Found updating ....');
+				Opinion.update({username: username, question: question},{username: username, question: question, value: value}).exec(function updateCB(error, opinion){
+					if(error){
+						message = 'username: ' + username + ' question: ' + question + ' choice:' + value;
+						//console.log(message);
+					}
+					//console.log(opinion);
+					return res.json(opinion);
+				});
+				
+			}else{
+				Opinion.create({username: username, question: question, value: value}).exec(function updateCB(error, opinion){
+					console.log('Not Found updating ....');
+					if(error){
+						message = 'username: ' + username + ' question: ' + question + ' choice:' + value;
+						//console.log(message);
+					}
+					return res.json(200, opinion);
+				});
 			}
-			return res.json(opinion);
 		});
 	},
 	update: function(req, res){
-		email = req.session.email;
+		username = req.session.username;
 		question = req.param('question');
 		value = req.param('value');
 		
-		Opinion.update({email: email, question: question, value: value}).exec(function updateCB(error, opinion){
+		Opinion.update({username: username, question: question, value: value}).exec(function updateCB(error, opinion){
 			if(error){
-				message = 'email: ' + email + ' question: ' + question + ' choice:' + value;
+				message = 'username: ' + username + ' question: ' + question + ' choice:' + value;
 				console.log(message);
 			}
 			return res.json(opinion);
 		});
 	},
 	find: function(req, res){
-		email = req.session.email;
+		username = req.session.username;
 		question = req.param('question');
 		
-		Opinion.find({email: email, question: question}).exec(function findCB(error, opinion){
+		Opinion.find({username: username, question: question}).exec(function findCB(error, opinion){
 			if(error){
-				message = 'email: ' + email + ' question: ' + question + ' choice:' + value;
+				message = 'username: ' + username + ' question: ' + question + ' choice:' + value;
 				console.log(message);
 			}
 			return res.json(opinion);

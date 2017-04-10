@@ -14,33 +14,20 @@
 		
 		function nextQuestion(){
 			var value = $('input[name=response]:checked', '#response').val();
-
-			//alert(value);
 			if(typeof value === 'undefined'){
-			
 				$( "#popup" ).dialog({
 					dialogClass: "alert",
 					  buttons: [
 					    {
 					      text: "Ok",
-//					      icons: {
-//					        primary: "ui-icon-heart"
-//					      },
 					      click: function() {
 					        $( this ).dialog( "close" );
 					      }
-					 
-					      // Uncommenting the following line would hide the text,
-					      // resulting in the label being used as a tooltip
-					      //showText: false
 					    }
 					  ]
 				});
 				$( "#popup" ).html('Please select one of the eight radio buttons to select a value!');
-				
 				return;
-			}else if (answered === true){
-				updateAnswer(QuestionNumber, value);
 			}else{
 				saveAnswer(QuestionNumber, value);
 			}
@@ -49,7 +36,7 @@
 		function saveAnswer(question, value){
 		
 			path = "<%=sails.getBaseUrl()%>" + "/opinion/save" ;
-			console.log(path);	
+			//console.log(path);	
 		
 			var request= {
 	            action : path,
@@ -59,12 +46,17 @@
 	        };
 			
 			$.post(path,  request,   function(data, status, xhr){
-				console.log(data); 
-				findAnswer(question)
-				$("input:radio[name='response']").each(function(i) {
-			       this.checked = false;
-				});
-				getQuestion(); 
+				//console.log(data); 
+				if(!data.message_error){
+					//findAnswer(question)
+					$("input:radio[name='response']").each(function(i) {
+				       this.checked = false;
+					});
+					getQuestion(); 
+				}else{
+					console.log(data.message_error);
+				}
+				
 			}, "json");	
 		
 		}
@@ -84,7 +76,7 @@
 		function getQuestionNumber(number){
 				
 				var path = "<%=sails.getBaseUrl()%>" + "/question/" + number;
-				console.log(path);	
+				//console.log(path);	
 			
 				var request= {
 		            action : path,
@@ -101,16 +93,47 @@
 		}
 		
 		function setQuestion(content){
-			console.log(content);
+			//console.log(content);
 			$('#question').html(content);
 		}
 		
 		function getQuestion(){
 			if(MaxQuestions && QuestionNumber < MaxQuestions){
+				//console.log('here');
 				QuestionNumber = QuestionNumber + 1;
-			}
-			
-			getQuestionNumber(QuestionNumber);		
+				getQuestionNumber(QuestionNumber);
+			}else if(MaxQuestions && QuestionNumber == MaxQuestions) {
+				console.log('Last Question');
+				lastQuestionPopup();
+				
+				
+			}else if(QuestionNumber == 0){
+				getQuestionNumber(0);
+			}	
+		}
+		
+		function lastQuestionPopup(){
+			$( "#popup" ).dialog({
+				dialogClass: "alert",
+				  buttons: [
+				    {
+				      text: "Ok",
+				      click: function() {
+				    	var location = "<%=sails.getBaseUrl()%>/allocation/intro";
+						window.location.href = location ;
+				      }
+				    },
+				    {
+				    	text: "cancel",
+					      click: function() {
+					        $( this ).dialog( "close" );
+					        getQuestionNumber(MaxQuestions);
+					      }
+				    }
+				  ]
+			});
+			$( "#popup" ).html('You have reached the end of this portion of the Lab. Please press <h5>OK</h5> to proceed or cancel to review your answers.');
+			return;
 		}
 		
 		function countQuestion(){
@@ -122,7 +145,7 @@
 		        };
 				
 				$.post(path,  request,   function(data, status, xhr){	
-					console.log(data);
+					//console.log(data);
 					
 					MaxQuestions = Number(data);
 					getQuestion();
@@ -139,16 +162,21 @@
 		        };
 				
 				$.post(path,  request,   function(data, status, xhr){	
-					var question = data[0].question;
-					console.log('question ' + data[0].question);
-					if (question === QuestionNumber){
-						answered = true;
+					if(data.length>0 && data[0].question){
+						//console.log('inside if');
+						//console.log(data[0].value);
+						$('input[name=response]', '#response').each(function(index, value){
+							//console.log(index);
+							if($(this).attr('value')==data[0].value){
+								this.checked = true;
+							}
+						});
 					}else{
-						answered = false;
+						$('input[name=response]', '#response').each(function(index, value){
+							this.checked = false;
+						});
 					}
-					
 				}, "json");	
-			
 		}
 		
 		$( function() {

@@ -18,8 +18,8 @@ module.exports = {
    ***************************************************************************/
 
    models: {
-     connection: 'localPost'
-    //	 connection: 'somePostgresqlServer'
+	   		connection: 'localPost'
+    	 //connection: 'somePostgresqlServer'
    }
 
 };

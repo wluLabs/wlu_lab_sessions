@@ -10,14 +10,14 @@
 	  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 	  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 	  <script>
-	  		var email = '<%= req.session.email %>';
+	  		var username = '<%= req.session.username %>';
 		  	
-		  	function getSessionUser(email){
+		  	function getSessionUser(username){
 				path = "<%=sails.getBaseUrl()%>" + "/sessionuser/find" ;
 				
 				var request= {
 		            action : path,
-		          	email: email,
+		          	username: username,
 		            rand : Math.floor(Math.random()*100000)
 		        };
 				
@@ -30,13 +30,14 @@
 			}
 		  	
 		  	function sendEmail(){
-				path = "<%=sails.getBaseUrl()%>" + "/emailer/sessionMail" ;
-				var to_email = $('#email').text();
+		  		console.log('here');
+				path = "<%=sails.getBaseUrl()%>" + "/emailer/user_send_mail" ;
 				var session_date = $('#session_date').text();
 				var session_time = $('#session_time').text();
+				console.log('trying to send an email to the user');
 				var request= {
 		            action : path,
-		            to_email: to_email,
+		            username: username,
 		            session_date: session_date,
 		            session_time: session_time,
 		            rand : Math.floor(Math.random()*100000)
@@ -68,13 +69,13 @@
 		  	}
 		  	
 		  	function displaySessionData(data){
-		  		var email = '<h5 id="email" class="center"> Email provided: ' + data.user_id.email +  '</h5>';
+		  		var username = '<h5 class="center"> Username: <span id="username">' + data.user_id.username +  '</span></h5>';
 		  		var session_date = data.session_id.date;
 		  		session_date = session_date.substring(0, 10);
-		  		session_date = '<h5 id="session_date" class="center">Session Date: ' +  session_date  +  '</h5>';
-		  		var session_time = '<h5 id="session_time" class="center">Session Time: ' +  data.session_id.time  +  '</h5>';
+		  		session_date = '<h5  class="center">Session Date: <span id="session_date">' +  session_date  +  '</span></h5>';
+		  		var session_time = '<h5  class="center">Session Time: <span id="session_time">' +  data.session_id.time  +  '</span></h5>';
 		  		
-		  		$('#session_data').append(email);
+		  		$('#session_data').append(username);
 		  		$('#session_data').append(session_date);
 		  		$('#session_data').append(session_time);
 		  	}
@@ -101,10 +102,17 @@
 		  		
 		  	}
 		  	
+		  	function logoutUser(){
+		  		var location = "<%=sails.getBaseUrl()%>/login/logout";
+				window.location.href = location ;
+		  	}
+		  	
 			$( document ).ready(function() {
-				getSessionUser(email);
-				//var aValue = storage.getItem('email');
-				console.log(email);
+				getSessionUser(username);
+				setTimeout(function() { logoutUser(); }, 25000);
+				$('#popup').show()
+				$('#popup').text('You will be automatically logged out of this page in 25 seconds!');
+				setTimeout(function() { $('#message').fadeOut(2000); }, 3000);
 			});
 	  </script>
 	</head>
@@ -128,6 +136,8 @@
 			</div>
 		</div>
 	 	<div id='popup'>
+		</div>
+		<div id='message' class='green'>
 		</div>
 	</body>
 </html>

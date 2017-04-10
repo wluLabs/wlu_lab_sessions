@@ -1,40 +1,66 @@
 module.exports = {
   login: function (req, res) {
-	  	var email = req.param('email');
-	  	//console.log(email);
-	  	var password = req.param('password');
-	  	//console.log(password);
+	  
+  	var username = req.param('username');
+  	var password = req.param('password');
+  	//console.log(password);
 
-		if (!email || !password) {
-		  return res.json(401, {err: 'email and password required'});
-		}
+	if (!username || !password) {
+	  return res.json(401, {err: 'username and password required'});
+	}
 
-	    User.findOne({email: email}, function (err, user) {
-	      if (!user) {
-	        return res.json(401, {err: 'invalid email or password'});
-	      }
+    Uzer.findOne({username: username}, function (err, user) {
+      if (!user) {
+    	  console.log('Looking up user by email: ' + username);
+    	  // this is added so users can use email as username to login as a convenience
+    	  Uzer.findOne({email: username}, function (err, user) {
+    	      if (!user) {
+    	    	  return res.json(401, {err: 'invalid username or password'});
+    	      }
+    	     if(user){
+    	    	 console.log('User found comparing passwords!');
+    	    	 console.log('found user by email: ');
+    	    	 ComparePasswordService.comparePassword(req, res, user, password);
+    	     }
+    	 });
+     }
+     if(user){
+    	 console.log('found user by username: ' + username);
+    	 ComparePasswordService.comparePassword(req, res, user, password);
+     }
+    });
+  },
+  // Only used to automaticall log a user in once he/she creates an account
+  login_user_from_create: function (req, res) {
+  	var username = req.param('username');
+  	var password = req.param('password');
 
-	      User.comparePassword(password, user, function (err, valid) {
-	        if (err) {
-	          return res.json(403, {err: 'forbidden'});
-	        }
+	if (!username || !password) {
+	  return res.json(200, {error_message: 'autologin failed'});
+	}
 
-	        if (!valid) {
-	          return res.json(401, {err: 'invalid email or password'});
-	        } else {
-	        	var token = jwToken.issue({id : user.id });
-	        	req.session.token = token;
-	        	req.session.email = email;
-	        	console.log(req.path);
-	        	
-	        	var page_view = req.session.requesting_page;
-	        	page_view = page_view.substring(1);
-	        	console.log('requesting_page: ' + page_view);
-	        	res.view(page_view);
-	        }
-	      });
-	    });
-	
+    Uzer.findOne({username: username}, function (err, user) {
+      if (!user) {
+    	  console.log();
+        return res.json(401, {err: 'invalid username or password'});
+      }
+
+      Uzer.comparePassword(password, user, function (err, valid) {
+        if (err) {
+          return res.json(403, {err: 'forbidden'});
+        }
+
+        if (!valid) {
+          return res.json(401, {error_message: 'invalid password'});
+        } else {
+        	var token = jwToken.issue({id : user.id });
+        	req.session.token = token;
+        	req.session.username = user.username; 
+        	
+        	res.json(200, {success_message: 'you are automatically logged in'});
+        }
+      });
+    });
   },
   logout: function (req, res) {
 	  req.session.token = null;
