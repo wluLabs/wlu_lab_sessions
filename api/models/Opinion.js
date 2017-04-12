@@ -9,7 +9,7 @@ module.exports = {
 
   attributes: {
 	  	id: {type: 'int', primaryKey: true, autoIncrement: true}, 
-	  	username: {type: 'username', required: 'true' },
+	  	username: {type: 'string', required: true },
 	    question:{ type: 'int', required: true},
 	    value: { type: 'int', required: true}
   }

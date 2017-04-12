@@ -8,6 +8,7 @@
 module.exports = {
 	save: function(req, res){
 		username = req.session.username;
+		console.log('username' + username);
 		question = req.param('question');
 		value = req.param('value');
 		message = 'username: ' + username + ' question: ' + question + ' choice:' + value;
@@ -29,12 +30,16 @@ module.exports = {
 				
 			}else{
 				Opinion.create({username: username, question: question, value: value}).exec(function updateCB(error, opinion){
-					console.log('Not Found updating ....');
+					console.log('Not Found creating ....');
 					if(error){
 						message = 'username: ' + username + ' question: ' + question + ' choice:' + value;
 						//console.log(message);
 					}
-					return res.json(200, opinion);
+					if(opinion){
+						console.log(opinion);
+						return res.json(200, opinion);
+					}
+					
 				});
 			}
 		});

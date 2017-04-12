@@ -12,7 +12,9 @@
 	  <script>
 	  		
 		  	function gotoConsent(){
-		  		var location = "<%=sails.getBaseUrl()%>/consent/cp";
+		  		var host = window.location.host;
+		  		//console.log(host);
+		  		var location = "/consent/cp";
 				window.location.href = location ;
 		  	}
 			$( document ).ready(function() {

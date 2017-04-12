@@ -25,7 +25,8 @@ module.exports = {
    * Set the port in the production environment to 80                        *
    ***************************************************************************/
 
-  // port: 80,
+//	proxyHost: 'wlu-lab-sessions.mybluemix.net',
+//	proxyPort: 443
 
   /***************************************************************************
    * Set the log level in production environment to "silent"                 *

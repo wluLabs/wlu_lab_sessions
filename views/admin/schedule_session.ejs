@@ -36,7 +36,7 @@
 			});
 		  	
 		  	function getSessions(){
-				path = "<%=sails.getBaseUrl()%>" + "/session/find" ;
+				path = "" + "/session/find" ;
 				var request= {
 		            action : path,
 		            rand : Math.floor(Math.random()*100000)
@@ -133,7 +133,7 @@
 		  	}
 		  	
 		  	function createSession(){
-				path = "<%=sails.getBaseUrl()%>" + "/session/create" ;
+				path = "" + "/session/create" ;
 				date = $('#datepicker').val();
 				
 				if(!date === ''){
@@ -180,7 +180,7 @@
 			}
 		  	
 		  	function deleteSession(id){
-				path = "<%=sails.getBaseUrl()%>" + "/session/remove" ;
+				path = "/session/remove" ;
 				
 				var request= {
 			            action : path,

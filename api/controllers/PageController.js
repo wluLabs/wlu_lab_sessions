@@ -32,13 +32,13 @@ module.exports = {
 	  res.view('session/successful_signup');
   },
   intro: function(req, res){
-	  res.view('page/allocation/intro');
+	  res.view('allocation/intro');
   },
   norml: function(req, res){
-	  res.view('page/allocation/norml');
+	  res.view('allocation/norml');
   },
   dfk: function(req, res){
-	  res.view('page/allocation/dfk');
+	  res.view('allocation/dfk');
   }
   
 };

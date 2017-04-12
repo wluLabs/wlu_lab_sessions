@@ -43,7 +43,7 @@
 			}
 	  		
 	  		function findSession(){
-				path = "<%=sails.getBaseUrl()%>" + "/session/findById";
+				path = "/session/findById";
 				var request= {
 					id: session_id,
 		            action : path,
@@ -59,7 +59,7 @@
 			}
 		  	
 		  	function getUsers(session_id){
-				path = "<%=sails.getBaseUrl()%>" + "/sessionuser/findUsersBySession" ;
+				path = "/sessionuser/findUsersBySession" ;
 				var request= {
 					session_id: session_id,
 		            action : path,
@@ -147,7 +147,7 @@
 		  	
 		  	function testEmailer(){
 		  		
-		  		path = "<%=sails.getBaseUrl()%>" + "/admin/email" ;
+		  		path = "/admin/email" ;
 		  		console.log(users);
 		  		var message = getMessageContent();
 		  		

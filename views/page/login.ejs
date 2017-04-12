@@ -72,7 +72,7 @@
 			var username = $('#username').val();
 			var password = $('#password').val();
 			console.log('username' + username + ' password ' + password);
-			var location = "<%=sails.getBaseUrl()%>/login/login?username=" + username + '&password=' + password;
+			var location = "/login/login?username=" + username + '&password=' + password;
 			window.location.href = location ;
 		}
 

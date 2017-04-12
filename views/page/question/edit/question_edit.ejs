@@ -14,7 +14,7 @@
 		});
 		
 		function getAnswer(){
-			var location = "<%=sails.getBaseUrl()%>/page/answer_edit?question="  + QuestionNumber;
+			var location = "/page/answer_edit?question="  + QuestionNumber;
 			window.location.href = location ;
 		}
 		
@@ -41,7 +41,7 @@
 		}
 		
 		function countQuestion(){
-				var path = "<%=sails.getBaseUrl()%>" + "/countquestions/count";
+				var path = "/countquestions/count";
 			
 				var request= {
 		            action : path,
@@ -59,7 +59,7 @@
 		
 		function getQuestionNumber(number){
 				
-				var path = "<%=sails.getBaseUrl()%>" + "/question/" + number;
+				var path = "/question/" + number;
 				console.log(path);	
 			
 				var request= {
@@ -85,7 +85,7 @@
 		
 		function createQuestion(){
 				console.log("question");
-				var path = "<%=sails.getBaseUrl()%>" + "/question";
+				var path = "/question";
 				console.log(path);	
 				var question = getQuestionContent();
 				console.log(question);
@@ -105,7 +105,7 @@
 				
 				var question = '?text=' + getQuestionContent();
 				console.log("question");
-				var path = "<%=sails.getBaseUrl()%>" + "/question/update/" + questionNumber + question;
+				var path = "/question/update/" + questionNumber + question;
 				console.log(question);
 			
 				var request= {

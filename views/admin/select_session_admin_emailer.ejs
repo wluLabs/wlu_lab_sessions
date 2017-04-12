@@ -36,7 +36,7 @@
 			});
 		  	
 		  	function getSessions(){
-				path = "<%=sails.getBaseUrl()%>" + "/session/find" ;
+				path = "/session/find" ;
 				var request= {
 		            action : path,
 		            rand : Math.floor(Math.random()*100000)
@@ -134,7 +134,7 @@
 		  	
 		  	function testEmailer(){
 		  		
-		  		path = "<%=sails.getBaseUrl()%>" + "/admin/email" ;
+		  		path = "/admin/email" ;
 		  		users = ['funston.greg@gmail.com','mensatech@gmail.com'];
 				var request= {
 		            users: users,
@@ -151,7 +151,7 @@
 		  	}
 		  		
 		  	function selectSession(session_id){
-				var location = "<%=sails.getBaseUrl()%>/admin/session_admin_emailer?session_id="+ session_id;
+				var location = "/admin/session_admin_emailer?session_id="+ session_id;
 				window.location.href = location ;
 			}
 					

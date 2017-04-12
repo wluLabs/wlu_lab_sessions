@@ -28,7 +28,7 @@
 		
 		function createQuestion(){
 				console.log("question");
-				var path = "<%=sails.getBaseUrl()%>" + "/question";
+				var path = "/question";
 				console.log(path);	
 				var question = getQuestion();
 				console.log(question);
@@ -45,7 +45,7 @@
 		}
 		
 		function countQuestion(){
-				var path = "<%=sails.getBaseUrl()%>" + "/countquestions/count";
+				var path = "/countquestions/count";
 			
 				var request= {
 		            action : path,

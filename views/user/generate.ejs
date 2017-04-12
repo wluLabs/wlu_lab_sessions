@@ -15,7 +15,7 @@
 			email = $('#email').val();
 			password = $('#password').val();
 			confirmPassword  = $('#confirm_password').val();
-			path = "<%=sails.getBaseUrl()%>" + "/user/createUser" ;
+			path = "/user/createUser" ;
 			var request= {
 		            action : path,
 		            email: email,
@@ -48,7 +48,7 @@
 		
 		function loginUser(username, password){
 			
-			path = "<%=sails.getBaseUrl()%>" + "/login/login_user_from_create" ;
+			path = "/login/login_user_from_create" ;
 			var request= {
 		            action : path,
 		            username: username,
@@ -81,7 +81,7 @@
 		
 		function checkAvailability(){
 			username = $('#tags').val();
-			path = "<%=sails.getBaseUrl()%>" + "/user/checkUsernameAvailable" ;
+			path = "/user/checkUsernameAvailable" ;
 			var request= {
 		            action : path,
 		            username: username,
@@ -99,12 +99,12 @@
 		}
 		
 		function nextPage(username){
-			var location = "<%=sails.getBaseUrl()%>/page/pickSession?username=" + username;
+			var location = "/page/pickSession?username=" + username;
 			window.location.href = location ;
 		}
 		
 		function logUserIn(username){
-			var location = "<%=sails.getBaseUrl()%>/login/login?username=" + username;
+			var location = "/login/login?username=" + username;
 			window.location.href = location ;
 		}
 	
@@ -173,6 +173,7 @@
 				</div>
 			</div>	
 		</div>
+		<p>
 		<div class='cellContainer'>
 			<div class='hundred button_height '>
 				<div class='ninety'>
@@ -181,6 +182,7 @@
 				</div>
 			</div>
 		</div>
+		</p>
 		<div class='clear spacer_twenty'></div>
 		<div class='clear spacer_twenty'></div>
 		<div class='clear spacer_twenty'></div>

@@ -32,7 +32,7 @@
 		}
 		
 		function countQuestion(){
-				var path = "<%=sails.getBaseUrl()%>" + "/countquestions/count";
+				var path = "/countquestions/count";
 			
 				var request= {
 		            action : path,
@@ -50,7 +50,7 @@
 		
 		function getQuestionNumber(number){
 				
-				var path = "<%=sails.getBaseUrl()%>" + "/question/" + number;
+				var path = "/question/" + number;
 				console.log(path);	
 			
 				var request= {
