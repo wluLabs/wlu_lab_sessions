@@ -13,7 +13,7 @@
 	  		var username = '<%= req.session.username %>';
 		  	
 		  	function getSessionUser(username){
-				path = "<%=sails.getBaseUrl()%>" + "/sessionuser/find" ;
+				path = "/sessionuser/find" ;
 				
 				var request= {
 		            action : path,
@@ -31,7 +31,7 @@
 		  	
 		  	function sendEmail(){
 		  		console.log('here');
-				path = "<%=sails.getBaseUrl()%>" + "/emailer/user_send_mail" ;
+				path = "/emailer/user_send_mail" ;
 				var session_date = $('#session_date').text();
 				var session_time = $('#session_time').text();
 				console.log('trying to send an email to the user');
@@ -55,7 +55,7 @@
 		  	
 		  	function getSession(id){
 		  		
-		  		path = "<%=sails.getBaseUrl()%>" + "/sessionuser/" + id;
+		  		path = "/sessionuser/" + id;
 				var request= {
 		            action : path,
 		            rand : Math.floor(Math.random()*100000)
@@ -103,7 +103,7 @@
 		  	}
 		  	
 		  	function logoutUser(){
-		  		var location = "<%=sails.getBaseUrl()%>/login/logout";
+		  		var location = "/login/logout";
 				window.location.href = location ;
 		  	}
 		  	
