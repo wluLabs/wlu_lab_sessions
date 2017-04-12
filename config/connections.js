@@ -86,7 +86,7 @@ module.exports.connections = {
 
   	localPost: {
 	     adapter: 'sails-postgresql',
-	     host: 'localhost',
+	     host: 'www.xyconic.com',
 	     user: 'postgres', // optional
 	     password: 'G#@reg', // optional
 	     database: 'wlu-data'//, //optional,
