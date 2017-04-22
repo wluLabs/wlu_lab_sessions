@@ -40,11 +40,11 @@ module.exports = {
 	  console.log('username ' + username);
 	  
 	  	if (!confirm_password ) {
-	      return res.json(200, {error_message: 'Password doesn\'t match, What a shame!'});
+	      return res.json(200, {password_error_message: 'Password doesn\'t match!'});
 	    }else if (!password ) {
-	      return res.json(200, {error_message: 'Password doesn\'t match, What a shame!'});
+	      return res.json(200, {password_error_message: 'Password doesn\'t match!'});
 	    }else if (!email ) {
-	      return res.json(200, {error_message: 'you must supply an email'});
+	      return res.json(200, {email_error_message: 'you must supply an email'});
 	    }else if (password !== confirm_password) {
 	      return res.json(200, {error_message: 'Password doesn\'t match, What a shame!'});
 	    }else{
@@ -69,9 +69,9 @@ module.exports = {
 	  if(username){
 		  Uzer.findOne({username: username}).exec(function (err, record) {
 			  if(record){
-				  res.json(200, {message: 'This username is not available!'});
+				  res.json(200, {error_message: 'This username is not available!'});
 			  }else{
-				  res.json(200, {message: 'This username is currently available.'});
+				  res.json(200, {success_message: 'This username is currently available.'});
 			  }
 		  });
 	  }else{

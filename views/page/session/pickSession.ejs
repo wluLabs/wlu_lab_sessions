@@ -147,8 +147,7 @@
 							if(data.message){
 								displayPopup(JSON.stringify(data.message));
 							}else if (data.rowCount == 1 || (data.user_id && data.session_id)){
-								var location = "/page/showUserSession";
-								window.location.href = location ;
+								var location = "/page/showUserSession"; 
 							}
 							
 						}, "json");	

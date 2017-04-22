@@ -10,7 +10,7 @@
 module.exports.policies = {
 
   '*': ['isAuthorized'], // Everything resctricted here
-  	'UserController': {
+  'UserController': {
     'create': true,
     'displayCreateUserPage': true,
     'checkUsernameAvailable': true,

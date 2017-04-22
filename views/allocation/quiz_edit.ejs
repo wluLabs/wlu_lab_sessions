@@ -1,0 +1,187 @@
+<html>
+<head>
+	<title>Demo 1 : Convert All Textareas</title>
+	<link rel="stylesheet" href="/css/test1.css" type="text/css" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+	<script type="text/javascript" src="http://js.nicedit.com/nicEdit-latest.js"></script>
+	<script type="text/javascript">
+		var QuizNumber = 0;
+		var MaxQuizs;
+	
+		bkLib.onDomLoaded(function() { 
+				area2 = new nicEditor({fullPanel : true}).panelInstance('myArea2');
+		});
+		
+		function increaseQuiz(){
+			QuizNumber = QuizNumber + 1;
+		}
+		
+		function saveQuiz(){
+			updateQuiz(QuizNumber);
+		}
+	
+		function getQuiz(){
+			if(MaxQuizs && QuizNumber < MaxQuizs){
+				QuizNumber = QuizNumber + 1;
+			}
+			
+			getQuizNumber(QuizNumber);		
+		}
+		
+		function previousQuiz(){
+			if(QuizNumber === 0 || QuizNumber === 1){
+				QuizNumber = 1;
+			}else{
+				QuizNumber = QuizNumber - 1;
+			}
+			
+			getQuizNumber(QuizNumber);		
+		}
+		
+		function countQuiz(){
+				var path = "/countQuiz/count";
+			
+				var request= {
+		            action : path,
+		            rand : Math.floor(Math.random()*100000)
+		        };
+				
+				$.post(path,  request,   function(data, status, xhr){	
+					console.log(data);
+					
+					QuizNumber = Number(data);
+				}, "json");	
+			
+		}
+		
+		function getQuizNumber(number){
+				
+				var path = "/al_quiz/" + number;
+				console.log(path);	
+			
+				var request= {
+		            action : path,
+		            rand : Math.floor(Math.random()*100000)
+		        };
+				
+				$.get(path,  request,   function(data, status, xhr){
+					var quiz = data.text;	
+					$('#QuizNumber').html(data.id);
+			        setQuiz(quiz);   
+				}, "json");	
+			
+		}
+		
+
+		
+		function setQuiz(content){
+			console.log(content);
+			area2 = nicEditors.findEditor('myArea2');
+			area2.setContent(content);
+		}
+		
+		function createQuiz(){
+				console.log("quiz");
+				var path = "/quiz/create";
+				console.log(path);	
+				var quiz = getQuizContent();
+				console.log(quiz);
+			
+				var request= {
+		            action : path,
+		     		text: quiz,
+		            rand : Math.floor(Math.random()*100000)
+		        };
+				
+				$.post(path,  request,   function(data, status, xhr){	
+					increaseQuiz();
+				}, "json");	
+		}
+		
+		function updateQuiz(QuizNumber){
+				
+				var quiz = '?text=' + getQuizContent();
+				console.log("quiz");
+				var path = "/quiz/update/" + QuizNumber + quiz;
+				console.log(quiz);
+			
+				var request= {
+		            action : path,
+		     		text: quiz,
+		            rand : Math.floor(Math.random()*100000)
+		        };
+				
+				$.post(path,  request,   function(data, status, xhr){	
+					console.log('done');
+				}, "json");	
+		}
+		
+		function getQuizContent(){
+			var entities = [
+		        ['%2B', '+']
+		   ] ;
+		
+			var area2 = new nicEditors.findEditor('myArea2');
+			quiz = area2.getContent();
+			var str_esc = escape(quiz);
+			console.log('after escape' + str_esc);
+			str_esc= str_esc.replace(entities[0][1], entities[0][0])
+			return str_esc;
+		}
+		
+		function replaceSpecialCharacters(quiz){
+			
+		
+			return quiz;
+		}
+		
+		$( document ).ready(function() {
+	    	countQuiz();
+		});
+		
+	</script>	
+	
+	
+
+</head>
+<body>
+<div id="sample" class='text600'>
+<h4 class='left'>Quiz <span id='QuizNumber'></span>:</h4>
+<div class = 'after_left'></div>
+<br />
+<br />
+<div class='hundred button_height'>
+	<a href="#" onclick="getAnswer()" class="fifty_w_h right button dark_grey"><div class="center_text">Edit Answer</div></a>
+</div>	
+<br />
+<br />
+<textarea id='myArea2' class='text600' name="area1" cols="40"></textarea>
+<br />
+<br />
+
+<div class='hundred button_height'>
+	<div class='spacer_fifty'>&nbsp;</div><a href="#" onclick="saveQuiz()" class="fifty left button dark_grey"><div class="center_text">Save Quiz</div></a>
+</div>	
+<div class = 'after_left'></div>
+<br />
+<br />	
+<hr>	
+<br /> 
+
+<br />
+<br />
+
+	<div class='hundred button_height'>
+		 <a href="#" onclick="previousQuiz()" class="fifty_w_h left button dark_grey"><div class="center_text">Previous</div></a>
+		
+		 <a href="#" onclick="createQuiz()" class="fifty_w_h  right button dark_grey"><div class="center_text">Next</div></a>
+		
+	</div>
+	<div class = 'after_left'></div>
+	
+<div class = 'after_left'></div>
+<div id='hiddenDiv' class='hidden'></div>
+</div>
+</body>
+</html>

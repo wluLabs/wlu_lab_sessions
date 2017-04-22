@@ -1,0 +1,213 @@
+<html>
+<head>
+	<title>Demo 1 : Convert All Textareas</title>
+	<link rel="stylesheet" href="/css/allocation.css" type="text/css" />
+	<link rel="stylesheet" href="/css/button.css" type="text/css" />
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	
+	<script type="text/javascript">
+		var username = '<%= req.session.username %>';
+		
+		var QuestionNumber = 0;
+		var MaxQuestions = 4;
+		var answered = false;
+		
+		var answers = [['&nbsp;$5.00', '&nbsp;$2.00', '&nbsp;$0.00'],['&nbsp;$5.00','&nbsp;$3.50','&nbsp;$2.00'],
+			['$18.00', '$20.00', '$25.50'],['$12.00', , '$18.00', '$30.00']];
+		
+		function nextQuestion(){
+			
+			var value = $('input[name=response]:checked', '#response').val();
+			if(typeof value === 'undefined'){
+				$( "#popup" ).dialog({
+					dialogClass: "alert",
+					  buttons: [
+					    {
+					      text: "Ok",
+					      click: function() {
+					        $( this ).dialog( "close" );
+					      }
+					    }
+					  ]
+				});
+				$( "#popup" ).html('Please select one of the three radio buttons to select a value!');
+				return;
+			}else{
+				saveAnswer(QuestionNumber, value);
+			}
+		}
+		
+		function saveAnswer(question, value){
+		
+			console.log('question: ' + question + ' value: ' + value);
+			getQuestion();
+		}
+		
+		function previousQuestion(){
+			if(QuestionNumber === 0 || QuestionNumber === 1){
+				QuestionNumber = 1;
+			}else{
+				QuestionNumber = QuestionNumber - 1;
+			}
+			
+			getQuestionNumber(QuestionNumber);		
+		}
+		
+		function getQuestionNumber(number){
+				
+				var path = "/quiz/" + number;
+				//console.log(path);	
+			
+				var request= {
+		            action : path,
+		            rand : Math.floor(Math.random()*100000)
+		        };
+				
+				$.get(path,  request,   function(data, status, xhr){
+					var question = data.text;	
+					$('#questionNumber').html(data.id);
+					findAnswer(data.id);
+			        setQuestion(question);   
+				}, "json");	
+			
+		}
+		
+		function getScenario(){
+			
+			var path = "/scenario/" + 1;
+		
+			var request= {
+	            action : path,
+	            rand : Math.floor(Math.random()*100000)
+	        };
+			
+			$.get(path,  request,   function(data, status, xhr){
+				var question = data.text;	
+				//$('#questionNumber').html(data.id);
+				//findAnswer(data.id);
+		        setScenario(question);   
+			}, "json");	
+		
+		}
+		
+		function setQuestion(content){
+			//console.log(content);
+			$('#quiz_text').html(content);
+			$('').each(function (){
+				
+			});
+		}
+		
+		function setScenario(content){
+			//console.log(content);
+			$('#scenario_text').html(content);
+		}
+		
+		function getQuestion(){
+			if(MaxQuestions && QuestionNumber < MaxQuestions){
+				//console.log('here');
+				QuestionNumber = QuestionNumber + 1;
+				getQuestionNumber(QuestionNumber);
+			}else if(MaxQuestions && QuestionNumber == MaxQuestions) {
+				console.log('Last Question');
+				lastQuestionPopup();
+				
+				
+			}else if(QuestionNumber == 0){
+				getQuestionNumber(0);
+			}	
+		}
+		
+		function lastQuestionPopup(){
+			$( "#popup" ).dialog({
+				dialogClass: "alert",
+				  buttons: [
+				    {
+				      text: "Ok",
+				      click: function() {
+				    	var location = "/allocation/game2";
+						window.location.href = location ;
+				      }
+				    },
+				    {
+				    	text: "cancel",
+					      click: function() {
+					        $( this ).dialog( "close" );
+					        getQuestionNumber(MaxQuestions);
+					      }
+				    }
+				  ]
+			});
+			$( "#popup" ).html('You have reached the end of this scenario. Please press <h5>OK</h5> to proceed to scenario 2.');
+			return;
+		}
+			
+		function findAnswer(question){
+				
+			$('input[name=response]', '#response').each(function(index, value){
+				this.checked = false;
+				var value = answers[QuestionNumber-1][index];
+				console.log('value: ' + value);
+				$('#answer' + index).empty();
+				$('#answer' + index).html(value);
+			});	
+		}
+		
+		$( function() {
+		    $( "#dialog" ).dialog();
+		  } );
+		
+		$( document ).ready(function() {
+			getScenario()
+			getQuestion();
+		});
+	  	
+	  	
+		
+		
+	</script>	
+	
+</head>
+<body>
+
+<div class='center'><h4>Allocation Game</h4></div>
+<p>
+<%- partial('../layout/allocation/table') %>
+</p>
+<p>
+Once all of the participants in our study have completed the survey, one out of every 10 
+participants will be randomly selected to implement their allocation decisions. That is, 
+if you are chosen, the dollar value of any tokens you kept for yourself will be paid to 
+you at the second part of this study in the computer lab and the dollar value of any tokens 
+you transferred to X << X being Norml Canada or Drug Free Kids participants chose in 
+screen 6 >> will be mailed to it.  
+</p>
+<p>
+<div id='scenario_text'></div>
+
+</p>
+
+<p>
+<div id='quiz_text'></div>
+
+</p>
+
+<%- partial('../layout/scenario/quiz_answer') %>
+
+<p>
+<div class='hundred button_height '>
+	<div class='ninety'>
+		 <a href="#" onclick="previousQuestion()" class="fifty_w_h left button dark_grey "><div class="center_text">Previous Question</div></a>
+		
+		 <a href="#" onclick="nextQuestion()" class="fifty_w_h  right button dark_grey "><div class="center_text">Next Question</div></a>
+	</div>
+</div>
+<div class = 'after_left'></div>
+</p>
+<div id='popup'>
+</div>
+
+</body>
+</html>

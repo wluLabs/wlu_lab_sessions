@@ -1,0 +1,155 @@
+<html>
+<head>
+	<title>Demo 1 : Convert All Textareas</title>
+	<link rel="stylesheet" href="/css/allocation.css" type="text/css" />
+	<link rel="stylesheet" href="/css/button.css" type="text/css" />
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	
+	<script type="text/javascript">
+		var username = '<%= req.session.username %>';
+		var message = 'hello world';
+		var keypress_string = '';
+		function KeyCounter(){};
+		
+	  	function getSessionUser(username){
+			path = "/sessionuser/find" ;
+			
+			var request= {
+	            action : path,
+	          	username: username,
+	            rand : Math.floor(Math.random()*100000)
+	        };
+			
+			$.post(path,  request,   function(data, status, xhr){
+				console.log(data);
+				getSession(data.id);
+				
+			}, "json");	
+		
+		}
+	  	
+	  	function sendEmail(){
+	  		console.log('here');
+			path = "/emailer/user_send_mail" ;
+			var session_date = $('#session_date').text();
+			var session_time = $('#session_time').text();
+			console.log('trying to send an email to the user');
+			var request= {
+	            action : path,
+	            username: username,
+	            session_date: session_date,
+	            session_time: session_time,
+	            rand : Math.floor(Math.random()*100000)
+	        };
+			
+			$.post(path,  request,   function(data, status, xhr){
+				if(data.message){
+					//console.log(data.message);
+					displayPopup(data.message);
+				}
+				
+			}, "json");	
+		
+		}
+	  	
+	  	function getSession(id){
+	  		
+	  		path = "/sessionuser/" + id;
+			var request= {
+	            action : path,
+	            rand : Math.floor(Math.random()*100000)
+	        };
+			
+			$.post(path,  request,   function(data, status, xhr){
+				//console.log(data);
+				displaySessionData(data);
+			}, "json");	
+	  		
+	  	}
+	  	
+	  	function displaySessionData(data){
+	  		var username = '<h5 class="center"> Username: <span id="username">' + data.user_id.username +  '</span></h5>';
+	  		var session_date = data.session_id.date;
+	  		session_date = session_date.substring(0, 10);
+	  		session_date = '<h5  class="center">Session Date: <span id="session_date">' +  session_date  +  '</span></h5>';
+	  		var session_time = '<h5  class="center">Session Time: <span id="session_time">' +  data.session_id.time  +  '</span></h5>';
+	  		
+	  		$('#session_data').append(username);
+	  		$('#session_data').append(session_date);
+	  		$('#session_data').append(session_time);
+	  	}
+	  	
+	  	function displayPopup(message){
+	  		$( "#popup" ).dialog({
+				autoOpen: true,
+				resizable: false,
+				position: { my: "left bottom", at: "left+100 bottom-100", of: '#emailer' },
+			    height: 350,
+			    width: 300,
+			    
+			    modal: true,
+			    buttons: {
+			        "OK": function() {
+			          $( this ).dialog( "close" );
+				    }
+			    }
+			});
+			
+			$( "#popup" ).html(
+				message
+			);
+	  		
+	  	}
+	  	
+	  	function logoutUser(){
+	  		var location = "/confirm/final";
+			window.location.href = location ;
+	  	}
+	  	
+		$( document ).ready(function() {
+			
+			var counter = new KeyCounter();
+			counter['counter'] = 0;
+			$(document).keydown( function(e){
+				keypress_string = keypress_string + e.key;
+				
+				if(keypress_string === 'x'){
+					keypress_string = e.key;	
+				}else if(keypress_string === 'xy'){
+					
+					keypress_string = '';
+					counter['counter'] = counter['counter'] + 1;
+					
+					$('#key_counter').empty();
+					$('#key_counter').html(counter['counter']);
+				}else{
+					keypress_string = '';
+				}
+
+			});
+
+		});
+	  	
+		
+		
+	</script>	
+	
+</head>
+<body>
+
+<div class='center'><h4>WLU Labs Key Counter</h4></div>
+<p>
+<div class='hundred center'>
+<h1><div id='key_counter'>0
+</div></h1>
+</p>
+</div>
+<p>
+</p>
+<div id='popup'>
+</div>
+
+</body>
+</html>

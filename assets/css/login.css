@@ -44,6 +44,10 @@ div.container {
 	width: 30%;
 }
 
+.red{
+	color: red;
+}
+
 .spacer_right{
 	width:25%;
 	height: 10px;

@@ -18,6 +18,8 @@ body{
 	text-align: center;
 }
 
+
+
 .centerDiv{
 	width: 100%;
 	margin: 0 auto;
@@ -91,4 +93,8 @@ body{
     border: solid 2px;
     border-radius: 5px;
     
+}
+
+.inline{
+	display: inline-block;
 }

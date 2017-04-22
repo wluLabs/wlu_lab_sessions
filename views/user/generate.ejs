@@ -37,9 +37,21 @@
 					}
 					if(data.error_message){
 						console.log(data.message);
-						$('#popup').show()
-						$('#popup').text(data.error_message);
-						setTimeout(function() { $('#popup').fadeOut(3000); }, 5000);
+						$('#username_not_available').show()
+						$('#username_not_available').text(data.error_message  + '<br/> Please select another username. If this problem persists please ask for help!');
+						setTimeout(function() { $('#username_not_available').fadeOut(6000); }, 5000);
+					}
+					if(data.password_error_message){
+						console.log(data.message);
+						$('#username_not_available').show()
+						$('#username_not_available').text(data.password_error_message  + '<br/>  If this problem persists please ask for help!');
+						setTimeout(function() { $('#username_not_available').fadeOut(6000); }, 5000);
+					}
+					if(data.email_error_message){
+						console.log(data.message);
+						$('#username_not_available').show()
+						$('#username_not_available').text(data.email_error_message  + '<br/>  If this problem persists please ask for help!');
+						setTimeout(function() { $('#username_not_available').fadeOut(6000); }, 5000);
 					}
 					
 					
@@ -69,7 +81,7 @@
 						console.log(data.message);
 						$('#logged_in').show()
 						$('#logged_in').text(data.error_message);
-						setTimeout(function() { $('#popup').fadeOut(3000); }, 5000);
+						setTimeout(function() { $('#logged_in').fadeOut(3000); }, 5000);
 					}
 					
 					
@@ -90,9 +102,16 @@
 				
 				$.post(path,  request,   function(data, status, xhr){	
 					
-					if(data.message){
+					if(data.success_message){
 						console.log(data.message);
-						setTimeout(function() { $('#popup').fadeOut(3000); }, 3000);
+						$('#username_available').show()
+						$('#username_available').text(data.success_message);
+						setTimeout(function() { $('#username_available').fadeOut(3000); }, 3000);
+					}else if(data.error_message){
+						console.log(data.error_message);
+						$('#username_not_available').show()
+						$('#username_not_available').text(data.error_message);
+						setTimeout(function() { $('#username_not_available').fadeOut(3000); }, 3000);
 					}
 					
 				}, "json");	
@@ -225,7 +244,8 @@
 		<div class='vertical_spacer_ten'></div>
 		<div id='popup' class='green'></div>
 		<div id='logged_in' class='green'></div>
-	
+		<div id='username_available' class='green'></div>
+		<div id='username_not_available' class='red'></div>
 	</div>
 </body>
 </html>
