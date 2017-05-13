@@ -22,9 +22,9 @@ module.exports = {
 				  SessionUser.findOne({session_id: session_id, user_id:user_id}).exec(function (err, record) {
 					  if(record){
 						  console.log('a user session was already created for this user'); 
-						  res.json(200, record);
+						  res.json(200, {session:record});
 					  }
-					  if(!record && found < 24){
+					  if(!record && count < 24){
 						  console.log('trying to create a user session');
 						  SessionUser.query('INSERT INTO SessionUser  (user_id , session_id) values($1, $2)' ,
 								  [user_id, session_id ] ,function (err, record) {
@@ -32,7 +32,7 @@ module.exports = {
 											  console.log(err);
 											  res.json(200, {message: ' we were unable to create your session'});
 										  }
-										  res.json(200, record);
+										  res.json(200, {session:record});
 						  });
 					  }else{
 						  console.log('unable to create a user session');
