@@ -1,0 +1,26 @@
+<div class='center'>What is your age?</div>
+<div class='vertical_spacer_ten'></div>
+<div class='center'><input id='input_age' type="text"  ></div>
+<div class='vertical_spacer_ten'></div>
+<div class='center'>Please enter a valid number between 15 and 70 years old. </div>
+
+<script>
+var keypress_string;
+$('#input_age').keyup( function(e){
+	keypress_string = keypress_string + e.key;
+	var age = $('#input_age').val();
+	var age_num = parseInt(age);
+	var ageIsNum = $.isNumeric(age_num);
+	if(ageIsNum && age_num <= 70){
+		
+	}else{
+		var message = 'Please enter a valid number from 0 to 15 in the for myself input!';
+		var cl = 'red';
+		showValidationMessage(message, cl);
+	}
+
+});
+
+
+
+</script>

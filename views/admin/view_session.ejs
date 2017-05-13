@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+	<head>
+	  <meta charset="utf-8">
+	  <meta name="viewport" content="width=device-width, initial-scale=1">
+	  <title>jQuery UI Datepicker - Default functionality</title>
+	  <link rel="stylesheet" href="/css/schedule.css" type="text/css" />
+	  <link rel="stylesheet" href="/css/button.css" type="text/css" />
+	  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+	  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	  <script>
+	  		var session_id = '<%= req.session.session_id %>';
+	  		var ngo = ['', '2', '1'];
+	  		
+		  	function reloadPage(){
+		  		var location = "/admin/view_session?session_id=" + session_id;
+				window.location.href = location ;
+		  	}
+		  	
+		  	function returnToSessions(){
+		  		var location = "/admin/schedule_session";
+				window.location.href = location ;
+		  	}
+
+			$( function() {
+			  $( "#datepicker" ).datepicker();
+			});
+		  
+		  	$( function() {
+			    var availableTags = [ "10:30", "11:30", "12:30","1:30", "2:30" ];
+			    $( "#tags" ).autocomplete({
+			    	minLength: 0,
+			    	source: function (request, response) {
+			            response(availableTags);
+			        }
+			    });
+			});
+		  	
+		  	function deleteSession(user_id){
+		  		
+		  		$('#assistance').show().addClass('red');
+				$('#assistance').html(' This is future functionality! Not initially requested');
+				setTimeout(function() { $('#assistance').fadeOut(2000); }, 3000);
+		  		
+		  	}
+		  	
+		  	function changeNgo(username, ngo){
+		  		console.log(username);
+		  		console.log(ngo);
+		  		path = "/sessionuser/update_ngo";
+				var request= {
+					username: username,
+					ngo: ngo,
+	            	action : path,
+		            rand : Math.floor(Math.random()*100000)
+		        };
+				
+				$.post(path,  request,   function(data, status, xhr){	
+					console.log(data);
+					if(data.success_message){
+						reloadPage();
+					}
+				}, "json");		  		
+		  	}
+		  	
+		  	function displaySessionUsers(session_users){
+		  		if(session_users){
+		  			$('#session_users').empty();
+		  			
+			  		$.each(session_users, function (index, session_user) { 			
+			  			buildUserRow(session_user, index);
+			  		});
+			  		
+			  		$("tr:even").css("background-color","#FBF693");
+					$("tr:odd").css("background-color","#FFFFCE");
+		  		}
+		  	}
+		  	
+	  		function findSession(){
+				path = "/session/findById";
+				var request= {
+					id: session_id,
+		            action : path,
+		            rand : Math.floor(Math.random()*100000)
+		        };
+				
+				$.post(path,  request,   function(data, status, xhr){	
+					console.log(data);
+					//displayUsersForSession(data.rows);
+					var date = data.date;
+					date = date.substring(0, date.indexOf('T'))
+					$('#datepicker').val(date);
+					$('#time').val(data.time);
+					$('#max_users').html('Maximum capacity: ' + data.max + ' seats');
+					findSessionUsernames();
+				}, "json");	
+			
+			}
+	  		
+	  		function findSessionUsernames(){
+				path = "/sessionuser/findUsersBySession";
+				var request= {
+					session_id: session_id,
+		            action : path,
+		            rand : Math.floor(Math.random()*100000)
+		        };
+				
+				$.post(path,  request,   function(data, status, xhr){	
+					console.log(data);
+					if(data){
+						displaySessionUsers(data)	
+					}
+					
+					
+				}, "json");	
+			
+			}
+	  		
+		  	function createSession(){
+				path = "" + "/session/update" ;
+				date = $('#datepicker').val();
+				
+				if(!date === ''){
+					var splitDate = date.split("/");
+					date = splitDate[2] + ',' + splitDate[1] + ',' + splitDate[0];
+					console.log('date ' + date);
+				}
+				console.log('date ' + date);
+				
+				time = $('#time').val();
+				if(!time === ''){
+					
+				}
+				console.log('time ' + time); 
+
+				if(	date.length > 0 && time.length > 0	
+				){
+					console.log('trying to create a session');
+					var request= {
+				            action : path,
+				            date: date,
+				            time: time,
+				            rand : Math.floor(Math.random()*100000)
+				        };
+						
+						$.post(path,  request,   function(data, status, xhr){	
+							
+							if(data.message){
+								//displayPopup(JSON.stringify(data.message));
+							}else{
+								$('#assistance').show().addClass('green');
+								$('#assistance').html(' Session info updated!');
+								setTimeout(function() { $('#assistance').fadeOut(2000); }, 3000);
+							}
+							
+						}, "json");	
+					
+				}else{
+					if(date === ''){
+						console.log('enter a valid date');
+					}
+					if(time === ''){
+						console.log('enter a valid time');
+					}
+				}
+			}
+		  	
+		  	function buildUserRow(session_user, index){
+		  		
+		  		index = index + 1;
+				  			
+				var tr = '<tr id="tr_' + index + '">';
+				var user = '<td class="cell_id cp">' + session_user.username + '</td>';
+				var email = '<td class="cell1 cp">' + session_user.email + '</td>';
+				var ngo_name = '<td class="cell center cp">' + session_user.name + '</td>';
+				
+				var ngo_id = new Number(session_user.ngo);
+				
+				var input = '<div class=" "><a href="#" class=""'  + 
+				'" onclick="changeNgo(' + "'" + session_user.username + "'" + ',' + ngo[ngo_id] + ')" value="1">change</a></div>'
+				
+				var status = '<td id="user_' + session_user.username + '" class="v_cell cp center">' + input + '</td>';
+				
+				var table_row = tr + user + email + ngo_name + status;	  		
+				$('#user_table tbody:last-child').append(table_row);
+				
+		  	}
+		  	
+		  	function displayPopup(message){
+		  		console.log(message);
+		  		$( "#popup" ).dialog({
+					autoOpen: true,
+					resizable: false,
+					position: { my: "left bottom", at: "left+100 bottom-100", of: '#tags' },
+				    height: 350,
+				    width: 300,
+				    
+				    modal: true,
+				    buttons: {
+				        "OK": function() {
+				          $( this ).dialog( "close" );
+					    }
+				    }
+				});
+				
+				$( "#popup" ).html(
+					message
+				);
+		  		
+		  	}
+		  	
+			$( document ).ready(function() {
+				$("#tags").bind('focus', function(){
+					  if($(this).val()=="" || $(this).val() != ""){ 
+					     $(this).autocomplete("search");
+					  } 
+				});
+				
+				findSession()
+				
+			});
+	  </script>
+	</head>
+	<body>
+		<div id='assistance'>
+		</div>
+		<div class='hundred center'><h2>View Session Admin Page</h2></div>
+		<div class='vertical_spacer_ten'></div>
+	 	<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
+		<p>Select a Date: <input type="text" id="datepicker"></p> <form id='use_date'>
+		<div class='vertical_spacer_ten'></div>
+		<div class="ui-widget">
+		  <label for="tags">Select a Time: </label>
+		  <input id="time">
+		</div>
+		<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
+		
+		<div id='max_users'></div>
+		<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
+		<div class='hundred button_height '>
+			<div class='ninety'>
+				 <a href="#" onclick="createSession()" class="fifty_w_h  left button dark_grey "><div class="center_text">Change Session Schedule </div></a>
+			</div>
+		</div>
+		<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
+	 	<div class='vertical_spacer_ten'></div>
+	 	<div id='session_users' class='session_users'>
+	 	</div>
+	 	<%- partial('../layout/admin/user_table') %>
+	 	<div class='vertical_spacer_ten'></div>
+	 	<div class='vertical_spacer_ten'></div>
+	 	<a href="#" onclick="returnToSessions()" >Return to Schedule Sessions Page</a>
+	 	<div id='popup'>
+	 	
+		</div>
+	</body>
+</html>

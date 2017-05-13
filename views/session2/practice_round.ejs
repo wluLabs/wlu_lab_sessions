@@ -1,0 +1,188 @@
+<html>
+<head>
+	<title>Demo 1 : Convert All Textareas</title>
+	<link rel="stylesheet" href="/css/key_counter.css" type="text/css" />
+	<link rel="stylesheet" href="/css/button.css" type="text/css" />
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	
+	<script type="text/javascript">
+		var username = '<%= req.session.username %>';
+		var message = 'hello world';
+		var keypress_string = '';
+		function KeyCounter(){};
+		function Timer(){};
+		
+		var round_order= [{round1:'', round2: '', round3:'', round4:''}, {round1:'', round2: '', round3:'', round4:''}, {round1:'', round2: '', round3:'', round4:''}, {round1:'', round2: '', round3:'', round4:''}];
+	  	
+	  	function savePayment(amount){
+			path = "/pr_amount/save" ;
+			var request= {
+	            action : path,
+	            amount: amount,
+	            rand : Math.floor(Math.random()*100000)
+	        };
+			
+			$.post(path,  request,   function(data, status, xhr){
+				if(data.success_message){
+					//console.log('saved');
+					$('#proceed').show();
+				}
+			}, "json");	
+		
+		}
+	  	
+	  	function generateRoundOrder(){
+			path = "/pr_amount/save" ;
+			var request= {
+	            action : path,
+	            
+	            rand : Math.floor(Math.random()*100000)
+	        };
+			
+			$.post(path,  request,   function(data, status, xhr){
+				if(data.success_message){
+					//console.log('saved');
+					$('#proceed').show();
+				}
+			}, "json");	
+		
+		}
+	  	
+	  	
+	  	function displayPopup(message){
+	  		$( "#popup" ).dialog({
+				autoOpen: true,
+				resizable: false,
+				position: { my: "left bottom", at: "left+100 bottom-100", of: '#emailer' },
+			    height: 350,
+			    width: 300,
+			    
+			    modal: true,
+			    buttons: {
+			        "OK": function() {
+			          $( this ).dialog( "close" );
+				    }
+			    }
+			});
+			
+			$( "#popup" ).html(
+				message
+			);
+	  		
+	  	}
+	  	
+	  	function logoutUser(){
+	  		var location = "/confirm/final";
+			window.location.href = location ;
+	  	}
+	  	
+		$( document ).ready(function() {
+			//generateRoundOrder();
+			//selectSwitchType();
+			
+			var timer_started = false;
+			$('#proceed').hide();
+			var counter = new KeyCounter();
+			counter['counter'] = 0;
+
+			$(document).keydown( function(e){
+				keypress_string = keypress_string + e.key;
+				if(timer_started===false){
+					//console.log('timer_started ' + timer_started);
+					var timeleft = 30;
+					setInterval(function(){
+						timeleft = timeleft - 1;
+						countdown(timeleft)}, 1000);
+					countdown(timeleft);
+					timer_started = true;
+				}
+				
+				if(keypress_string === 'x'){
+					keypress_string = e.key;	
+				}else if(keypress_string === 'xz' ){
+					
+					keypress_string = '';
+					counter['counter'] = counter['counter'] + 1;
+					
+					$('#key_counter').empty();
+					$('#key_counter').html(counter['counter']);
+				}else{
+					keypress_string = '';
+				}
+			});
+		});
+		
+		function afterPractice(){
+			var location = "/session2/after_practice";
+			window.location.href = location ;
+		}
+	
+		function countdown(timeleft) {
+			
+		  if (timeleft == 0) { 
+			var key_counter = $('#key_counter').html();
+			$('#key_counts').html('In the practice round, you completed' + key_counter + ' pairs of X-Z clicks');
+			var amount = ((key_counter * 0.015).toFixed(2));
+			$('#payment').html('Your payment from the practice round is $ ' + amount);
+			$('#payment_message').html('We will make the payment to you at the end of the experiment. After all' + 
+					'&nbsp;participants have completed the practice round, we will give you some additional instructions for the next stage.');
+			$('#key_counter').empty();
+			$('#timer').html("0" + ' seconds remaining');
+		    savePayment( amount);
+		    return timedout = false;
+		  } else if(timeleft > 0){
+		    $('#timer').html(timeleft  + ' seconds remaining');  
+		  }
+		}
+	</script>	
+	
+</head>
+<body>
+
+<div class='center'><h4>WLU Labs Key Counter</h4></div>
+<p>
+<div class='center'>
+Your task is to sequentially click the X and Z keys as many times as possible in a 30-second (half-minute) time period.  
+</div>
+<div class='center'>
+Payment for your performance will be 1.5 cents ($0.015) for each pair of X-Z clicks
+</div>
+<div class='center'>
+The timer will start as soon as you start clicking.
+</div>
+<p>
+<div class='hundred center'>
+<h2><div id='key_counter'>0
+</h2></div>
+<div class='hundred center'>
+<h4><div id='key_counts'>
+</h4></div>
+<div class='hundred center'>
+<h4><div id='payment'>
+</h4></div>
+<div class='hundred center'>
+<h4><div id='payment_message'>
+</h4></div>
+</p>
+</div>
+<p>
+</p>
+<div class=' timer'>
+<h2><div id='timer'>0
+</h2></div>
+<div class='vertical_spacer_ten'></div>
+<div class='vertical_spacer_ten'></div>
+<div class='vertical_spacer_ten'></div>
+<div class='hundred button_height'>
+	<div class='hundred left25'>
+		 <a id='proceed' href="#" onclick="afterPractice()" class=" fifty_w_h  left button dark_grey "><div class="center_text">Proceed to Next Page</div></a>
+	</div>
+</div>
+
+<div id='popup'>
+</div>
+
+</body>
+</html>

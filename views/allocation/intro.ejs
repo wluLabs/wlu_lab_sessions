@@ -11,74 +11,62 @@
 	
 	<script type="text/javascript">
 		
-		// ensure answer is not preselected
-//		function refreshPage(){
-//			$("input:radio[name='consent']").each(function(i) {
-//			  this.checked = false;
-//			});
-//		}
-		
-//		function proceed(){
-//			var value = $('input[name=consent]:checked', '#response').val();
-//			console.log(value);
-//			// ensure a value has been selected
-//			if(typeof value === 'undefined'){
-//				$( "#popup" ).dialog({
-//					autoOpen: true,
-//					resizable: false,
-//					position: { my: "left bottom", at: "left+100 bottom-100", of: '#pb' },
-//				    height: 300,
-//				    width: 300,
-//				    
-//				    modal: true,
-//				    buttons: {
-//				        "OK": function() {
-//				          $( this ).dialog( "close" );
-//					    }
-//				    }
-//				});
-//				
-//				$( "#popup" ).html(
-//					'<h5 class="center">Please select option</h5> <p><h4 class="center">' +
-//					'"I agree to participate"</h4></p>  <h5 class="center">if you wish to proceed!</h5>'
-//				);
-//				
-//			}else if (value == 1){
-//				//login();
-//				generateUserName();
-//			}else{
-//				$( "#popup" ).dialog({
-//					autoOpen: true,
-//					resizable: false,
-//					position: { my: "left bottom", at: "left+100 bottom-100", of: '#pb' },
-//				    height: 350,
-//				    width: 300,
-//				    
-//				    modal: true,
-//				    buttons: {
-//				        "OK": function() {
-//				          $( this ).dialog( "close" );
-//					    }
-//				    }
-//				});
-//				
-//				$( "#popup" ).html(
-//					'<h5 class="center">You selected</h5> <p><h4 class="center">' +
-//					'"I do not wish to participate"</h4></p>  <h5 class="center">Please close your browser!</h5>'
-//				);
-//			
-//			}
-//		}
-		
-		function login(){
-			var location = "/page/login";
-			window.location.href = location ;
+	function selectNGO(){
+		var value = $('input[name=response]:checked', '#response').val();
+		if(typeof value === 'undefined'){
+			$( "#popup" ).dialog({
+				dialogClass: "alert",
+				  buttons: [
+				    {
+				      text: "Ok",
+				      click: function() {
+				        $( this ).dialog( "close" );
+				      }
+				    }
+				  ]
+			});
+			$( "#popup" ).html('Please select one of the two radio buttons to select a Not-For-Profit Organization to donate !');
+			return;
+		}else{
+			//alert(value);
+			saveAnswer(value);
 		}
+	}
 		
-		function generateUserName(){
-			var location = "/user/displayCreateUserPage";
-			window.location.href = location ;
-		}
+	function saveAnswer(value){
+		
+		path = "/ngo_choice1/create" ;
+	
+		var request= {
+            action : path,
+            ngo: value,
+            rand : Math.floor(Math.random()*100000)
+        };
+		
+		$.post(path,  request,   function(data, status, xhr){
+			if(data.message_error){
+				$('#error_message').show()
+				$('#error_message').text(JSON.stringify(data.message_error));
+				setTimeout(function() { $('#error_message').fadeOut(3000); }, 5000);
+				$('#assistance').show()
+				$('#assistance').text('If this error persists, please ask for asistance');
+				setTimeout(function() { $('#assistance').fadeOut(3000); }, 10000);
+				
+			}else{
+				$('#popup').show()
+				$('#popup').text('You choice has been saved. You will be forwarded to the next page in 3 seconds');
+				setTimeout(function() { $('#popup').fadeOut(2000); }, 3000);
+				setTimeout(function() { nextPage(); }, 3000);
+			}
+			
+		}, "json");	
+	
+	}
+	
+	function nextPage(){
+		var location = "/allocation/allocation1";
+		window.location.href = location ;
+	}
 
 		
 		$( document ).ready(function() {
@@ -106,16 +94,29 @@ organizations you might prefer to allocate some of your tokens.
 Select one only.
 </p>
 <p>
-<a href="/allocation/norml">NORML</a>
+<a href="/allocation/ccac">Canadian Council on Animal Care</a>
 </p>
 <p>
-<a href="/allocation/dfk">Drug Free Kids</a>
+<a href="/allocation/aac">Animal Alliance of Canada</a>
+</p>
+<p>
+<%- partial('../layout/allocation/select_ngo') %>
+</p>
+<br/>
+<p>
+<a href="#" onclick="selectNGO()">When Ready - Select an organization, click this link and you will be forwarded to the next Page</a>
+</p>
+<br/><br/>
+<p>
+<div id='popup'></div>
+<div id='error_message' class='red'>
+</div>
+<div id='assistance' class='green'></div>
+
+
 </p>
 
-<a href="/allocation/allocation1">When Ready - Proceed to next Page</a>
 
-<div id='popup'>
-</div>
 
 </body>
 </html>

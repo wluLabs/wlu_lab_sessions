@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+	<head>
+	  <meta charset="utf-8">
+	  <meta name="viewport" content="width=device-width, initial-scale=1">
+	  <title>jQuery UI Datepicker - Default functionality</title>
+	  <link rel="stylesheet" href="/css/schedule.css" type="text/css" />
+	  <link rel="stylesheet" href="/css/button.css" type="text/css" />
+	  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+	  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	  <script>
+	  		var username = '<%= req.session.username %>';
+		  	function getSessionUser(){
+				path = "/sessionuser/find" ;
+				
+				var request= {
+		            action : path,
+		            rand : Math.floor(Math.random()*100000)
+		        };
+				
+				$.post(path,  request,   function(data, status, xhr){
+					console.log(data);
+					getSession(data.id);
+				}, "json");	
+			}
+		  	
+		  	function sendEmail(){
+		  		//console.log('here');
+				path = "/emailer/user_send_mail" ;
+				var session_date = $('#session_date').text();
+				var session_time = $('#session_time').text();
+				console.log('trying to send an email to the user');
+				var request= {
+		            action : path,
+		            username: username,
+		            session_date: session_date,
+		            session_time: session_time,
+		            rand : Math.floor(Math.random()*100000)
+		        };
+				
+				$.post(path,  request,   function(data, status, xhr){
+					if(data.message){
+						console.log(data.message);
+						displayPopup(data.message);
+					}
+					
+				}, "json");	
+			
+			}
+		  	
+		  	function getSession(id){
+		  		
+		  		path = "/sessionuser/" + id;
+				var request= {
+		            action : path,
+		            rand : Math.floor(Math.random()*100000)
+		        };
+				
+				$.post(path,  request,   function(data, status, xhr){
+					//console.log(data);
+					displaySessionData(data);
+				}, "json");	
+		  		
+		  	}
+		  	
+		  	function displaySessionData(data){
+		  		var room = '<h5 class="padding_left25"> Room: <span id="username">' + 'P1033' +  '</span></h5>';
+		  		var username = '<h5 class="padding_left25"> Username: <span id="username">' + data.user_id.username +  '</span></h5>';
+		  		var session_date = data.session_id.date;
+		  		var session_date_string = session_date.substring(0, 10);
+		  		session_date = '<h5  class="padding_left25">Session Date: <span id="session_date">' +  session_date_string  +  '</span></h5>';
+		  		var session_time = '<h5  class="padding_left25">Session Time: <span id="session_time">' +  data.session_id.time  +  '</span></h5>';
+		  		$('#session_data').append(room);
+		  		$('#session_data').append(username);
+		  		$('#session_data').append(session_date);
+		  		$('#session_data').append(session_time);
+		  		
+		  		$('.session_time').html(data.session_id.time);
+		  		$('.session_date').html(session_date_string);
+		  	}
+		  	
+		  	function displayPopup(message){
+		  		$( "#popup" ).dialog({
+					autoOpen: true,
+					resizable: false,
+					position: { my: "left bottom", at: "left+100 bottom-100", of: '#emailer' },
+				    height: 350,
+				    width: 300,
+				    
+				    modal: true,
+				    buttons: {
+				        "OK": function() {
+				          $( this ).dialog( "close" );
+					    }
+				    }
+				});
+				
+				$( "#popup" ).html(
+					message
+				);
+		  		
+		  	}
+		  	
+		  	function nextPage(){
+		  		var location = "/confirm/final";
+				window.location.href = location ;
+		  	}
+		  	
+			$( document ).ready(function() {
+				getSessionUser();
+				setTimeout(function() { nextPage(); }, 300000);
+				$('#popup').show().addClass('green');
+				$('#popup').text('You will be automatically logged out of this page in 300 seconds!');
+				setTimeout(function() { $('#message').fadeOut(5000); }, 3000);
+			});
+	  </script>
+	</head>
+	<body>
+		<div class='hundred center'><h2>Successful Create Session Aknowledgement Page</h2></div>
+		<div class='vertical_spacer_ten'></div>
+	 	<div class='vertical_spacer_ten'></div>
+	 	<p>
+	 	Thank you for completing the first part of our study.
+		You are registered in the following session to complete the second part of our study.
+		
+	 	<h4 class='padding_left25'>Details:</h4>
+	 	
+		
+		<div id='session_data'>
+		</div>
+		
+		The $5 for filling out today’s questionnaire as well as any additional payment 
+		promised will be paid to you at the lab on <span class='session_date'></span> at </span><span class='session_time'></span>. If you have 
+		any questions, please contact Dr. Leslie Berger at <span class='blue'>lberger@wlu.ca</span> or Dr. Lan Guo 
+		at <span class='blue'>laguo@wlu.ca</span>
+		
+		<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
+		<div class='hundred center'><h5>Send an email with this info to your email address? Press the send email button.</h5></div>
+		<div class='hundred center'><h5>Otherwise please take note of the following info or print a page using the browsers print section then close your browser.</h5></div>
+		<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
+		<div class='hundred button_height '>
+			<div class='hundred left25'>
+				 <a id='emailer' href="#" onclick="sendEmail()" class="thirty fifty_w_h  left button dark_grey "><div class="center_text">Send Email</div></a>
+			</div>
+		</div>
+	 	<div id='popup'>
+		</div>
+		<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
+		<div id='message' class='green'>
+		</div>
+	</body>
+</html>

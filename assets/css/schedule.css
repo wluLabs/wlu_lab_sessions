@@ -6,17 +6,30 @@ body{
 	font-family: 'arial';
 }	
 	
-
+.cell1{
+	width: 4%;
+}
 .center{
 	text-align: center;
 	
 }
 
+.session_users{
+	padding-bottom: 10px;
+}
+
+.padding_left25{
+	padding-left:25px;
+}
 .hundred{
 	width: 100%;
 }
 .left{
 	float: left;
+}
+
+.blue{
+	color: blue;
 }
 
 .left25{
@@ -35,14 +48,49 @@ body{
 	height:10px;	
 }
 
+.cell1{
+	width: 6%;
+}
+
+.cell_id{
+	width: 2%;
+}
+
 .cell{
-	width: 20%;
+	width: 5%;
+}
+
+.green{
+	color: green;
 }
 
 .cell2{
+	width: 17%;
+}
+
+.cell3{
+	width: 10%;
+}
+
+.cell4{
+	width: 35%;
+}
+
+.cell_st{
 	width: 20%;
 }
 
+.m_cell{
+	width: 2%;
+}
+
+.v_cell{
+	width: 3%;
+}
+
+.cp{
+	padding: 1%;
+}
 .clear{
 	clear:both;
 }
@@ -57,4 +105,18 @@ body{
 
 .thirty{
 	max-width: 30%;
+}
+
+
+table{
+	border-collapse: collapse;
+	width: 100%;
+}
+
+.padding-top-button{
+	padding-top: 10px;
+}
+
+.radio_w{
+	width: 33%;
 }

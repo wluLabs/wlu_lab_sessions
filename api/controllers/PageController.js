@@ -14,7 +14,7 @@ module.exports = {
   },
   answer_edit: function(req, res){
 	  var questionnumber = req.query.questionnumber;
-	  console.log('questionnumber' + questionnumber);
+	  //console.log('questionnumber' + questionnumber);
 	  res.view('page/answer/edit/answer_edit');
   },
   test_partial: function(req, res){
@@ -23,10 +23,7 @@ module.exports = {
 	  res.view('test/test3');
   },
   pickSession: function(req, res){
-	  var username = req.param('username');
-	  console.log('username ' + username);
-	  req.session.username = username;
-	  res.view('page/session/pickSession');
+	  res.view('page/pickSession');
   },
   showUserSession: function(req, res){
 	  res.view('session/successful_signup');
@@ -34,11 +31,11 @@ module.exports = {
   intro: function(req, res){
 	  res.view('allocation/intro');
   },
-  norml: function(req, res){
-	  res.view('allocation/norml');
+  ccac: function(req, res){
+	  res.view('allocation/ccac');
   },
-  dfk: function(req, res){
-	  res.view('allocation/dfk');
+  aac: function(req, res){
+	  res.view('allocation/aac');
   }
   
 };

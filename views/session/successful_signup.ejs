@@ -102,17 +102,17 @@
 		  		
 		  	}
 		  	
-		  	function logoutUser(){
-		  		var location = "/login/logout";
+		  	function nextPage(){
+		  		var location = "/page/question";
 				window.location.href = location ;
 		  	}
 		  	
 			$( document ).ready(function() {
 				getSessionUser(username);
-				setTimeout(function() { logoutUser(); }, 25000);
-				$('#popup').show()
-				$('#popup').text('You will be automatically logged out of this page in 25 seconds!');
-				setTimeout(function() { $('#message').fadeOut(2000); }, 3000);
+				setTimeout(function() { nextPage(); }, 5000);
+				$('#popup').show().addClass('green');
+				$('#popup').text('You will be automatically forwarded to the next portion of this session in 5 seconds!');
+				setTimeout(function() { $('#message').fadeOut(5000); }, 3000);
 			});
 	  </script>
 	</head>

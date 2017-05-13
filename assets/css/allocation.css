@@ -18,7 +18,9 @@ body{
 	text-align: center;
 }
 
-
+.message{
+	height: 20px;
+}
 
 .centerDiv{
 	width: 100%;
@@ -34,16 +36,117 @@ body{
 	padding: 5%;
 	margin: 0 auto;
 }
+
+.w_30{
+	width: 30%;
+}
+
 .left{
 	float: left;
+}
+
+.leftpad10{
+	padding-left: 10px;
+}
+
+.padding10_right{
+	padding-right: 20px;
+}
+
+.left5{
+	position: absolute;
+	left: 5%;
+}
+
+.left10{
+	position: absolute;
+	left: 10%;
+}
+
+.left20{
+	position: absolute;
+	left: 20%;
+}
+
+.left15{
+	position: absolute;
+	left: 15%;
 }
 
 .left25{
 	position: absolute;
 	left: 25%;
 }
+
+.left30{
+	position: absolute;
+	left: 30%;
+}
+
+.left40{
+	position: absolute;
+	left: 40%
+}
+
+.left45{
+	position: absolute;
+	left: 45%
+}
+
+.left50{
+	position: absolute;
+	left:50%
+}
+
+.left75{
+	position: absolute;
+	left: 75%;
+}
+
+.left65{
+	position: absolute;
+	left: 65%;
+}
+
+.left60{
+	position: absolute;
+	left: 60%;
+}
+
+.left35{
+	position: absolute;
+	left: 35%;
+}
+
+.left45{
+	position: absolute;
+	left: 45%;
+}
+
+.left55{
+	position: absolute;
+	left: 55%;
+}
+
+.left75{
+	position: absolute;
+	left: 75%;
+}
+.left80{
+	position: absolute;
+	left: 80%;
+}
 .right{
 	float: right;
+}
+.top5{
+	position: absolute;
+	top: 5%;
+}
+
+.top10{
+	position: absolute;
+	top: 10%;
 }
 
 .hidden{
@@ -97,4 +200,37 @@ body{
 
 .inline{
 	display: inline-block;
+}
+
+
+
+.blue{
+	color: blue;
+}
+
+.ngo{
+	font-weight: bold;
+	color: black;
+}
+
+.fifty_left35{
+	width: 30%;
+}
+
+.height_70{
+	height:70px;
+}
+
+.h30{
+	height: 30px;
+}
+
+.padding5{
+	padding: 5px;
+}
+
+.timer{
+		position: absolute;
+		left: 50%;
+		bottom:0%;
 }

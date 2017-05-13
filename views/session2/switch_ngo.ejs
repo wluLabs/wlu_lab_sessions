@@ -1,0 +1,116 @@
+
+
+<html>
+<head>
+	<title>Demo 1 : Convert All Textareas</title>
+	<link rel="stylesheet" href="/css/allocation.css" type="text/css" />
+	<link rel="stylesheet" href="/css/button.css" type="text/css" />
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	
+	<script type="text/javascript">
+		
+	function selectNGO(){
+		var value = $('input[name=response]:checked', '#response').val();
+		if(typeof value === 'undefined'){
+			$( "#popup" ).dialog({
+				dialogClass: "alert",
+				  buttons: [
+				    {
+				      text: "Ok",
+				      click: function() {
+				        $( this ).dialog( "close" );
+				      }
+				    }
+				  ]
+			});
+			$( "#popup" ).html('Please select one of the two radio buttons to select a Not-For-Profit Organization to donate !');
+			return;
+		}else{
+			//alert(value);
+			saveAnswer(value);
+		}
+	}
+		
+	function saveAnswer(value){
+		
+		path = "/ngo_choice1/create" ;
+	
+		var request= {
+            action : path,
+            ngo: value,
+            rand : Math.floor(Math.random()*100000)
+        };
+		
+		$.post(path,  request,   function(data, status, xhr){
+			if(data.message_error){
+				$('#error_message').show()
+				$('#error_message').text(JSON.stringify(data.message_error));
+				setTimeout(function() { $('#error_message').fadeOut(3000); }, 5000);
+				$('#assistance').show()
+				$('#assistance').text('If this error persists, please ask for asistance');
+				setTimeout(function() { $('#assistance').fadeOut(3000); }, 10000);
+				
+			}else{
+				$('#popup').show()
+				$('#popup').text('You choice has been saved. You will be forwarded to the next page in 3 seconds');
+				setTimeout(function() { $('#popup').fadeOut(2000); }, 3000);
+				setTimeout(function() { nextPage(); }, 3000);
+			}
+			
+		}, "json");	
+	
+	}
+	
+	function nextPage(){
+		var location = "/allocation/allocation1";
+		window.location.href = location ;
+	}
+
+		
+		$( document ).ready(function() {
+//	    	refreshPage();
+		});
+		
+		
+	</script>	
+	
+</head>
+<body>
+
+Allocation Game
+<p>
+For Rounds 3 and 4, you wish to work for (please choose one):
+</p>
+<p>
+Select one only.
+</p>
+<p>
+<a href="/allocation/ccac">Canadian Council on Animal Care</a>
+</p>
+<p>
+<a href="/allocation/aac">Animal Alliance of Canada</a>
+</p>
+<p>
+<%- partial('../layout/allocation/select_ngo') %>
+</p>
+<br/>
+<p>
+<a href="#" onclick="selectNGO()">When Ready - Select an organization, click this link and you will be forwarded to the next Page</a>
+</p>
+<br/><br/>
+<p>
+<div id='popup'></div>
+<div id='error_message' class='red'>
+</div>
+<div id='assistance' class='green'></div>
+
+
+</p>
+
+
+
+</body>
+</html>
+

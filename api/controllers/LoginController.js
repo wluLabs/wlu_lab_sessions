@@ -20,6 +20,9 @@ module.exports = {
     	     if(user){
     	    	 console.log('User found comparing passwords!');
     	    	 console.log('found user by email: ');
+    	    	 console.log(user);
+    	    	 console.log(user.username);
+    	    	 req.session.username = user.username;
     	    	 ComparePasswordService.comparePassword(req, res, user, password);
     	     }
     	 });
@@ -41,7 +44,7 @@ module.exports = {
 
     Uzer.findOne({username: username}, function (err, user) {
       if (!user) {
-    	  console.log();
+    	  //console.log();
         return res.json(401, {err: 'invalid username or password'});
       }
 

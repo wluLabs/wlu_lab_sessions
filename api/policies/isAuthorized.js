@@ -7,7 +7,7 @@
 
 module.exports = function (req, res, next) {
   var token;
-  console.log('isAuthorized');
+  //console.log('isAuthorized');
   if (req.headers && req.headers.authorization) {
 	  //console.log(req.headers.authorization);
     var parts = req.headers.authorization.split(' ');

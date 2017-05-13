@@ -1,0 +1,164 @@
+
+<html>
+<head>
+	<title>Demo 1 : Convert All Textareas</title>
+	<link rel="stylesheet" href="/css/allocation.css" type="text/css" />
+	<link rel="stylesheet" href="/css/button.css" type="text/css" />
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	
+	<script type="text/javascript">
+	var nextPage;
+	
+	var ngo = [" ", "Canadian Council on Animal Care", "Animal Alliance of Canada"];
+	var ngoChoice2 = '';
+	
+	function getNextPage(page){
+		var checked = $('#ngo_radio_choice2').is(':checked');
+		if(checked && $('#ngo_radio_choice2').attr('current_value') == '1'){
+			ngoChoice2 = 2;
+		}else if(checked && $('#ngo_radio_choice2').attr('current_value') == '2'){
+			ngoChoice2 = 1;
+		}
+		
+		var path = "/user_page_order/find";
+		var request= {
+            action : path,
+            rand : Math.floor(Math.random()*100000)
+        };
+		
+		$.get(path,  request,   function(data, status, xhr){
+			if(data[0].page3){
+				nextPage = data[0].page3;
+				processNgoChoice2();
+			}
+		}, "json");	
+	}
+	                                                                                                                                                                                                         	
+	function next(){
+		var location = "/session2/" + nextPage;
+		console.log('location ' + location);
+		window.location.href = location ;
+	}
+	
+	function findNgo_Choice1(){
+		
+		var path = "/ngo_choice2/findNgo_choice1";
+		var request= {
+            action : path,
+            rand : Math.floor(Math.random()*100000)
+        };
+		
+		$.get(path,  request,   function(data, status, xhr){
+			if(data.ngo_choice1){
+				console.log(data.ngo_choice1.ngo);
+				loadNgoInfo(data.ngo_choice1.ngo);
+				// setting ngoChoice2 to same as NGO Choice 1
+				ngoChoice2 = new Number(data.ngo_choice1.ngo);
+				$('.current_ngo').html(ngo[ngoChoice2]);
+				$('#ngo_radio_choice2').attr('current_value', data.ngo_choice1.ngo);
+				$('#ngo_current').attr('checked', true);
+			}
+		}, "json");	
+	}
+
+  	
+	function loadNgoInfo(ngo_choice1){
+		console.log('loading ngo choice page');
+		var path = "/ngo_choice2/getNgo_choice1_alt";
+		var request= {
+            action : path,
+            ngo_choice1: ngo_choice1,
+            rand : Math.floor(Math.random()*100000)
+        };
+		
+		$('#ngo_info').load(path,  request,   function(data, status, xhr){	
+			
+		}, "json");
+	}
+	
+	function processNgoChoice2(){
+		
+		var path = "/ngo_choice2/save";
+		var request= {
+            action : path,
+            ngo_choice2: ngoChoice2,
+            rand : Math.floor(Math.random()*100000)
+        };
+		
+		$.post(path,  request,   function(data, status, xhr){	
+			if(data.ngo_choice2){
+				next();
+			}	
+		}, "json");
+		
+	}
+	
+  	function displayPopup(){
+  		var message = 	"You have just chosen to work for " +
+  						ngo[ngoChoice2] +
+  						", a new not-for-profit" +
+  						" organization which supports the views on this page." +
+  						" You will/will not receive $3 for this choice. Press proceed " + 
+  						"to next page once you are satisfied with your decision.";
+  		$( "#popup" ).dialog({
+			autoOpen: true,
+			resizable: false,
+			position: { my: "left bottom", at: "left+100 bottom-100", of: '#ngo_info' },
+		    height: 350,
+		    width: 300,
+		    
+		    modal: true,
+		    buttons: {
+		        "OK": function() {
+		          $( this ).dialog( "close" );
+			    }
+		    }
+		});
+		
+		$( "#popup" ).html(
+			message
+		);
+  	}
+  	
+
+			
+	$( document ).ready(function() {
+		findNgo_Choice1();
+	});
+		
+		
+	</script>	
+	
+</head>
+<body>
+
+<p>
+You are currently working for <span class="current_ngo"></span>
+<p>
+With two rounds of the clicking task remaining (Rounds 3 and 4), 
+you are now offered the opportunity to switch the not-for-profit 
+organization for which you work. Specifically, if you so 
+choose, you may work for:
+
+<div id="ngo_info"></div>
+
+
+Update NGO choice: <input type="radio" id="ngo_radio_choice2" onclick="displayPopup()" current_value="displayPopup()" name='response'>
+Keep current NGO :&nbsp;<input type="radio" id="ngo_current" name='response'>	
+
+<div class='vertical_spacer_ten'></div>
+<div class='hundred button_height'>
+	<div class='hundred '>
+		 <a id='proceed' href="#" onclick="getNextPage(3)" class=" fifty_w_h  left25 button dark_grey "><div class="center_text">Proceed to Next Page</div></a>
+	</div>
+</div>
+
+
+<div id='popup'>
+</div>
+
+</body>
+</html>
+

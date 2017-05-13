@@ -35,9 +35,9 @@ module.exports = {
 	  user.password=password;
 	  user.email=email;
 	  user.username = username;
-	  console.log('confirm_password ' + confirm_password);
-	  console.log('email ' + email);
-	  console.log('username ' + username);
+	  //console.log('confirm_password ' + confirm_password);
+	  //console.log('email ' + email);
+	  //console.log('username ' + username);
 	  
 	  	if (!confirm_password ) {
 	      return res.json(200, {password_error_message: 'Password doesn\'t match!'});
@@ -78,6 +78,27 @@ module.exports = {
 		  res.json(200, {message: 'Please select  username!!'});
 	  }
 	 
+  },
+  findUserByEmail: function(req, res){
+	  
+	 var email = req.query.email;
+	 //console.log(email);
+	 var email2 = req.param('email');
+	 //console.log(email2); 
+	
+	Uzer.query(
+			"select u.email from uzer u where u.email like '%" + email2 + "%' order by u.email asc", function(err, rawResult){ 
+				//console.log('here: ' + rawResult);
+  	      if (err) {
+  	    	  console.log(err);
+  	    	  return res.json(200, {err: err});
+  	      }
+  	     if(rawResult){
+  	    	 //console.log(rawResult);
+  	    	res.json(200, rawResult.rows);
+  	     }
+	});
+	  
   }
   
 };

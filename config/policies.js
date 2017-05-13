@@ -32,7 +32,6 @@ module.exports.policies = {
   
   ,
   'PageController': {
-	    'pickSession': true,
 	    'showUserSession': true// We dont need authorization here, allowing public access
   },
   'WelcomeController': {
@@ -40,5 +39,8 @@ module.exports.policies = {
   },
   'SessionController':{
 	  'findSessionsForUser': true
+  },
+  'Session2Controller':{
+	  'welcome': true
   }
 };

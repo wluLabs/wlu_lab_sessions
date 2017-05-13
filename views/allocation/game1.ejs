@@ -13,9 +13,44 @@
 		var QuestionNumber = 0;
 		var MaxQuestions = 4;
 		var answered = false;
+		var non_gov_org = new Object();
 		
 		var answers = [['&nbsp;$5.00', '&nbsp;$2.00', '&nbsp;$0.00'],['&nbsp;$5.00','&nbsp;$3.50','&nbsp;$2.00'],
-			['$18.00', '$20.00', '$25.50'],['$12.00', , '$18.00', '$30.00']];
+			['$18.00', '$20.00', '$25.50'],['$12.00', '$18.00', '$30.00']];
+		var correct_answers = [[1,1],[2,2],[3,3],[4,2]];
+		
+		function check_answer(answer){
+			var correct_answer = correct_answers[QuestionNumber-1][1];
+			var message;
+			if(		QuestionNumber ===1 ||
+					QuestionNumber ===2
+			){
+				message = 'The first token you give to the organization is worth $5.' +
+				'The second token is worth $4.7, the third worth $4.4 and so forth. More ' +
+				'generally, each token you pass onto the organization is worth $5.3 &#45; n*0.3 ' +
+				'where n is the number of the token sent to the organization';	
+			}else{
+				message = 'Please refer to the table below that states your payment and ' +
+				'the payment sent to the not-for-profit organization as a ' +
+				'function of all possible allocations of your 15 tokens';
+			}
+			if(correct_answer === answer){
+				message = '<b>You got it!Great Job!!!</b>';
+				$('#quiz_assistant').empty();
+				$('#quiz_assistant').removeClass('red');
+				$('#quiz_assistant').addClass('green');
+			}else{
+				console.log(':(');
+				$('#quiz_assistant').removeClass('green');
+				$('#quiz_assistant').addClass('red');
+			}
+			$('#quiz_assistant').empty();
+			$('#quiz_assistant').show()
+			$('#quiz_assistant').html(message);
+			
+			setTimeout(function() { $('#quiz_assistant').fadeOut(3000); }, 1500);
+
+		}
 		
 		function nextQuestion(){
 			
@@ -35,24 +70,8 @@
 				$( "#popup" ).html('Please select one of the three radio buttons to select a value!');
 				return;
 			}else{
-				saveAnswer(QuestionNumber, value);
+				getQuestion();
 			}
-		}
-		
-		function saveAnswer(question, value){
-		
-			console.log('question: ' + question + ' value: ' + value);
-			getQuestion();
-		}
-		
-		function previousQuestion(){
-			if(QuestionNumber === 0 || QuestionNumber === 1){
-				QuestionNumber = 1;
-			}else{
-				QuestionNumber = QuestionNumber - 1;
-			}
-			
-			getQuestionNumber(QuestionNumber);		
 		}
 		
 		function getQuestionNumber(number){
@@ -94,14 +113,16 @@
 		
 		function setQuestion(content){
 			//console.log(content);
+			var org_name = non_gov_org['name'];
+			//console.log(org_name);
+			content = content.replace('NGO', org_name);
 			$('#quiz_text').html(content);
-			$('').each(function (){
-				
-			});
 		}
 		
 		function setScenario(content){
 			//console.log(content);
+			var org_name = non_gov_org['name'];
+			content = content.replace('NGO', org_name);
 			$('#scenario_text').html(content);
 		}
 		
@@ -159,55 +180,85 @@
 		    $( "#dialog" ).dialog();
 		  } );
 		
-		$( document ).ready(function() {
-			getScenario()
-			getQuestion();
-		});
-	  	
-	  	
+		function findNgo(){
+			
+			var path = "/Ngo_Choice1/find";
 		
+			var request= {
+	            action : path,
+	            rand : Math.floor(Math.random()*100000)
+	        };
+			
+			$.get(path,  request,   function(data, status, xhr){
+				if(data){
+					var ngo = data.ngo;	
+					non_gov_org.name = ngo.name;
+					$('.ngo').html(ngo.name);
+					getScenario();
+					getQuestion();
+				}
+				  
+			}, "json");	
+		
+		}  
+		
+		$( document ).ready(function() {
+			findNgo();
+		});
+		
+
 		
 	</script>	
 	
 </head>
 <body>
+<div class='height_70'>
+<div id='quiz_assistant'  ></div>
+</div>
 
+<div></div>
+<p>
 <div class='center'><h4>Allocation Game</h4></div>
-<p>
-<%- partial('../layout/allocation/table') %>
 </p>
+<div></div>
 <p>
-Once all of the participants in our study have completed the survey, one out of every 10 
-participants will be randomly selected to implement their allocation decisions. That is, 
+Once all of the participants in our study have completed the survey, <b>one out of every 10 
+participants</b> will be randomly selected to implement their allocation decisions. That is, 
 if you are chosen, the dollar value of any tokens you kept for yourself will be paid to 
 you at the second part of this study in the computer lab and the dollar value of any tokens 
-you transferred to X << X being Norml Canada or Drug Free Kids participants chose in 
-screen 6 >> will be mailed to it.  
+you transferred to <span class='ngo'></span> will be mailed to it.  
 </p>
 <p>
 <div id='scenario_text'></div>
 
 </p>
-
 <p>
-<div id='quiz_text'></div>
+<div id='quiz_text' ></div>
 
 </p>
 
 <%- partial('../layout/scenario/quiz_answer') %>
 
 <p>
+
 <div class='hundred button_height '>
-	<div class='ninety'>
-		 <a href="#" onclick="previousQuestion()" class="fifty_w_h left button dark_grey "><div class="center_text">Previous Question</div></a>
-		
-		 <a href="#" onclick="nextQuestion()" class="fifty_w_h  right button dark_grey "><div class="center_text">Next Question</div></a>
+	<div class='hundred left35'>
+		 <a id='emailer' href="#" onclick="nextQuestion()" class=" fifty_left35  left button dark_grey "><div class="center_text">Next Question</div></a>
 	</div>
 </div>
 <div class = 'after_left'></div>
+<br/><br/><br/>
 </p>
+
+
+<p>
 <div id='popup'>
 </div>
+</p>
+<p></p>
+<p>
+<%- partial('../layout/allocation/table') %>
+</p>
 
 </body>
 </html>
