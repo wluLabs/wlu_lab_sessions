@@ -28,9 +28,9 @@ module.exports.connections = {
   * Installed by default.                                                    *
   *                                                                          *
   ***************************************************************************/
-  localDiskDb: {
-    adapter: 'sails-disk'
-  },
+//  localDiskDb: {
+//    adapter: 'sails-disk'
+//  },
 
   /***************************************************************************
   *                                                                          *
@@ -74,24 +74,24 @@ module.exports.connections = {
   *                                                                          *
   *                                                                          *
   ***************************************************************************/
-//   somePostgresqlServer: {
-//     adapter: 'sails-postgresql',
-//     host: 'stampy.db.elephantsql.com',
-//     user: 'rffkjumy', // optional
-//     password: '5-evYRlLB537rjrJwMMGheVdF3fLIyHC', // optional
-//     database: 'rffkjumy',
-//     poolsize: 10,//, //optional,
-//     ssl: true
-//   }
+   somePostgresqlServer: {
+     adapter: 'sails-postgresql',
+     host: 'localhost',
+     user: 'postgres', // optional
+     password: 'G#@reg', // optional
+     database: 'wlu-data',
+     poolsize: 10//, //optional,
+     //ssl: true
+   }
 
-  	localPost: {
-	     adapter: 'sails-postgresql',
-	     host: 'localhost',
-	     user: 'postgres', // optional
-	     password: 'G#@reg', // optional
-	     database: 'wlu-data'//, //optional,
-	     //ssl: true
-	}
+//  	postgres: {
+//	     adapter: 'sails-postgresql',
+//	     host: 'localhost',
+//	     user: 'postgres', // optional
+//	     password: 'G#@reg', // optional
+//	     database: 'wlu-data'//, //optional,
+//	     //ssl: true
+//	}
   /***************************************************************************
   *                                                                          *
   * More adapters: https://github.com/balderdashy/sails                      *

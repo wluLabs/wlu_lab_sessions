@@ -11,15 +11,21 @@
  */
 
 module.exports = {
+		
+	ssl:{
+ 		ca: require('fs').readFileSync(require('path').resolve(__dirname,'../ssl/www_wlulabs_science.ca-bundle')),
+		key: require('fs').readFileSync(require('path').resolve(__dirname,'../ssl/wlu_labs.key')),
+		cert: require('fs').readFileSync(require('path').resolve(__dirname,'../ssl/www_wlulabs_science.crt'))
+	}
 
   /***************************************************************************
    * Set the default database connection for models in the production        *
    * environment (see config/connections.js and config/models.js )           *
    ***************************************************************************/
 
-  // models: {
-  //   connection: 'someMysqlServer'
-  // },
+//   models: {
+//     connection: 'somePostgresqlServer'
+//   },
 
   /***************************************************************************
    * Set the port in the production environment to 80                        *
