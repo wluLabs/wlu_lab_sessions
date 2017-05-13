@@ -17,7 +17,7 @@
 		}
 		
 		function validateMyself(){
-			console.log('here');
+			//console.log('here');
 			var keep = $('#myself').val();
 			var keep_num = parseInt(keep);
 			var keepIsNum = $.isNumeric(keep_num);
@@ -37,11 +37,17 @@
 			var donate = $('#donate').val();
 			console.log('donate: ' + donate);
 			var donate_num = parseInt(donate); 
-			console.log('inside validateDonate');
+			keep_num = parseInt(keep_num);
+			var total = keep_num + donate_num;
+			console.log(total);
+			console.log('total ' + total);
 			var donateIsNum = $.isNumeric(donate_num);
 			if(donateIsNum && donate_num >= 0 && donate_num <= 15){
 				console.log('inside if validateDonate');
-				if(keep_num && donate_num && (keep_num + donate_num === 15)){
+				console.log('inside if check sum ' + keep_num + ' donate_num ' + donate_num + (keep_num + donate_num));
+				console.log((total == 15));
+				console.log(total === 15);
+				if((total == 15)){
 					console.log('inside if validateDonate adds to 15')
 					createTokens(keep_num, donate_num);
 				}
