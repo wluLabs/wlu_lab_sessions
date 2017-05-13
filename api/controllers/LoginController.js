@@ -29,6 +29,7 @@ module.exports = {
      }
      if(user){
     	 console.log('found user by username: ' + username);
+    	 req.session.username = user.username;
     	 ComparePasswordService.comparePassword(req, res, user, password);
      }
     });

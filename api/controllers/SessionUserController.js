@@ -13,10 +13,11 @@ module.exports = {
 		var username = req.param('username');
 		//console.log('username: ' + username);
 		//console.log('req.session.username: ' + req.session.username);
-		if(req.session.username){
+		if(typeof username === 'undefined'){
 			username = req.session.username;
-			console.log('req.session.username: ' + req.session.username);
+			//console.log('req.session.username: ' + req.session.username);
 		}
+		//console.log(' after if username: ' + username);
 		var user_id;
 		if(username){
 			//console.log('attempting to create a usersession!! ' );
