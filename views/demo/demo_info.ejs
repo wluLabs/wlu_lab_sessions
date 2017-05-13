@@ -125,7 +125,6 @@
 			$('#validate_message').empty();
 			$('#validate_message').show().addClass(cl);
 			$('#validate_message').text(message);
-			setTimeout(function() { $('#validate_message').fadeOut(3000); }, 2000);
 		}
 		
 		function validateAge(){
@@ -137,7 +136,8 @@
 				$('#age').html('Age: ' + age_num);
 				getDemoPage('three');
 			}else{
-				
+				var message = ('Please enter a valid number between 15 and 70' );
+				showValidationMessage(message, 'red');
 			}
 			
 		}
@@ -165,7 +165,7 @@
 				getDemoPage('foura');
 			}else{
 				message = 'Please select a year by clicking on a radio button!';
-				showValidationMessage(message, 'red')
+				showValidationMessage(message, 'red');
 			}
 		}
 		
@@ -173,6 +173,7 @@
 			var majors = new Array();
 			var value = $('input[name=response]:checked', '#response').val();
 			userDemoGraphics.majors = new Array();
+			var checkedNum = 0;
 			
 			$('input[name=response]', '#response').each(function(index, value){
 				//this.checked = false;
@@ -180,21 +181,29 @@
 					var val = $(this).val();
 					//console.log('value: ' + val);
 					userDemoGraphics.majors.push(val);
+					checkedNum = checkedNum + 1;
 				}
 				if(this.checked == true && $(this).val() === 'Other'){
 					var specify = $('#other').val();
 					userDemoGraphics.majors[userDemoGraphics.majors.length -1] = 'Other: ' + specify;
-					//console.log(specify);
+					checkedNum = checkedNum + 1;
 				}
 			});	
 			//console.log(userDemoGraphics.majors.toString());
 			var business_test = userDemoGraphics.majors.toString();
-			if(business_test.includes('Business')){
-				getDemoPage('fourb');	
+			if(checkedNum > 0){
+				if(business_test.includes('Business')){
+					getDemoPage('fourb');	
+				}else{
+					getDemoPage('five');
+				}
+				$('#majors').html('Majors: ' + userDemoGraphics.majors.toString());
+				
 			}else{
-				getDemoPage('five');
+				message = 'Please select a major !';
+				showValidationMessage(message, 'red');
 			}
-			$('#majors').html('Majors: ' + userDemoGraphics.majors.toString());
+
 			
 		}
 		
@@ -232,10 +241,9 @@
 				$('#game_hours').html('Game hours played per week: ' + game_hours_num);
 				getDemoPage('six');
 			}else{
-				
+				var message = ('Please enter a valid number!' );
+				showValidationMessage(message, 'red');	
 			}
-			
-			
 		}
 		
 		function validateWorkExperience(){
@@ -252,7 +260,8 @@
 				$('#next_button').html('Save Info');
 				userDemoGraphics.page = 'save_info';
 			}else{
-				
+				var message = ('Please enter a valid number!' );
+				showValidationMessage(message, 'red');	
 			}	
 		}
 		
@@ -270,7 +279,7 @@
 	        };
 			
 			$('#page').load(path,  request,   function(data, status, xhr){	
-				
+				$('#validate_message').hide();	
 			}, "json");	
 		}
 		
