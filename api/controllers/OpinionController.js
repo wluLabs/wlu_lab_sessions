@@ -8,7 +8,7 @@
 module.exports = {
 	save: function(req, res){
 		username = req.session.username;
-		console.log('username' + username);
+		//console.log('username' + username);
 		question = req.param('question');
 		value = req.param('value');
 		message = 'username: ' + username + ' question: ' + question + ' choice:' + value;
