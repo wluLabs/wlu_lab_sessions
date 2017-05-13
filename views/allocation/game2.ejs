@@ -46,14 +46,14 @@
 				$('#quiz_assistant').addClass('red');
 			}
 			$('#quiz_assistant').empty();
-			
+			$('#quiz_assistant').show();
 			$('#quiz_assistant').html(message);
 			
 
 		}
 		
 		function nextQuestion(){
-			
+			$('#quiz_assistant').hide();
 			var value = $('input[name=response]:checked', '#response').val();
 			if(typeof value === 'undefined'){
 				$( "#popup" ).dialog({

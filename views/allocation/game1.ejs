@@ -40,7 +40,7 @@
 				$('#quiz_assistant').removeClass('red');
 				$('#quiz_assistant').addClass('green');
 			}else{
-				console.log(':(');
+				//console.log(':(');
 				$('#quiz_assistant').removeClass('green');
 				$('#quiz_assistant').addClass('red');
 			}
@@ -48,12 +48,12 @@
 			$('#quiz_assistant').show()
 			$('#quiz_assistant').html(message);
 			
-			setTimeout(function() { $('#quiz_assistant').fadeOut(3000); }, 1500);
+			//setTimeout(function() { $('#quiz_assistant').fadeOut(5000); }, 1500);
 
 		}
 		
 		function nextQuestion(){
-			
+			$('#quiz_assistant').hide();
 			var value = $('input[name=response]:checked', '#response').val();
 			if(typeof value === 'undefined'){
 				$( "#popup" ).dialog({
@@ -132,7 +132,7 @@
 				QuestionNumber = QuestionNumber + 1;
 				getQuestionNumber(QuestionNumber);
 			}else if(MaxQuestions && QuestionNumber == MaxQuestions) {
-				console.log('Last Question');
+				//console.log('Last Question');
 				lastQuestionPopup();
 				
 				
@@ -170,7 +170,7 @@
 			$('input[name=response]', '#response').each(function(index, value){
 				this.checked = false;
 				var value = answers[QuestionNumber-1][index];
-				console.log('value: ' + value);
+				//console.log('value: ' + value);
 				$('#answer' + index).empty();
 				$('#answer' + index).html(value);
 			});	
