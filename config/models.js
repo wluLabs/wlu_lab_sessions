@@ -18,7 +18,7 @@ module.exports.models = {
   *                                                                          *
   ***************************************************************************/
 	//connection: postgres
-	connection: 'somePostgresqlServer'
+	connection: 'somePostgresqlServer',
 
   /***************************************************************************
   *                                                                          *
@@ -28,6 +28,6 @@ module.exports.models = {
   * See http://sailsjs.org/#!/documentation/concepts/ORM/model-settings.html  *
   *                                                                          *
   ***************************************************************************/
-   //migrate: 'alter'
+   migrate: 'safe'
 
 };

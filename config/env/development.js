@@ -19,7 +19,7 @@ module.exports = {
 
    models: {
 	   	//connection: 'postgres'
-    	//connection: 'somePostgresqlServer'
+    	connection: 'somePostgresqlServer'
    }
 
 };
