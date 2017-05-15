@@ -19,7 +19,7 @@ module.exports = {
   },
   test_partial: function(req, res){
 	  var questionnumber = req.query.questionnumber;
-	  console.log('questionnumber' + questionnumber);
+	  //console.log('questionnumber' + questionnumber);
 	  res.view('test/test3');
   },
   pickSession: function(req, res){

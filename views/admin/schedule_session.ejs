@@ -4,7 +4,7 @@
 	  <meta charset="utf-8">
 	  <meta name="viewport" content="width=device-width, initial-scale=1">
 	  <title>Admin Schedule Session</title>
-	  <link rel="stylesheet" href="/css/schedule.css" type="text/css" />
+	  <link rel="stylesheet" href="/css/schedule_session.css" type="text/css" />
 	  <link rel="stylesheet" href="/css/button.css" type="text/css" />
 	  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 	  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
@@ -104,12 +104,12 @@
 		  					session.id + '" onclick="updateSessionType(' + session.id +',2)" value="2" >2</div>' +
 		  				'<div class="radio_w left"><input id="st_' + session.id + '_3" class="radio_w" type="radio" name="session' + 
 		  					session.id + '" onclick="updateSessionType(' + session.id +',3)" value="3" >3</div>' +
-		  				'<div class="radio_w left"><input id="st_' + session.id + '_4" class="radio_w" type="radio" name="session' + 
+		  				'<div class="radio_w left hidden"><input id="st_' + session.id + '_4" class="radio_w" type="radio" name="session' + 
 		  					session.id + '" onclick="updateSessionType(' + session.id +',4)" value="4" >4</div>' +
 		  				'<div class="radio_w left"><input id="st_' + session.id + '_5" class="radio_w" type="radio" name="session' + 
-		  					session.id + '" onclick="updateSessionType(' + session.id +',5)" value="5" >5</div>' +
+		  					session.id + '" onclick="updateSessionType(' + session.id +',5)" value="5" >4</div>' +
 		  				'<div class="radio_w left"><input id="st_' + session.id + '_6" class="radio_w" type="radio" name="session' + 
-		  					session.id + '" onclick="updateSessionType(' + session.id +',6)" value="6" >6</div>' +
+		  					session.id + '" onclick="updateSessionType(' + session.id +',6)" value="6" >5</div>' +
 		  				'</form>';
 					  		
 				var tr = '<tr id="tr_' + session.id + '">';
@@ -291,7 +291,7 @@
 			</div>
 		</div>
 		<div class='vertical_spacer_ten'></div>
-		Radio button values: 1-Always Stay, 2-Always Switch, 3-Pay to Stay, 4-Pay to Switch, 5-Pay to Quit, 6-Free to Switch
+		Radio button values: 1-Always Stay, 2-Always Switch, 3-Pay to Stay, 4-Pay to Quit, 5-Free to Switch
 		<div class='vertical_spacer_ten'></div>
 		
 		Sessions scheduled:

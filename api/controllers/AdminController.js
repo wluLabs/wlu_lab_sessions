@@ -16,6 +16,9 @@ module.exports = {
 	schedule_session: function(req, res){
 		res.view('admin/schedule_session');
 	},
+	view_session_data: function(req, res){
+		res.view('admin/view_session_data');
+	},
 	select_session_admin_emailer: function(req, res){
 		res.view('admin/select_session_admin_emailer');
 	},
@@ -53,6 +56,12 @@ module.exports = {
 				res.json(200, rawResult.rows);
 			}
 		});
+	},
+	show_user_data: function(req, res){
+		res.view('admin/show_user_data');
+	},
+	select_user_data_session: function (req, res){
+		res.view('admin/select_user_data_session');
 	}
 	
 };

@@ -161,7 +161,7 @@
 			$.post(path,  request,   function(data, status, xhr){	
 				
 				if(data.success_message){
-					console.log(data.success_message);
+					getNextPage();
 				}
 				if(data.error_message){
 					console.log(data.error_message);
@@ -176,7 +176,7 @@
 	    	var page_order = randomIntFromInterval(1,4);
 	    	console.log(page_order);	
 	    	saveUserPageOrder(page_order);
-	    	getNextPage();
+	    	
 	    	createAmountTracker();
 		});
 	

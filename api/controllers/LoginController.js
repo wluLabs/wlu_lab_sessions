@@ -20,8 +20,8 @@ module.exports = {
     	     if(user){
     	    	 console.log('User found comparing passwords!');
     	    	 console.log('found user by email: ');
-    	    	 console.log(user);
-    	    	 console.log(user.username);
+    	    	 //console.log(user);
+    	    	 //console.log(user.username);
     	    	 req.session.username = user.username;
     	    	 ComparePasswordService.comparePassword(req, res, user, password);
     	     }

@@ -7,7 +7,7 @@
 
 module.exports = {
   index: function (req, res) {
-	  console.log('Using Auth Controller');
+	  //console.log('Using Auth Controller');
     var email = req.param('email');
     var password = req.param('password');
 
