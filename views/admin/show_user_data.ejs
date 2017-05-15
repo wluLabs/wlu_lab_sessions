@@ -10,8 +10,8 @@
 	  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 	  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 	  <script>
-
-	  		var session_id = 12;	
+			 
+	  		var session_id = '<%= req.session.session_id %>';
 	  		var users = {};
 	  
 		  	function findById(){
@@ -278,11 +278,18 @@
 		  	
 			$( document ).ready(function() {
 				findById();	
-				
+				console.log(session_id);
 			});
 	  </script>
 	</head>
 	<body>
+		<a class="left" href="/admin/view_session_data">&lt;&nbsp;Back</a>
+		<div class='vertical_spacer_ten'></div>
+	 	<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
+	 	<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
 		<div class='hundred center'><h2>Create Session Admin Page</h2></div>
 		<div class='vertical_spacer_ten'></div>
 	 	<div class='vertical_spacer_ten'></div>
@@ -299,11 +306,15 @@
 		
 		<div class='vertical_spacer_ten'></div>
 		<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
 		
 		User data - ngo choice1/choice2 - page order - session type:
 		<div class='vertical_spacer_ten'></div>
 		<%- partial('../layout/admin/user_ngo_table') %>
 		
+		<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
 		<div class='vertical_spacer_ten'></div>
 		<div class='vertical_spacer_ten'></div>
 		
@@ -313,6 +324,8 @@
 		
 		<div class='vertical_spacer_ten'></div>
 		<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
 		
 		User data - ngo click session B:
 		<div class='vertical_spacer_ten'></div>
@@ -320,11 +333,15 @@
 		
 		<div class='vertical_spacer_ten'></div>
 		<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
 		
 		User data - my click session A:
 		<div class='vertical_spacer_ten'></div>
 		<%- partial('../layout/admin/user_my_amount_table') %>
 		
+		<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
 		<div class='vertical_spacer_ten'></div>
 		<div class='vertical_spacer_ten'></div>
 		
@@ -335,12 +352,6 @@
 		<div class='vertical_spacer_ten'></div>
 		<div class='vertical_spacer_ten'></div>
 		<div class='vertical_spacer_ten'></div>
-	 	
-	 	<div class='hundred button_height padding-top-button'>
-			<div class='ninety'>
-				 <a href="#" onclick="createSession()" class="fifty_w_h  left button dark_grey "><div class="center_text">Return to Admin</div></a>
-			</div>
-		</div>
 	 	
 	 	<div id='popup'>
 		</div>

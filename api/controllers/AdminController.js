@@ -58,6 +58,8 @@ module.exports = {
 		});
 	},
 	show_user_data: function(req, res){
+		var session_id = req.param('session_id');
+		req.session.session_id = session_id;
 		res.view('admin/show_user_data');
 	},
 	select_user_data_session: function (req, res){

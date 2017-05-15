@@ -36,7 +36,7 @@ module.exports = {
 			  	     if(rawResult){
 			  	    	//res.json(200, rawResult.rows);
 			  	    	 var count = new Number(rawResult.rows[0].count);
-			  	    	console.log(count);
+			  	    	//console.log(count);
 			  	    	 if(count == 0){
 			  	    		//console.log('inside if'); 
 			  	    		Session.destroy({id:id}).exec(function destroyCB(error){

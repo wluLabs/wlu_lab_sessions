@@ -20,7 +20,7 @@ module.exports = {
 			//var donateIsNum = $.isNumeric(donate_num);
 			
 			var value = donate_num + keep_num;
-			console.log(value);
+			//console.log(value);
 			
 			//donate = 20;
 			if(value === 15){

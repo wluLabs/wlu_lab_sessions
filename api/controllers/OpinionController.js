@@ -18,7 +18,7 @@ module.exports = {
 				message = 'username: ' + username + ' question: ' + question + ' choice:' + value;
 				//console.log(message);
 			}if(opinion){
-				console.log('Found updating ....');
+				//console.log('Found updating ....');
 				Opinion.update({username: username, question: question},{username: username, question: question, value: value}).exec(function updateCB(error, opinion){
 					if(error){
 						message = 'username: ' + username + ' question: ' + question + ' choice:' + value;

@@ -24,7 +24,7 @@ module.exports = {
 	},
 	findUserDataById: function(req, res){
 		var user_id = req.param('user_id');
-		console.log('user_id: ' +  user_id);
+		//console.log('user_id: ' +  user_id);
 		
 		var query = "select " +
 			"u.username, " +
