@@ -6,8 +6,26 @@ body{
 	font-family: 'arial';
 }	
 	
-.cell1{
+.c1{
 	width: 4%;
+}
+
+.c2{
+	width: 20%;
+	padding-left: 3%;
+}
+
+.c3{
+	width: 14%;
+	padding-left: 5%;
+}
+
+.c4{
+	width: 8%;
+}
+
+.c6{
+	width: 14%;
 }
 .center{
 	text-align: center;
