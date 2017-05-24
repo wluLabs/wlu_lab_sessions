@@ -226,19 +226,31 @@ body{
 	padding: 5px;
 }
 
-#timer{
-	position: absolute;
-	left: 50%;
-}
-
-#key_counter{
-	position: absolute;
-	left: 30%;
-}
 
 .bottom{
 	position: absolute;
 	bottom:2%;
 }
+
+.a_cell{
+	width: 6%;
+}
+
+.b_cell{
+	
+}
+
+.c_cell{
+	width: 30%;
+}
+
+.d_cell{
+	width: 35%;
+}
+
+.timer_data{
+	font-weight: bold;
+}
+
 
 .
