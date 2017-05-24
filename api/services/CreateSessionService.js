@@ -22,7 +22,7 @@ module.exports = {
 					  SessionUser.findOne({session_id: session_id, user_id:user_id}).exec(function (err, session_user) {
 						  if(session_user){
 							  console.log('a user session was already created for this user'); 
-							  res.json(200, {session:record});
+							  res.json(200, {session:session_user});
 						  }
 						  else if(!session_user){
 							  console.log('trying to create a user session');
