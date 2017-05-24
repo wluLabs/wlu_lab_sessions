@@ -9,6 +9,7 @@ module.exports = {
 	create:  function (req, res){
 		
 		var ngo = req.param('ngo');
+		var ngo2 = req.param('ngo');
 		var username = req.session.username;
 		var user_id;
 		Ngo_Choice1.create({username: username, ngo: ngo }).exec(function (err, record) {
@@ -17,7 +18,15 @@ module.exports = {
 				res.json(200, {message_error: err});
 			}
 			if(record){
-				res.json(200, {ngo: record});
+				Ngo_Choice2.create({username: username, ngo: ngo2 }).exec(function (err, record2) {
+					if(err){
+						//console.log(err);
+						res.json(200, {message_error: err});
+					}
+					if(record2){
+						res.json(200, {ngo: record2});
+					}					  
+				});
 			}					  
 		});
 	},
