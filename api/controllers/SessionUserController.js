@@ -61,16 +61,16 @@ module.exports = {
 		var session_id = req.param('session_id');
 		//console.log('session_id: ' + session_id);
 		SessionUser.query(
-				'select * from uzer u, ngo_choice1 n, ngo ng where u.username=n.username and cast(n.ngo AS int)=ng.id '+
-				'and u.id in (select user_id from sessionuser where session_id=$1) order by u.username',
+				'select u.*, n.ngo as ngo1, n2.ngo as ngo2 from uzer u, sessionuser su, ngo_choice1 n, ngo_choice2 n2 where ' +
+				'su.user_id=u.id and session_id=$1 and u.username=n.username and u.username=n2.username',
 				[session_id], function(err, rawResult){ 
 			//console.log('here: ' + session_id); 
 	  	      if (err) {
-	  	    	  //console.log(err);
+	  	    	  console.log(err);
 	  	    	  return res.json(200, {err: err});
 	  	      }
 	  	     if(rawResult){
-	  	    	 //console.log(rawResult);
+	  	    	console.log(rawResult);
 	  	    	res.json(200, rawResult.rows);
 	  	     }
 		});
@@ -96,7 +96,7 @@ module.exports = {
 		var ngo = req.param('ngo');
 		
 		SessionUser.query(
-				'update ngo_choice1 set ngo=$1 where username=$2',
+				'update ngo_choice2 set ngo=$1 where username=$2',
 				[ngo, username], function(err, rawResult){ 
 	  	      if (err) {
 	  	    	  console.log(err);
