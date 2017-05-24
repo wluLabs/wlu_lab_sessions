@@ -12,6 +12,7 @@
 	  <script>
 	  		var session_id = '<%= req.session.session_id %>';
 	  		var ngo = ['', '2', '1'];
+	  		var ngo_names = ['', 'Canadian Council on Animal Care', 'Animal Alliance of Canada'];
 	  		
 		  	function reloadPage(){
 		  		var location = "/admin/view_session?session_id=" + session_id;
@@ -173,16 +174,19 @@
 				var tr = '<tr id="tr_' + index + '">';
 				var user = '<td class="cell_id cp">' + session_user.username + '</td>';
 				var email = '<td class="cell1 cp">' + session_user.email + '</td>';
-				var ngo_name = '<td class="cell center cp">' + session_user.name + '</td>';
+				var ngo_id1 = new Number(session_user.ngo1);
+				var ngo_id2 = new Number(session_user.ngo2);
+				var ngo_name1 = '<td class="cell center cp">' + ngo_names[ngo_id1] + '</td>';
+				var ngo_name = '<td class="cell center cp">' + ngo_names[ngo_id2] + '</td>';
 				
-				var ngo_id = new Number(session_user.ngo);
+				
 				
 				var input = '<div class=" "><a href="#" class=""'  + 
-				'" onclick="changeNgo(' + "'" + session_user.username + "'" + ',' + ngo[ngo_id] + ')" value="1">change</a></div>'
+				'" onclick="changeNgo(' + "'" + session_user.username + "'" + ',' + ngo[ngo_id2] + ')" value="1">change</a></div>'
 				
 				var status = '<td id="user_' + session_user.username + '" class="v_cell cp center">' + input + '</td>';
 				
-				var table_row = tr + user + email + ngo_name + status;	  		
+				var table_row = tr + user + email + ngo_name1 + ngo_name + status;	  		
 				$('#user_table tbody:last-child').append(table_row);
 				
 		  	}
