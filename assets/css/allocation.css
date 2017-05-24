@@ -234,3 +234,6 @@ body{
 		left: 50%;
 		bottom:0%;
 }
+
+.ui-dialog,.ui-widget, .ui-widget-content, .ui-corner-all, .foo, .ui-draggable, .ui-resizable 
+{background-color:rgba(17, 245, 241, 1) !important}​
