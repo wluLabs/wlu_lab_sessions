@@ -70,7 +70,7 @@
 		  		var date = session.date;
 		  		index = index + 1;
 		  		date = date.substring(0,10);
-		  		var row = 	'<div class="left cell1 center"><input type="checkbox" name ="session_choice" '
+		  		var row = 	'<div class="left cell1 center"><input type="radio" name ="session_choice" '
 		  					+'session_id='+ session.id + ' id="use_date"></div>'
 		  					+ '<div class="left cell2 center">' + index + '</div><div class="left cell3">' + date 
 				  			+ '</div><div class="left cell4">' + session.time + '</div><div class="left cell4 center">' 
@@ -156,9 +156,7 @@
 			}
 		  	
 			$( document ).ready(function() {
-				
 				getSessions();
-				
 			});
 	  </script>
 	</head>
