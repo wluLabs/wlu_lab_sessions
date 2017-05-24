@@ -11,10 +11,10 @@ $('#input_age').keyup( function(e){
 	var age = $('#input_age').val();
 	var age_num = parseInt(age);
 	var ageIsNum = $.isNumeric(age_num);
-	if(ageIsNum && age_num <= 70){
+	if(ageIsNum && age_num <= 70 age_num >= 15){
 		
 	}else{
-		var message = 'Please enter a valid number from 0 to 15 in the for myself input!';
+		var message = 'Please enter a valid number from 15 to 70 in the for myself input!';
 		var cl = 'red';
 		showValidationMessage(message, cl);
 	}
