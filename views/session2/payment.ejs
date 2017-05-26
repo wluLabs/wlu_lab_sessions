@@ -1,1 +1,267 @@
-Payment
+<html>
+<head>
+	<title>Demo 1 : Convert All Textareas</title>
+	<link rel="stylesheet" href="/css/payment.css" type="text/css" />
+	<link rel="stylesheet" href="/css/button.css" type="text/css" />
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	
+	<script type="text/javascript">
+	
+		ngo_allocation = [0, 5.0, 9.7, 14.1, 18.2, 22, 25.5, 28.7, 31.6, 34.2, 36.5, 38.5, 40.2, 41.6, 42.7, 43.5]
+
+		function sendAssistanceMessage(){
+			setTimeout(function() { $('#allocate_assistant').fadeOut(3000); }, 1500);	
+		}
+		
+		function nextPage(){
+			var location = "/session2/payment";
+			window.location.href = location ;
+		}
+		
+		function populateData(){
+			getAllocate();
+			getAllocate2();
+			getPracticeRound();
+			getMyAmount();
+			getMyAmount2();
+			getNGOAmount();
+			getNGOAmount2();
+			getSessionType();
+		}
+		
+		function calculateMyAmount(tokens){
+			var amount = new Number(tokens) * 2;
+			amount = amount.toFixed(2);
+			return amount;
+		}
+		
+		function calculateNgoAmount(tokens){
+			var amount =  new Number(ngo_allocation[tokens]);
+			amount = amount.toFixed(2);
+			return amount;
+			
+		}
+		
+		function calculatePrAmount(amount){
+			amount = amount.toFixed(2);
+			return amount;
+		}
+		
+		function getAllocate(){
+			
+			var path = "/allocate/find";
+		
+			var request= {
+	            action : path,
+	            rand : Math.floor(Math.random()*100000)
+	        };
+			
+			$.get(path,  request,   function(data, status, xhr){
+				if(data.allocate){
+					var myTokens = new Number(data.allocate.myself);
+					var myAmount = calculateMyAmount(myTokens);
+					var ngoTokens = new Number(data.allocate.org);
+					var ngoAmount = calculateNgoAmount(ngoTokens);
+					$('#my_al_tokens').html( '' + myTokens + ' tokens');
+					$('#my_al_amount').html( '$ ' + ngoAmount);
+					$('#ngo_al_tokens').html('' + ngoTokens + ' tokens');
+					$('#ngo_al_amount').html( '$ ' + ngoAmount);
+				}  
+			}, "json");	
+		
+		}
+		
+		function getAllocate2(){
+			
+			var path = "/allocate2/find";
+			var request= {
+	            action : path,
+	            rand : Math.floor(Math.random()*100000)
+	        };
+			
+			$.get(path,  request,   function(data, status, xhr){
+				if(data.allocate2){
+					var myTokens = new Number(data.allocate2.myself);
+					var myAmount = calculateMyAmount(myTokens);
+					var ngoTokens = new Number(data.allocate2.org);
+					var ngoAmount = calculateNgoAmount(ngoTokens);
+					$('#my2_al_tokens').html( '' + myTokens + ' tokens');
+					$('#my2_al_amount').html( '$ ' + ngoAmount);
+					$('#ngo2_al_tokens').html('' + ngoTokens + ' tokens');
+					$('#ngo2_al_amount').html( '$ ' + ngoAmount);
+					
+				}  
+			}, "json");	
+		}
+		
+		function getPracticeRound(){
+			
+			var path = "/pr_amount/find";
+			var request= {
+	            action : path,
+	            rand : Math.floor(Math.random()*100000)
+	        };
+			
+			$.get(path,  request,   function(data, status, xhr){
+				if(data.pr_amount){
+					var amount = calculatePrAmount(data.pr_amount.amount);
+					$('#pr_amount').html('$ ' + amount);
+					var clicks = new Number(data.pr_amount.amount) / .015;
+					$('#pr_clicks').html(clicks + ' Clicks');
+				}  
+			}, "json");	
+		}
+		
+		function getMyAmount(){
+			
+			var path = "/my_amount/find";
+			var request= {
+	            action : path,
+	            rand : Math.floor(Math.random()*100000)
+	        };
+			
+			$.get(path,  request,   function(data, status, xhr){
+				if(data.my_amnount){
+					
+				}  
+			}, "json");	
+		}
+		
+		function getMyAmount2(){
+			
+			var path = "/my2_amount/find";
+			var request= {
+	            action : path,
+	            rand : Math.floor(Math.random()*100000)
+	        };
+			
+			$.get(path,  request,   function(data, status, xhr){
+				if(data.my2_amnount){
+					
+				}  
+			}, "json");	
+		}
+		
+		function getNGOAmount(){
+			
+			var path = "/ngo_amount/find";
+			var request= {
+	            action : path,
+	            rand : Math.floor(Math.random()*100000)
+	        };
+			
+			$.get(path,  request,   function(data, status, xhr){
+				if(data.ngo_amnount){
+					
+				}  
+			}, "json");	
+		}
+		
+		function getNGOAmount2(){
+			
+			var path = "/ngo_amount2/find";
+			var request= {
+	            action : path,
+	            rand : Math.floor(Math.random()*100000)
+	        };
+			
+			$.get(path,  request,   function(data, status, xhr){
+				if(data.ngo_amnount2){
+					
+				}  
+			}, "json");	
+		}
+		
+		function getSessionType(){
+			
+			var path = "/sessionuser/findSessionType";
+			var request= {
+	            action : path,
+	            rand : Math.floor(Math.random()*100000)
+	        };
+			
+			$.get(path,  request,   function(data, status, xhr){
+				if(data){
+				 
+				}  
+			}, "json");	
+		}
+		
+		function lastQuestionPopup(){
+			$( "#popup" ).dialog({
+				dialogClass: "alert",
+				  buttons: [
+				    {
+				      text: "Ok",
+				      click: function() {
+				    	var location = "/allocation/allocate";
+						window.location.href = location ;
+				      }
+				    },
+				    {
+				    	text: "cancel",
+					      click: function() {
+					        $( this ).dialog( "close" );
+					        getQuestionNumber(MaxQuestions);
+					      }
+				    }
+				  ]
+			});
+			$( "#popup" ).html('You have reached the end of this scenario. Please press <h5>OK</h5> to proceed to the next page.');
+			return;
+		}
+			
+
+		
+		$( function() {
+		    $( "#dialog" ).dialog();
+		  } );
+		
+		
+		$( document ).ready(function() {
+			populateData();
+		});
+		
+	</script>	
+	
+</head>
+<body>
+<div class='height_70'>
+	<div id='allocate_assistant'  ></div>
+	<div id='assistance' class='red'></div>
+	<div id='error_message' class='red'></div>
+</div>
+
+<div class='center'><h4>Payment</h4></div>
+
+<p>
+Your performance and payment from today&#39;s experiment follow:  
+</p>
+<p>
+<div id='scenario_text'></div>
+	
+</p>
+
+<p>
+<%- partial('../layout/session2/payment_table') %>
+</p>
+
+
+<p>
+Please put up your hand and we will come to your station to pay you in cash and in private. 
+<p>
+Thank you very much for participating in our research study!
+
+<div class = 'after_left'></div>
+</p>
+<div id='popup' class ='green'>
+</div>
+
+<p>
+
+</p>
+
+</body>
+</html>

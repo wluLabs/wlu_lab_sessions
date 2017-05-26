@@ -30,7 +30,19 @@ module.exports = {
 		}else{
 			res.json(200, {error_message: 'The parameter values do not add to 15'});
 		}
+	},	
+	find: function(req, res){
+		
+		var username = req.session.username;
+		
+		Allocate2.findOne({ username: username }).exec(function findOneCB(error, allocate2){
+			if (error) {
+			    return res.json(200, {error_message: 'Unable to find an Allocate object for username: ' + username});
+			}
+			if(allocate2){
+				res.json(200, {allocate2: allocate2});
+			}		  
+		});		
 	}
-	
 };
 

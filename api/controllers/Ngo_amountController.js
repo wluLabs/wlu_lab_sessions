@@ -35,6 +35,22 @@ module.exports = {
 	  	        res.json(200, {user: amount, success_message:'Your Amount has been save to the db'});
 	  	      }
 		});
+	},
+	
+	find: function(req, res){
+		
+		var username = req.session.username;
+		
+		Ngo_amount.findOne({ username: username }).exec(function findOneCB(error, ngo_amount){
+			if (error) {
+			    return res.json(200, {error_message: 'Unable to find an pr_amount object for username: ' + username});
+			}
+			if(ngo_amount){
+				res.json(200, {ngo_amount: ngo_amount});
+			}
+			  
+		});
+		
 	}
 	
 };

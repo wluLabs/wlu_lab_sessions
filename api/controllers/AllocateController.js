@@ -24,7 +24,7 @@ module.exports = {
 			
 			//donate = 20;
 			if(value === 15){
-				Allocate.create({myself:myself, org: donate, username: username }).exec(function findOneCB(error, allocate){
+				Allocate.create({myself:myself, org: donate, username: username }).exec(function createCB(error, allocate){
 					if (error) {
 					    return res.json(200, {error_message: 'Unable to create an Allocate object'});
 					  }
@@ -37,6 +37,22 @@ module.exports = {
 		},
 		demo: function(req, res){
 			return res.view('demo/info');
+		},
+		
+		find: function(req, res){
+			
+			var username = req.session.username;
+			
+			Allocate.findOne({ username: username }).exec(function findOneCB(error, allocate){
+				if (error) {
+				    return res.json(200, {error_message: 'Unable to find an Allocate object for username: ' + username});
+				}
+				if(allocate){
+					res.json(200, {allocate: allocate});
+				}
+				  
+			});
+			
 		}
 	
 };
