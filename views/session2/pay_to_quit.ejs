@@ -16,9 +16,9 @@
 	
 	function getNextPage(page){
 		var checked = $('#ngo_radio_choice2').is(':checked');
-		if(checked && $('#ngo_radio_choice2').attr('current_value') == '1'){
+		if(checked && ngoChoice2 === '1'){
 			ngoChoice2 = 2;
-		}else if(checked && $('#ngo_radio_choice2').attr('current_value') == '2'){
+		}else if(checked && ngoChoice2 === '2'){
 			ngoChoice2 = 1;
 		}
 		
@@ -42,7 +42,7 @@
 		window.location.href = location ;
 	}
 	
-	function findNgo_Choice1(){
+	function findNgo_Choice2(){
 		
 		var path = "/ngo_choice2/findNgo_choice1";
 		var request= {
@@ -55,7 +55,7 @@
 				console.log(data.ngo_choice1.ngo);
 				loadNgoInfo(data.ngo_choice1.ngo);
 				// setting ngoChoice2 to same as NGO Choice 1
-				ngoChoice2 = new Number(data.ngo_choice1.ngo);
+				ngoChoice2 = data.ngo_choice1.ngo;
 				$('.current_ngo').html(ngo[ngoChoice2]);
 				$('#ngo_radio_choice2').attr('current_value', data.ngo_choice1.ngo);
 				$('#ngo_current').attr('checked', true);
@@ -88,7 +88,7 @@
         };
 		
 		$.post(path,  request,   function(data, status, xhr){	
-			if(data.ngo_choice2){
+			if(data.updated){
 				next();
 			}	
 		}, "json");
@@ -125,7 +125,7 @@
 
 			
 	$( document ).ready(function() {
-		findNgo_Choice1();
+		findNgo_Choice2();
 	});
 		
 		
@@ -144,7 +144,7 @@ Specifically, if you so choose, you may work for:
 <div id="ngo_info"></div>
 
 
-Update NGO choice: <input type="radio" id="ngo_radio_choice2" onclick="displayPopup()" current_value="displayPopup()" name='response'>
+Update NGO choice: <input type="radio" id="ngo_radio_choice2" onclick="displayPopup()" name='response'>
 Keep current NGO :&nbsp;<input type="radio" id="ngo_current" name='response'>	
 
 <div class='vertical_spacer_ten'></div>

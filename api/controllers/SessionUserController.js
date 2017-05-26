@@ -66,11 +66,11 @@ module.exports = {
 				[session_id], function(err, rawResult){ 
 			//console.log('here: ' + session_id); 
 	  	      if (err) {
-	  	    	  console.log(err);
+	  	    	  //   console.log(err);
 	  	    	  return res.json(200, {err: err});
 	  	      }
 	  	     if(rawResult){
-	  	    	console.log(rawResult);
+	  	    	//console.log(rawResult);
 	  	    	res.json(200, rawResult.rows);
 	  	     }
 		});

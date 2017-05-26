@@ -63,6 +63,12 @@ module.exports = {
 	  },
 	  after_amount: function(req, res){
 		  res.view('session2/after_amount');
+	  },
+	  allocate: function(req, res){
+		  res.view('session2/allocate');
+	  },
+	  payment: function(req, res){
+		  res.view('session2/payment');
 	  }
 };
 
