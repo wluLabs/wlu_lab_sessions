@@ -64,8 +64,8 @@ module.exports = {
 	  after_amount: function(req, res){
 		  res.view('session2/after_amount');
 	  },
-	  allocate: function(req, res){
-		  res.view('session2/allocate');
+	  allocate2: function(req, res){
+		  res.view('session2/allocate2');
 	  },
 	  payment: function(req, res){
 		  res.view('session2/payment');

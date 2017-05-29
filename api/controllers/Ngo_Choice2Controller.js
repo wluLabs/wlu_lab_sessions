@@ -77,20 +77,19 @@ module.exports = {
 	},
 	find:  function (req, res){
 		var username = req.session.username;
-		var user_id;
-		Ngo_Choice1.findOne({username: username }).exec(function (err, record) {
+		Ngo_Choice2.findOne({username: username }).exec(function (err, choice2) {
 			if(err){
 				//console.log(err);
 				res.json(200, {message_error: err});
 			}
-			if(record){
-				Ngo.findOne({id: record.ngo }).exec(function (err, record) {
+			if(choice2){
+				Ngo.findOne({id: choice2.ngo }).exec(function (err, record) {
 					if(err){
 						//console.log(err);
 						res.json(200, {message_error: err});
 					}
 					if(record){
-						res.json(200, {ngo: record});
+						res.json(200, {ngo: record, choice2: choice2});
 					}					  
 				});
 			}					  

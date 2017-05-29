@@ -71,6 +71,28 @@
 		}
 		
 		function nextPage(){
+			chooseClickSessions();
+		}
+		
+		function chooseClickSessions(){
+			path = '/clickSessionChoices/create';
+			
+			var request= {
+		            action : path,
+		            rand : Math.floor(Math.random()*100000)
+		        };
+				
+				$.get(path,  request,   function(data, status, xhr){
+					if(data.error_message){
+						
+					}else{
+						console.log('next');
+						next();
+					}
+				}, "json");	
+		}
+		
+		function next(){
 			var location = "/session2/payment";
 			window.location.href = location ;
 		}

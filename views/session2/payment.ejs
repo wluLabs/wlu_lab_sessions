@@ -8,11 +8,20 @@
 	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 	
 	<script type="text/javascript">
-	
-		ngo_allocation = [0, 5.0, 9.7, 14.1, 18.2, 22, 25.5, 28.7, 31.6, 34.2, 36.5, 38.5, 40.2, 41.6, 42.7, 43.5]
-
-		function sendAssistanceMessage(){
-			setTimeout(function() { $('#allocate_assistant').fadeOut(3000); }, 1500);	
+		// token values for NGOs array
+		ngo_allocation = [0, 5.0, 9.7, 14.1, 18.2, 22, 25.5, 28.7, 31.6, 34.2, 36.5, 38.5, 40.2, 41.6, 42.7, 43.5];
+		
+		var rounds = new Object();
+		// initialize totals
+		var myTotal = new Object();
+		myTotal.total = 7;
+		var ngoTotal = new Object();
+		ngoTotal.total = 0;
+		var ngo2Total = new Object();
+		ngo2Total.total = 0;
+		
+		function pause(){
+			setTimeout(function(){ updateTableRounds();}, 150);
 		}
 		
 		function nextPage(){
@@ -20,15 +29,14 @@
 			window.location.href = location ;
 		}
 		
+		// get data from db for payment page
 		function populateData(){
-			getAllocate();
-			getAllocate2();
+			getBonus();
 			getPracticeRound();
-			getMyAmount();
-			getMyAmount2();
-			getNGOAmount();
-			getNGOAmount2();
 			getSessionType();
+			getNgoChoice1();
+			getNgoChoice2();
+			getPageOrder();
 		}
 		
 		function calculateMyAmount(tokens){
@@ -49,7 +57,22 @@
 			return amount;
 		}
 		
-		function getAllocate(){
+		function getBonus(){
+			
+			var path = "/bonus/find";
+			var request= {
+	            action : path,
+	            rand : Math.floor(Math.random()*100000)
+	        };
+			
+			$.get(path,  request,   function(data, status, xhr){
+				if(data.bonus){
+					updateBonus(data.bonus);
+				}  
+			}, "json");	
+		}
+		
+		function getAllocate(choice1){
 			
 			var path = "/allocate/find";
 		
@@ -62,18 +85,22 @@
 				if(data.allocate){
 					var myTokens = new Number(data.allocate.myself);
 					var myAmount = calculateMyAmount(myTokens);
+					myTotal.allocate1 = new Number(myAmount);
 					var ngoTokens = new Number(data.allocate.org);
 					var ngoAmount = calculateNgoAmount(ngoTokens);
+					ngoTotal.allocate1 = new Number(ngoAmount);
+					//console.log('ngoTotal.allocate1 ' + ngoTotal.allocate1);
 					$('#my_al_tokens').html( '' + myTokens + ' tokens');
-					$('#my_al_amount').html( '$ ' + ngoAmount);
-					$('#ngo_al_tokens').html('' + ngoTokens + ' tokens');
-					$('#ngo_al_amount').html( '$ ' + ngoAmount);
+					$('#my_al_amount').html( '$ ' + myAmount);
+					$('#ngo' + choice1.ngo + '_1').html('' + ngoTokens + ' tokens<br/>' + '$ ' + ngoAmount);
+					getMyAmount();
+					getNGOAmount();
 				}  
 			}, "json");	
 		
 		}
 		
-		function getAllocate2(){
+		function getAllocate2(choice2 ){
 			
 			var path = "/allocate2/find";
 			var request= {
@@ -83,14 +110,19 @@
 			
 			$.get(path,  request,   function(data, status, xhr){
 				if(data.allocate2){
-					var myTokens = new Number(data.allocate2.myself);
-					var myAmount = calculateMyAmount(myTokens);
-					var ngoTokens = new Number(data.allocate2.org);
-					var ngoAmount = calculateNgoAmount(ngoTokens);
-					$('#my2_al_tokens').html( '' + myTokens + ' tokens');
-					$('#my2_al_amount').html( '$ ' + ngoAmount);
-					$('#ngo2_al_tokens').html('' + ngoTokens + ' tokens');
-					$('#ngo2_al_amount').html( '$ ' + ngoAmount);
+					var my2tokens = new Number(data.allocate2.myself);
+					var my2Amount = calculateMyAmount(my2tokens);
+					
+					myTotal.allocate2 = new Number(my2Amount);
+					var ngo2Tokens = new Number(data.allocate2.org);
+					var ngo2Amount = calculateNgoAmount(ngo2Tokens);
+					console.log('ngo2Amount ' + ngo2Amount);
+					ngoTotal.allocate2 = new Number(ngo2Amount);
+					$('#my2_al_tokens').html( '' + my2tokens + ' tokens');
+					$('#my2_al_amount').html( '$ ' + my2Amount);
+					$('#ngo' + choice2.ngo + '_2').html('' + ngo2Tokens + ' tokens<br/>' + '$ ' + ngo2Amount);
+					getMyAmount2();
+					getNGOAmount2();
 					
 				}  
 			}, "json");	
@@ -109,6 +141,8 @@
 					var amount = calculatePrAmount(data.pr_amount.amount);
 					$('#pr_amount').html('$ ' + amount);
 					var clicks = new Number(data.pr_amount.amount) / .015;
+					myTotal.total = myTotal.total + data.pr_amount.amount;
+					console.log('getPracticeRound ' + myTotal.total);
 					$('#pr_clicks').html(clicks + ' Clicks');
 				}  
 			}, "json");	
@@ -123,8 +157,9 @@
 	        };
 			
 			$.get(path,  request,   function(data, status, xhr){
-				if(data.my_amnount){
-					
+				if(data.my_amount){
+					rounds.my_amount = data.my_amount;
+					rounds.my_return = true;
 				}  
 			}, "json");	
 		}
@@ -138,8 +173,9 @@
 	        };
 			
 			$.get(path,  request,   function(data, status, xhr){
-				if(data.my2_amnount){
-					
+				if(data.my2_amount){
+					rounds.my2_amount = data.my2_amount;
+					rounds.my2_return = true;
 				}  
 			}, "json");	
 		}
@@ -153,8 +189,9 @@
 	        };
 			
 			$.get(path,  request,   function(data, status, xhr){
-				if(data.ngo_amnount){
-					
+				if(data.ngo_amount){
+					rounds.ngo_amount = data.ngo_amount;	
+					rounds.ngo_return = true;
 				}  
 			}, "json");	
 		}
@@ -168,8 +205,9 @@
 	        };
 			
 			$.get(path,  request,   function(data, status, xhr){
-				if(data.ngo_amnount2){
-					
+				if(data.ngo_amount2){
+					rounds.ngo_amount2 = data.ngo_amount2;	
+					rounds.ngo2_return = true;
 				}  
 			}, "json");	
 		}
@@ -184,42 +222,282 @@
 			
 			$.get(path,  request,   function(data, status, xhr){
 				if(data){
-				 
+				 $('#session_type').html(data.name); 
 				}  
 			}, "json");	
 		}
 		
-		function lastQuestionPopup(){
-			$( "#popup" ).dialog({
-				dialogClass: "alert",
-				  buttons: [
-				    {
-				      text: "Ok",
-				      click: function() {
-				    	var location = "/allocation/allocate";
-						window.location.href = location ;
-				      }
-				    },
-				    {
-				    	text: "cancel",
-					      click: function() {
-					        $( this ).dialog( "close" );
-					        getQuestionNumber(MaxQuestions);
-					      }
-				    }
-				  ]
-			});
-			$( "#popup" ).html('You have reached the end of this scenario. Please press <h5>OK</h5> to proceed to the next page.');
-			return;
-		}
+		function getClickSessions(){
+			path = '/clickSessionChoices/find';
 			
+			var request= {
+		            action : path,
+		            rand : Math.floor(Math.random()*100000)
+		        };
+				
+				$.get(path,  request,   function(data, status, xhr){
+					if(data.sessionChoices){
+						var m_round = new Number(data.sessionChoices.my_session) + 1;
+						rounds.myself_round = m_round;
+						var n_round = new Number(data.sessionChoices.ngo_session) + 1;
+						rounds.ngo_round = n_round;
+					}
+				}, "json");	
+		}
+		
+		function updateMyData(){
+			if(rounds.myself_round === 1){
+				rounds.my_row_id = rounds.my;
+				rounds.my2_row_id = rounds.my2;
+				console.log('rounds ' + rounds);
+				console.log('rounds.rounds.my_amount ' + rounds.my_amount);
+				console.log('rounds.my_amount.amount ' + rounds.my_amount.amount);
+				myTotal.total = myTotal.total + new Number(rounds.my_amount.amount);
 
+			}else if(rounds.myself_round ===2){
+				rounds.my_row_id = rounds.my2;
+				rounds.my2_row_id = rounds.my;
+				myTotal.total = myTotal.total + new Number(rounds.my2_amount.amount);
+			}
+			updateNgoData();
+		}
 		
-		$( function() {
-		    $( "#dialog" ).dialog();
-		  } );
+		function updateNgoData(){
+			if(rounds.ngo_round === 1){
+				rounds.ngo_row_id = rounds.ngo;	
+				rounds.ngo2_row_id = rounds.ngo2;
+			}else if(rounds.ngo_round === 2){
+				rounds.ngo_row_id = rounds.ngo2;
+				rounds.ngo2_row_id = rounds.ngo;
+			}
+			
+		}
 		
+		function getNgoChoice1(){
+			path = '/ngo_choice1/find';
+			
+			var request= {
+		            action : path,
+		            rand : Math.floor(Math.random()*100000)
+		        };
+				
+				$.get(path,  request,   function(data, status, xhr){
+					if(data.error_message){
+						
+					}else{
+						var donate_a = $('#donate_a').html();
+						donate_a = donate_a.replace("NGO1", data.ngo.name );
+						$('#donate_a').html(donate_a);
+						getAllocate(data.choice1);
+						rounds.ngo_choice1 = data.choice1;
+					}
+				}, "json");	
+		}
 		
+		function getNgoChoice2(){
+			path = '/ngo_choice2/find';
+			
+			var request= {
+		            action : path,
+		            rand : Math.floor(Math.random()*100000)
+		        };
+				
+				$.get(path,  request,   function(data, status, xhr){
+					if(data.error_message){
+						
+					}else{
+						var donate_b = $('#donate_b').html();
+						donate_b = donate_b.replace("NGO2", data.ngo.name );
+						$('#donate_b').html(donate_b);
+						getAllocate2(data.choice2);
+						rounds.ngo_choice2 = data.choice2;
+						pause();
+					}
+				}, "json");	
+		}
+		
+		function getPageOrder(){
+			
+			var path = "/user_page_order/find";
+			var request= {
+	            action : path,
+	            rand : Math.floor(Math.random()*100000)
+	        };
+			
+			$.get(path,  request,   function(data, status, xhr){
+				if(data[0]){
+					$('#round1').html(data[0].page1);
+					$('#round2').html(data[0].page2);
+					$('#round3').html(data[0].page3);
+					$('#round4').html(data[0].page4);
+					processPageData(data[0]);
+				}
+			}, "json");	
+		}
+		
+		function processPageOrder(page, counter){
+				
+			if(page === 'ngo_earnings'){
+				rounds.ngo = counter;
+			}else if(page === 'ngo_earnings2'){
+				rounds.ngo2 = counter;
+			}else if(page === 'my_earnings'){
+				rounds.my = counter;
+			}else if(page === 'my_earnings2'){
+				rounds.my2 = counter;
+			}
+		}
+		
+		function updateTableRounds(){
+			updateMyData();
+			updateMy_row();
+			updateNgo_row();
+		}
+		
+		function updateMy_row(){
+			var my;
+			var my2;
+			
+			var cell1 = $('#round' + rounds.my_row_id).html();
+			$('#round' + rounds.my_row_id).html(cell1 + '<br/>' + '<span class="green">(Selected Round)</span>');
+			
+			if(rounds.myself_round === 1 ){
+				my = rounds.my_amount;
+				my2 = rounds.my2_amount;
+				myTotal.total = myTotal.total + new Number(myTotal.allocate1);
+				$('#my_al_amount').addClass('green');
+				$('#my2_al_amount').addClass('red');
+			}else{
+				my = rounds.my2_amount;
+				my2 = rounds.my_amount;
+				myTotal.total = myTotal.total + new Number(myTotal.allocate2);
+				$('#my2_al_amount').addClass('green');
+				$('#my_al_amount').addClass('red');
+			}
+			var performance = createMyPerformance(my); 
+			$('#round' + rounds.my_row_id + '_1').html(performance);	
+			var amount = createMyAmount(my); 
+			$('#round' + rounds.my_row_id + '_2').html(amount).addClass('green').addClass('center');
+			var performance2 = createMyPerformance(my2); 
+			$('#round' + rounds.my2_row_id + '_1').html(performance2);	
+			var amount2 = createMyAmount(my2); 
+			$('#round' + rounds.my2_row_id + '_2').html(amount2).addClass('red').addClass('center');
+			var total = (myTotal.total).toFixed(2);
+			$('#my_total').html('$ ' + total).addClass('green').addClass('center');
+		}
+		
+		function createMyPerformance(my){
+			var html;
+			html = '1st 30: ' + my.count_1_30 + '<br/>';
+			html = html + '2nd 30: ' + my.count_2_30 + '<br/>';
+			html = html + '3rd 30: ' + my.count_3_30 + '<br/>';
+			html = html + '4th 30: ' + my.count_4_30 + '<br/>';
+			html = html + '5th 30: ' + my.count_5_30 + '<br/>';
+			html = html + '6th 30: ' + my.count_6_30 + '<br/>';
+			
+			return html;
+		}
+		
+		function createMyAmount(my){
+			var html;
+			html = '$ ' + my.amount_1_30 + '<br/>';
+			html = html + '$ ' + (my.amount_2_30).toFixed(2) + '<br/>';
+			html = html + '$ ' + (my.amount_3_30).toFixed(2) + '<br/>';
+			html = html + '$ ' + (my.amount_4_30).toFixed(2) + '<br/>';
+			html = html + '$ ' + (my.amount_5_30).toFixed(2) + '<br/>';
+			html = html + '$ ' + (my.amount_6_30).toFixed(2) + '<br/>';
+			
+			return html;
+		}
+		
+		function updateNgo_row(){
+			var ngo;
+			var ngo2;
+			var ngoAmountCell;
+			var ngo2AmountCell;
+			
+			console.log(rounds);
+			
+			var cell1 = $('#round' + rounds.ngo_row_id).html();
+			$('#round' + rounds.ngo_row_id).html(cell1 + '<br/>' + '<span class="green">(Selected Round)</span>');
+			
+			if(rounds.ngo_round === 1 ){
+				ngo = rounds.ngo_amount;
+				ngo2 = rounds.ngo_amount2;
+				ngoAmountCell = 3;
+				ngo2AmountCell = 4;
+				ngoTotal.total = ngoTotal.total + new Number(rounds.ngo_amount.amount);
+				ngoTotal.total = ngoTotal.total + new Number(ngoTotal.allocate1);
+				var total = (ngoTotal.total).toFixed(2);
+				$('#ngo_total').html('$ ' + total).addClass('green').addClass('center');
+				$('#ngo' + rounds.ngo_choice1.ngo + '_1').addClass('green');
+			}else{
+				ngo = rounds.ngo_amount2;
+				ngo2 = rounds.ngo_amount;
+				ngoAmountCell = 4;
+				ngo2AmountCell = 3; 
+				console.log(ngoTotal.total);
+				ngoTotal.total = ngoTotal.total + new Number(rounds.ngo_amount2.amount);
+				console.log(ngoTotal.total);
+				console.log(JSON.stringify(ngoTotal));
+				ngoTotal.total = ngoTotal.total + new Number(ngoTotal.allocate2);
+				console.log(ngoTotal.total);
+				var total2 = (ngoTotal.total).toFixed(2);
+				$('#ngo2_total').html('$ ' + total2).addClass('green').addClass('center');
+				$('#ngo' + rounds.ngo_choice2.ngo + '_2').addClass('green');
+			}
+			var performance = createNgoPerformance(ngo); 
+			$('#round' + rounds.ngo_row_id + '_1').html(performance);	
+			var amount = createNgoAmount(ngo); 
+			$('#round' + rounds.ngo_row_id + '_' + ngoAmountCell).html(amount).addClass('green').addClass('center');
+			var performance2 = createNgoPerformance(ngo2); 
+			$('#round' + rounds.ngo2_row_id + '_1').html(performance2);	
+			var amount2 = createNgoAmount(ngo2); 
+			$('#round' + rounds.ngo2_row_id + '_' + ngo2AmountCell).html(amount2).addClass('red  ').addClass('center');
+		}
+		
+		function createNgoPerformance(ngo){
+			var html;
+			html = '1st 30: ' + ngo.count_1_30 + '<br/>';
+			html = html + '2nd 30: ' + ngo.count_2_30 + '<br/>';
+			html = html + '3rd 30: ' + ngo.count_3_30 + '<br/>';
+			html = html + '4th 30: ' + ngo.count_4_30 + '<br/>';
+			html = html + '5th 30: ' + ngo.count_5_30 + '<br/>';
+			html = html + '6th 30: ' + ngo.count_6_30 + '<br/>';
+			
+			return html;
+		}
+		
+		function createNgoAmount(ngo){
+			var html;
+			html = '$ ' + ngo.amount_1_30 + '<br/>';
+			html = html + '$ ' + (ngo.amount_2_30).toFixed(2) + '<br/>';
+			html = html + '$ ' + (ngo.amount_3_30).toFixed(2) + '<br/>';
+			html = html + '$ ' + (ngo.amount_4_30).toFixed(2) + '<br/>';
+			html = html + '$ ' + (ngo.amount_5_30).toFixed(2) + '<br/>';
+			html = html + '$ ' + (ngo.amount_6_30).toFixed(2) + '<br/>';
+			
+			return html;
+		}
+		
+		function processPageData(page, counter){
+			var counter = 0;
+			processPageOrder(page.page1, ++counter);
+			processPageOrder(page.page2, ++counter);
+			processPageOrder(page.page3, ++counter);
+			processPageOrder(page.page4, ++counter);
+			
+			getClickSessions();
+		}
+		
+		function updateBonus(bonus){
+			if(bonus.bonus === true){
+				$('#session_bonus').html('$ 3.00').addClass('center').addClass('green');
+				myTotal.total = myTotal.total + 3;
+			}
+		}
+		
+			
 		$( document ).ready(function() {
 			populateData();
 		});
@@ -253,6 +531,8 @@ Your performance and payment from today&#39;s experiment follow:
 Please put up your hand and we will come to your station to pay you in cash and in private. 
 <p>
 Thank you very much for participating in our research study!
+
+Information Disclosure Message.
 
 <div class = 'after_left'></div>
 </p>
