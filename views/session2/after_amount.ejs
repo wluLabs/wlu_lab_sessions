@@ -1,0 +1,105 @@
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script>
+		// global variables
+
+		var nextPage;
+		
+		function determineNextPage(page){
+			if(page == 2){
+				findUserSessionType();	
+			}else if(page == 4){
+				nextPage = 'exit_question';
+				next();
+			}else{
+				getNextPage(page);	
+			}
+		}
+
+		function getNextPage(page){
+			
+			var path = "/user_page_order/find";
+			var request= {
+	            action : path,
+	            rand : Math.floor(Math.random()*100000)
+	        };
+			
+			$.get(path,  request,   function(data, status, xhr){
+				if(data[0].page1){
+					console.log(data[0]);
+					if(page == 1){
+						
+						nextPage = data[0].page2;
+						console.log('nextPage 2' + nextPage);
+						next();
+					}else if(page == 3){
+						nextPage = data[0].page4;
+						console.log('nextPage 4' + nextPage);
+						next();
+					}
+				}
+			}, "json");	
+		}
+		
+		function next(){
+			var location = "/session2/" + nextPage;
+			console.log('location ' + location);
+			window.location.href = location ;
+		}
+
+		function updateAmountTracker(){
+			var path = "/amount_tracker/update";
+			var request= {
+	            action : path,
+	            rand : Math.floor(Math.random()*100000)
+	        };
+			
+			$.get(path,  request,   function(data, status, xhr){
+				if(data.page){
+					var page = new Number(data.page);
+					console.log('page ' +page);
+					determineNextPage(page); 
+				}
+			}, "json");	
+		} 
+		
+		function findUserSessionType(){
+			var path = "/sessionuser/findSessionType";
+			var request= {
+	            action : path,
+	            rand : Math.floor(Math.random()*100000)
+	        };
+			
+			$.get(path,  request,   function(data, status, xhr){
+				if(data){
+					console.log(data);
+					console.log('userSessionType ');
+					nextPage = data.name;
+					next();
+				}
+			}, "json");	
+		} 
+		
+		function findSessionType(){
+			var path = "/sessionuser/findSessionType";
+			var request= {
+	            action : path,
+	            rand : Math.floor(Math.random()*100000)
+	        };
+			
+			$.get(path,  request,   function(data, status, xhr){
+				if(data){
+					//console.log(data);
+					//console.log('userSessionType ');
+					nextPage = data.name;
+					next();
+				}
+			}, "json");	
+		} 
+		
+		$( document ).ready(function() {
+			updateAmountTracker();
+			//findUserSessionType();
+		});
+	
+	
+	</script>

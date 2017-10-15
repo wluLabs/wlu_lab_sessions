@@ -14,7 +14,7 @@ module.exports = {
 		UserClick.findOne({username: username, page: page}).exec(function (err, userclick){
 			//console.log('userclick: ' + userclick.toJSON);
 			if (userclick) {
-				console.log('userclick: ' + userclick);
+				//console.log('userclick: ' + userclick);
 				var clicks = Number.parseInt(userclick.clicks) + 1;
 				UserClick.update({username: username, page: page}, {clicks: clicks}).exec(function (err, userclick) {
 			  	      if (err) {

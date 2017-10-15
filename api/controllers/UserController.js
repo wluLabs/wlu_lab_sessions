@@ -35,9 +35,9 @@ module.exports = {
 	  user.password=password;
 	  user.email=email;
 	  user.username = username;
-	  console.log('confirm_password ' + confirm_password);
-	  console.log('email ' + email);
-	  console.log('username ' + username);
+	  //console.log('confirm_password ' + confirm_password);
+	  //console.log('email ' + email);
+	  //console.log('username ' + username);
 	  
 	  	if (!confirm_password ) {
 	      return res.json(200, {password_error_message: 'Password doesn\'t match!'});
@@ -61,8 +61,44 @@ module.exports = {
 	    }
 	    
   },
+  updateUser: function (req, res) {
+	  var email = req.param('email');
+	  var password = req.param('password');
+	  var confirm_password = req.param('confirm_password');
+	  var username = req.param('username');
+	  var user={};
+	  user.password=password;
+	  user.email=email;
+	  
+	  	if (!confirm_password ) {
+	      return res.json(200, {password_error_message: 'Password doesn\'t match!'});
+	    }else if (!password ) {
+	      return res.json(200, {password_error_message: 'Password doesn\'t match!'});
+	    }else if (!email ) {
+	      return res.json(200, {email_error_message: 'you must supply an email'});
+	    }else if (password !== confirm_password) {
+	      return res.json(200, {error_message: 'Password doesn\'t match, What a shame!'});
+	    }else{
+	    	Uzer.update({email: user.email}, {password: user.password}).exec(function (err, updated) {
+	  	      if (err) {
+	  	        return res.json(200, {error_message: 'Invalid parameter: ' + err});
+	  	      }
+	  	      // If user created successfuly we return user and token as response
+	  	      if (updated) {
+	  	        // NOTE: payload is { id: user.id}
+	  	        res.json(200, {updated: updated, success_message:'Your password was updated'});
+	  	      }
+	  	    });
+	    }
+	    
+  },
   displayCreateUserPage: function(req, res){
-	  res.view('user/generate');
+	  var logged_out = LogoutUserService.logout(req, res);
+	  if(logged_out === true){
+		  req.session.token = null;
+		  res.view('user/generate');
+	  }
+	  
   },
   checkUsernameAvailable: function(req, res){
 	  var username = req.param('username');
@@ -78,6 +114,27 @@ module.exports = {
 		  res.json(200, {message: 'Please select  username!!'});
 	  }
 	 
+  },
+  findUserByEmail: function(req, res){
+	  
+	 var email = req.query.email;
+	 //console.log(email);
+	 var email2 = req.param('email');
+	 //console.log(email2); 
+	
+	Uzer.query(
+			"select u.email from uzer u where u.email like '%" + email2 + "%' order by u.email asc", function(err, rawResult){ 
+				//console.log('here: ' + rawResult);
+  	      if (err) {
+  	    	  console.log(err);
+  	    	  return res.json(200, {err: err});
+  	      }
+  	     if(rawResult){
+  	    	 //console.log(rawResult);
+  	    	res.json(200, rawResult.rows);
+  	     }
+	});
+	  
   }
   
 };

@@ -3,11 +3,20 @@ module.exports = {
   intro: function(req, res){
 	  res.view('allocation/intro');
   },
-  norml: function(req, res){
-	  res.view('allocation/norml');
+  exit: function(req, res){
+	  res.view('allocation/exit');
   },
-  dfk: function(req, res){
-	  res.view('allocation/dfk');
+  ccac: function(req, res){
+	  res.view('allocation/ccac');
+  },
+  aac: function(req, res){
+	  res.view('allocation/aac');
+  },
+  ccac2: function(req, res){
+	  res.view('allocation/ccac2');
+  },
+  aac2: function(req, res){
+	  res.view('allocation/aac2');
   },
   allocation1: function(req, res){
 	  res.view('allocation/allocation1');

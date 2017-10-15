@@ -6,14 +6,56 @@
 	<link rel="stylesheet" href="/css/allocation.css" type="text/css" />
 	<link rel="stylesheet" href="/css/button.css" type="text/css" />
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 	
 	<script type="text/javascript">
-		var username = '<%= req.session.username %>';
 	  	
-	  	
+	function findNgo(){
 		
+		var path = "/ngo_Choice3/find";
+	
+		var request= {
+            action : path,
+            rand : Math.floor(Math.random()*100000)
+        };
+		
+		$.get(path,  request,   function(data, status, xhr){
+			if(data){
+				var ngo = data.ngo;	
+				$('.ngo').html(ngo.name);
+				console.log(ngo);
+				saveAnswer(ngo.id);
+			}  
+		}, "json");	
+	}  	
+	
+	// create default value for first ngo click session
+	function saveAnswer(value){
+		
+		path = "/ngo_choice1/save" ;
+	
+		var request= {
+            action : path,
+            ngo: value,
+            rand : Math.floor(Math.random()*100000)
+        };
+		
+		$.post(path,  request,   function(data, status, xhr){
+			if(data.message_error){
+				console.log(data.message_error);
+				
+			}else{
+				console.log(data.ngo_choice1);
+			}
+			
+		}, "json");	
+	
+	}
+		
+	$( document ).ready(function() {
+		findNgo();
+	});
 		
 	</script>	
 	
@@ -24,31 +66,45 @@ Allocation Game
 <p>
 
 
-You have now been given 15 tokens. You may divide these tokens any way you choose 
-between yourself and X << X being Norml Canada or Drug Free Kids, please get 
-the choice participants made in the previous screen>>. Each token you choose to 
-keep for yourself is worth $2. Each token you give to the not-for-profit organization
- is worth a different amount. The first token you give to the organization is worth $5.
- The second token is worth $4.70, the third worth $4.40 and so forth. More generally,
- each token you pass onto the organization is worth $5.30 – n*0.3 where n is the number
- of the token sent to the organization. The table below makes explicit your payment
- and the payment sent to X << X being Norml Canada or Drug Free Kids, please get
- the choice participants made in the previous screen >> as a function of all
- possible allocations of your 15 tokens.
+You have now been given <b>15 tokens</b>. You may divide these tokens any way you choose 
+between <b>yourself</b> and <span class='ngo'></span>. 
 </p>
 <p>
-Please give some thought to your decision because once 
+Each token you choose to 
+keep for yourself is worth <b>$2.00</b>. Each token you give to the not-for-profit organization
+ is worth a different amount. The first token you give to the organization is worth <b>$5.00</b>.
+ The second token is worth <b>$4.70</b>, the third worth <b>$4.40</b> and so forth. More generally,
+ each token you pass onto the organization is worth <b>$5.30 &#45; n*0.3</b> where n is the number
+ of the token sent to the organization.
+ </p>
+ <p>
+ The table below makes explicit your payment
+ and the payment sent to <span class='ngo'></span> as a function of all
+ possible allocations of your <b>15 tokens</b>.
+</p>
+<p>
+<b>Please give some thought to your decision</b> because once 
 all of the participants in our study have completed the survey, 
-1 out of every 10 participants will be randomly selected. The allocations 
+<b>1 out of every 10 participants</b> will be randomly selected. 
+</p>
+<p>
+<span class=''>
+The allocations 
 of these randomly selected participants will be implemented. That is, if you 
 are chosen, the dollar value of any tokens you kept for yourself will be paid 
 to you during the second part of this study in the computer lab and the dollar 
-value of any tokens that you transferred to X << X being Norml Canada or Drug 
-Free Kids, please get the choice participants made in the previous screen >> 
+value of any tokens that you transferred to <span class='ngo'></span> 
 will be mailed to this organization.
+</span>
 </p>
+<div class='hundred center'><h3>Allocation Table</h3></div>
 <p>
-<a href="/allocation/allocation2">When ready - Proceed to next Page</a>
+
+<%- partial('../layout/allocation/table') %>
+</p>
+
+<p>
+<a href="/allocation/game1">When ready - Proceed to next Page</a>
 
 
 

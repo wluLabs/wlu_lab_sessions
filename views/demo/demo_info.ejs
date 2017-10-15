@@ -1,0 +1,376 @@
+<html>
+<head>
+	<title>Demo 1 : Convert All Textareas</title>
+	<link rel="stylesheet" href="/css/allocation.css" type="text/css" />
+	<link rel="stylesheet" href="/css/button.css" type="text/css" />
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	
+	<script type="text/javascript">
+	
+		var userDemoGraphics = new Object();
+		
+		function lastQuestionPopup(){
+			$( "#popup" ).dialog({
+				dialogClass: "alert",
+				  buttons: [
+				    {
+				      text: "Ok",
+				      click: function() {
+//				    	var location = "/demo/confirm";
+//						window.location.href = location ;
+						updateInfo();
+				      }
+				    },
+				    {
+				    	text: "cancel",
+					      click: function() {
+					        $( this ).dialog( "close" );
+					        //getQuestionNumber(MaxQuestions);
+					      }
+				    }
+				  ]
+			});
+			var message = ''
+			$( "#popup" ).html(message);
+			return;
+		}
+		
+		function updateInfo(){
+			var bus_areas = 'n/a';
+			if(userDemoGraphics.bus_areas){
+				bus_areas = userDemoGraphics.bus_areas.toString()
+			}
+			
+			path = "/demo/create";
+			var request= {
+	            action : path,
+	            gender: userDemoGraphics['gender'],
+	            age: userDemoGraphics['age'],
+	            year: userDemoGraphics['year'],
+	            majors: userDemoGraphics.majors.toString(),
+	            bus_areas: bus_areas,
+	            game_hours: userDemoGraphics['game_hours'],
+	            work_ex: userDemoGraphics['work_ex'],
+	            rand : Math.floor(Math.random()*100000)
+	        };
+			
+			$.post(path,  request,   function(data, status, xhr){	
+				if(data.error_message){
+					$('#error_message').show()
+					$('#error_message').text(JSON.stringify(data.error_message));
+					setTimeout(function() { $('#error_message').fadeOut(3000); }, 5000);
+					$('#assistance').show().addClass('red');
+					$('#assistance').text('If this error persists, please ask for asistance');
+					setTimeout(function() { $('#assistance').fadeOut(3000); }, 10000);
+					//console.log(data.error_message);
+					
+				}else{
+					//console.log(data);
+					$('#assistance').show().addClass('green');
+					$('#assistance').text('Your choice has been saved. You will be forwarded to the next page in 3 seconds');
+					setTimeout(function() { $('#assistance').fadeOut(2000); }, 3000);
+					setTimeout(function() { nextPage(); }, 3000);
+				}
+					
+			}, "json");	
+			
+		}
+		
+		
+		
+		function updateDemo(){
+			
+			if(userDemoGraphics.page === 'one'){
+				validateGender();
+			}else if(userDemoGraphics.page === 'two'){
+				validateAge();
+			}else if(userDemoGraphics.page === 'three'){
+				validateYear();
+			}else if(userDemoGraphics.page === 'foura'){
+				validateMajor();
+			}else if(userDemoGraphics.page === 'fourb'){
+				validateBusinessArea();
+			}else if(userDemoGraphics.page === 'five'){
+				validateGameHours();
+			}else if(userDemoGraphics.page === 'six'){
+				validateWorkExperience();
+			}else if(userDemoGraphics.page === 'save_info'){
+				updateInfo();
+			}
+		}
+		
+		function validateGender(){
+			
+			var value = $('input[name=response]:checked', '#response').val();
+			//console.log(value);
+			if(value === '1' || value === '0'){
+				userDemoGraphics.gender = value;
+				var gender = '';
+				if(value === '0'){
+					gender = 'Female';	
+				}else{
+					gender = 'Male';
+				}
+				$('#gender').html('Gender: ' + gender);
+				getDemoPage('two');
+			}else{
+				message = 'Please select a gender by clicking on a radio button!';
+				showValidationMessage(message, 'red')
+			}
+		}
+		
+		function showValidationMessage(message, cl){
+			$('#validate_message').empty();
+			$('#validate_message').show().addClass(cl);
+			$('#validate_message').text(message);
+		}
+		
+		function validateAge(){
+			var age = $('#input_age').val();
+			var age_num = parseInt(age);
+			var ageIsNum = $.isNumeric(age_num);
+			
+			if(ageIsNum === true){
+				if( age_num < 71 && age_num > 14){
+					userDemoGraphics.age = age_num;
+					$('#age').html('Age: ' + age_num);
+					getDemoPage('three');
+				}else{
+					var message = ('Please enter a valid number between 15 and 70' );
+					showValidationMessage(message, 'red');
+				}
+			}	
+		}
+		
+		function validateYear(){
+
+			var value = $('input[name=response]:checked', '#response').val();
+			//console.log(value);
+			if( value === '1' || value === '2' ||
+				value === '3' || value === '4' ||
+				value === '5'){
+				userDemoGraphics.year = value;
+				if(value === '1'){
+					year = '1st';	
+				}else if(value === '2'){
+					year = '2nd';	
+				}else if(value === '3'){
+					year = '3rd';	
+				}else if(value === '4'){
+					year = '4th';	
+				}else{
+					year = '5th or greater';
+				}
+				$('#year').html('University year: ' + year);
+				getDemoPage('foura');
+			}else{
+				message = 'Please select a year by clicking on a radio button!';
+				showValidationMessage(message, 'red');
+			}
+		}
+		
+		function validateMajor(){
+			var majors = new Array();
+			var value = $('input[name=response]:checked', '#response').val();
+			userDemoGraphics.majors = new Array();
+			var checkedNum = 0;
+			
+			$('input[name=response]', '#response').each(function(index, value){
+				//this.checked = false;
+				if(this.checked == true){
+					var val = $(this).val();
+					//console.log('value: ' + val);
+					userDemoGraphics.majors.push(val);
+					checkedNum = checkedNum + 1;
+				}
+				if(this.checked == true && $(this).val() === 'Other'){
+					var specify = $('#other').val();
+					userDemoGraphics.majors[userDemoGraphics.majors.length -1] = 'Other: ' + specify;
+					checkedNum = checkedNum + 1;
+				}
+			});	
+			//console.log(userDemoGraphics.majors.toString());
+			var business_test = userDemoGraphics.majors.toString();
+			if(checkedNum > 0){
+				if(business_test.includes('Business')){
+					getDemoPage('fourb');	
+				}else{
+					getDemoPage('five');
+				}
+				$('#majors').html('Majors: ' + userDemoGraphics.majors.toString());
+				
+			}else{
+				message = 'Please select a major !';
+				showValidationMessage(message, 'red');
+			}
+
+			
+		}
+		
+		function validateBusinessArea(){
+
+			var bus_areas = new Array();
+			var value = $('input[name=response]:checked', '#response').val();
+			userDemoGraphics.bus_areas = new Array();
+			
+			$('input[name=response]', '#response').each(function(index, value){
+				//this.checked = false;
+				if(this.checked == true){
+					var val = $(this).val();
+					//console.log('value: ' + val);
+					userDemoGraphics.bus_areas.push(val);
+				}
+				if(this.checked == true && $(this).val() === 'Other'){
+					var specify = $('#other').val();
+					userDemoGraphics.bus_areas[userDemoGraphics.bus_areas.length -1] = 'Other: ' + specify;
+				}
+			});	
+			$('#bus_areas').html('Business Areas: ' + userDemoGraphics.bus_areas.toString());
+			getDemoPage('five');
+		}
+		
+		function validateGameHours(){
+			var game_hours = $('#game_hours_input').val();
+			//console.log('game_hours ' + game_hours);
+			var game_hours_num = parseInt(game_hours);
+			var game_hoursIsNum = $.isNumeric(game_hours_num);
+			//console.log('game_hoursIsNum ' + game_hoursIsNum);
+			if(game_hoursIsNum){
+				//console.log('inside if game_hoursIsNum ' + game_hoursIsNum);
+				userDemoGraphics.game_hours = game_hours_num;
+				$('#game_hours').html('Game hours played per week: ' + game_hours_num);
+				getDemoPage('six');
+			}else{
+				var message = ('Please enter a valid number!' );
+				showValidationMessage(message, 'red');	
+			}
+		}
+		
+		function validateWorkExperience(){
+
+			var work_ex = $('#work_ex').val();
+			var work_ex_num = parseInt(work_ex);
+			var work_exIsNum = $.isNumeric(work_ex_num);
+			if(work_exIsNum){
+				userDemoGraphics.work_ex = work_ex_num;
+				$('#work_experience').html('Work Experience in months: ' + work_ex_num);
+				$('#page').empty();
+				$('#page').html('Please have a final look at your info. If you need to change it refresh the page and start again. If it is correct hit the "Save Info" button');
+				$('#next_button').empty();
+				$('#next_button').html('Save Info');
+				userDemoGraphics.page = 'save_info';
+			}else{
+				var message = ('Please enter a valid number!' );
+				showValidationMessage(message, 'red');	
+			}	
+		}
+		
+		function nextPage(){
+			var location = "/demo/confirm";
+			window.location.href = location ;
+		}
+		
+	  	function getDemoPage(page){
+	  		userDemoGraphics.page = page;
+			path = "/demo/" + page;
+			var request= {
+	            action : path,
+	            rand : Math.floor(Math.random()*100000)
+	        };
+			
+			$('#page').load(path,  request,   function(data, status, xhr){	
+				$('#validate_message').hide();	
+			}, "json");	
+		}
+		
+		$( document ).ready(function() {
+			getDemoPage('one');	
+		});
+		
+//		window.onbeforeunload = function(e){
+//			e.returnValue = message;
+//			return message;
+//		}
+			
+	</script>	
+	
+</head>
+<body>
+<div id='validate_message' class='message'></div>
+<div class='center'><h4>Demographic Info Page</h4></div>
+
+
+
+<table class='hundred leftpad10'>
+	<tr>
+		<td class='w_30 padding5'><div class=''><div id='gender' class=' '></div></div></td>
+		<td class='w_30 padding5'><div class=''><div id='age' class=' '></div></div></td>
+		<td class='w_30 padding5'><div class=''><div id='year' class=' '></div></div></td>
+	</tr>
+	
+	<tr>
+		<td class='w_30 padding5' colspan='3'><div class=''><div id='majors' class=></div></div></td>
+	</tr>
+	<tr>
+		<td class='w_30 padding5' colspan='3'>
+			<div class=''>
+				<div id='bus_areas' class=' '></div>
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td class='w_30 padding5' colspan='3'>
+			<div class=''>
+				<div id='game_hours' class=' '></div>
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td class='w_30 padding5' colspan='3'>
+			<div class=''>
+				<div id='work_experience' class=' '></div>
+			</div>
+		</td>
+	</tr>
+</table>
+
+<p>
+<div id='page'></div>
+
+</p>
+
+<p>
+
+
+</p>
+
+
+
+<p>
+<div class='hundred button_height '>
+	<div class='hundred left35'>
+		 <a id='emailer' href="#" onclick="updateDemo()" class=" fifty_left35  left button dark_grey "><div id="next_button" class="center_text">Next Question</div></a>
+	</div>
+</div>
+<div class = 'after_left'></div>
+</p>
+<div class = 'after_left'></div>
+</p>
+<div id='popup'>
+</div>
+<div id='assistance'>
+</div>
+<div id='error_message'>
+</div>
+<div class='vertical_spacer_ten'></div>
+<div class='vertical_spacer_ten'></div>
+<div class='vertical_spacer_ten'></div>
+<div class='vertical_spacer_ten'></div>
+<div class='vertical_spacer_ten'></div>
+<div class='vertical_spacer_ten'></div>
+Please note: If you wish to participate in the lab study (and receive your payment) you must finish the complete session including the demographic information. 
+
+</body>
+</html>

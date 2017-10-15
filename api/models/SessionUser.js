@@ -9,7 +9,7 @@ module.exports = {
 		
 		attributes: {
 			  id: {type: 'int', primaryKey: true, autoIncrement: true },
-			  user_id: {model:'uzer'},
+			  user_id: {model:'uzer', unique: true},
 			  session_id: {model:'session'}
 		}
 		

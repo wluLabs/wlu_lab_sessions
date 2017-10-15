@@ -1,4 +1,4 @@
-/**
+  /**
  * OpinionController
  *
  * @description :: Server-side logic for managing opinions
@@ -8,17 +8,17 @@
 module.exports = {
 	save: function(req, res){
 		username = req.session.username;
-		console.log('username' + username);
+		//console.log('username' + username);
 		question = req.param('question');
 		value = req.param('value');
 		message = 'username: ' + username + ' question: ' + question + ' choice:' + value;
-		console.log(message);
+		//console.log(message);
 		Opinion.findOne({username: username, question: question}).exec(function findCB(error, opinion){
 			if(error){
 				message = 'username: ' + username + ' question: ' + question + ' choice:' + value;
-				console.log(message);
+				//console.log(message);
 			}if(opinion){
-				console.log('Found updating ....');
+				//console.log('Found updating ....');
 				Opinion.update({username: username, question: question},{username: username, question: question, value: value}).exec(function updateCB(error, opinion){
 					if(error){
 						message = 'username: ' + username + ' question: ' + question + ' choice:' + value;
@@ -30,13 +30,13 @@ module.exports = {
 				
 			}else{
 				Opinion.create({username: username, question: question, value: value}).exec(function updateCB(error, opinion){
-					console.log('Not Found creating ....');
+					//console.log('Not Found creating ....');
 					if(error){
 						message = 'username: ' + username + ' question: ' + question + ' choice:' + value;
 						//console.log(message);
 					}
 					if(opinion){
-						console.log(opinion);
+						//console.log(opinion);
 						return res.json(200, opinion);
 					}
 					
@@ -52,7 +52,7 @@ module.exports = {
 		Opinion.update({username: username, question: question, value: value}).exec(function updateCB(error, opinion){
 			if(error){
 				message = 'username: ' + username + ' question: ' + question + ' choice:' + value;
-				console.log(message);
+				//console.log(message);
 			}
 			return res.json(opinion);
 		});
@@ -64,7 +64,7 @@ module.exports = {
 		Opinion.find({username: username, question: question}).exec(function findCB(error, opinion){
 			if(error){
 				message = 'username: ' + username + ' question: ' + question + ' choice:' + value;
-				console.log(message);
+				//console.log(message);
 			}
 			return res.json(opinion);
 		});

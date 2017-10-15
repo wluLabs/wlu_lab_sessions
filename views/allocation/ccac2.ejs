@@ -1,0 +1,78 @@
+
+<html>
+<head>
+	<title>Demo 1 : Convert All Textareas</title>
+	<link rel="stylesheet" href="/css/allocation.css" type="text/css" />
+	<link rel="stylesheet" href="/css/button.css" type="text/css" />
+	<link rel="stylesheet" href="/css/ccac.css" type="text/css" />
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	
+	<script type="text/javascript">
+	
+	var username = '<%= req.session.username %>';
+		
+	function getClickCounter(){
+		path = "/userClick/find";
+		var request= {
+            action : path,
+            username: username,
+            page: 'norml',
+            rand : Math.floor(Math.random()*100000)
+        };
+		
+		$.get(path,  request,   function(data, status, xhr){
+			if(data){
+				console.log(data);
+			}
+			
+		}, "json");	
+	}
+  	
+
+  	
+
+			
+	$( document ).ready(function() {
+			getClickCounter();
+	});	
+		
+		
+	</script>	
+	
+</head>
+<body>
+
+<img src="/images/ccac_new.jpg" alt="NORML" height="100" width="480">
+
+
+<p>
+The Canadian Council on Animal Care (CCAC) is a not for profit organization 
+responsible for setting, maintaining, and overseeing the implementation of high 
+standards for animal ethics and care in science throughout Canada. The CCAC works 
+to ensure that animal-based science in Canada takes place only when necessary and 
+that the animals in the studies receive optimal care according to high quality, 
+research-informed standards.
+
+CCAC oversees research using animal testing that has improved health, prevented 
+disease and saved lives of both humans and animals. Life-changing therapies 
+ranging from vaccines and cancer therapies to organ transplants have helped 
+millions worldwide.
+<p>
+
+<p>
+<a href="/allocation/exit">Click here to return to the Allocation Game</a>
+</p>
+<p>
+<a href="/allocation/aac2">Animal Alliance of Canada</a>
+</p>
+
+</p>
+
+<div id='popup'>
+</div>
+
+</body>
+</html>
+

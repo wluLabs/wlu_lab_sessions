@@ -15,8 +15,17 @@ module.exports = {
 		    to: to_email,
 		    subject: "WLU Session schedule"
 		  },
-		  function(err) {console.log(err || "It worked!");
-		  		res.json(200, {message: 'Your email was successfully sent'});
+		  function(err) {
+			  //console.log(err);
+			  if(err){
+				  req.session.token = null;
+				  res.json(200, {message: 'There was a problem sending the email!!'});
+				  LogoutUserService.logout(req, res);
+			  }else{
+				  req.session.token = null;
+				  res.json(200, {message: 'Your email was successfully sent.'});
+				  LogoutUserService.logout(req, res);
+			  } 
 		  }
 		);
 	}

@@ -6,84 +6,114 @@
 	<link rel="stylesheet" href="/css/allocation.css" type="text/css" />
 	<link rel="stylesheet" href="/css/button.css" type="text/css" />
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	<script src="/scripts/jquery_shuffle.js"></script>
 	
 	<script type="text/javascript">
+	
+	var ngos = [1, 2];
 		
-		// ensure answer is not preselected
-//		function refreshPage(){
-//			$("input:radio[name='consent']").each(function(i) {
-//			  this.checked = false;
-//			});
-//		}
-		
-//		function proceed(){
-//			var value = $('input[name=consent]:checked', '#response').val();
-//			console.log(value);
-//			// ensure a value has been selected
-//			if(typeof value === 'undefined'){
-//				$( "#popup" ).dialog({
-//					autoOpen: true,
-//					resizable: false,
-//					position: { my: "left bottom", at: "left+100 bottom-100", of: '#pb' },
-//				    height: 300,
-//				    width: 300,
-//				    
-//				    modal: true,
-//				    buttons: {
-//				        "OK": function() {
-//				          $( this ).dialog( "close" );
-//					    }
-//				    }
-//				});
-//				
-//				$( "#popup" ).html(
-//					'<h5 class="center">Please select option</h5> <p><h4 class="center">' +
-//					'"I agree to participate"</h4></p>  <h5 class="center">if you wish to proceed!</h5>'
-//				);
-//				
-//			}else if (value == 1){
-//				//login();
-//				generateUserName();
-//			}else{
-//				$( "#popup" ).dialog({
-//					autoOpen: true,
-//					resizable: false,
-//					position: { my: "left bottom", at: "left+100 bottom-100", of: '#pb' },
-//				    height: 350,
-//				    width: 300,
-//				    
-//				    modal: true,
-//				    buttons: {
-//				        "OK": function() {
-//				          $( this ).dialog( "close" );
-//					    }
-//				    }
-//				});
-//				
-//				$( "#popup" ).html(
-//					'<h5 class="center">You selected</h5> <p><h4 class="center">' +
-//					'"I do not wish to participate"</h4></p>  <h5 class="center">Please close your browser!</h5>'
-//				);
-//			
-//			}
-//		}
-		
-		function login(){
-			var location = "/page/login";
-			window.location.href = location ;
+	function selectNGO(){
+		var value = $('input[name=response]:checked', '#response').val();
+		if(typeof value === 'undefined'){
+			$( "#popup" ).dialog({
+				dialogClass: "alert",
+				  buttons: [
+				    {
+				      text: "Ok",
+				      click: function() {
+				        $( this ).dialog( "close" );
+				      }
+				    }
+				  ]
+			});
+			$( "#popup" ).html('Please select one of the two radio buttons to select a Not-For-Profit Organization to donate !');
+			return;
+		}else{
+			//alert(value);
+			saveAnswer(value);
 		}
+	}
 		
-		function generateUserName(){
-			var location = "/user/displayCreateUserPage";
-			window.location.href = location ;
+	function saveAnswer(value){
+		
+		path = "/ngo_choice3/save" ;
+	
+		var request= {
+            action : path,
+            ngo: value,
+            rand : Math.floor(Math.random()*100000)
+        };
+		
+		$.post(path,  request,   function(data, status, xhr){
+			if(data.message_error){
+				$('#error_message').show()
+				$('#error_message').text(JSON.stringify(data.message_error));
+				setTimeout(function() { $('#error_message').fadeOut(3000); }, 5000);
+				$('#assistance').show()
+				$('#assistance').text('If this error persists, please ask for asistance');
+				setTimeout(function() { $('#assistance').fadeOut(3000); }, 10000);
+				
+			}else{
+				$('#popup').show()
+				$('#popup').text('You choice has been saved. You will be forwarded to the next page in 3 seconds');
+				setTimeout(function() { $('#popup').fadeOut(2000); }, 3000);
+				setTimeout(function() { nextPage(); }, 3000);
+			}
+			
+		}, "json");	
+	
+	}
+	
+	function nextPage(){
+		var location = "/allocation/allocation1";
+		window.location.href = location ;
+	}
+	
+	function displayNgos(){
+		
+		var pro = '&nbsp;-&nbsp;<span>(pro animal testing)</span>'
+		var anti = '&nbsp;-&nbsp;<span>(anti animal testing)</span>'
+		
+		if(ngos[0] == 1){
+			ngo1 = '<a href="/allocation/ccac">Canadian Council on Animal Care</a>' + pro;
+			ngo2 = '<a href="/allocation/aac">Animal Alliance of Canada</a>' + anti;
+			
+			ngo1_select = '<input type="radio" name="response" value="1"><b>Canadian Council on Animal Care</b>' + pro;
+			ngo2_select = '<input type="radio" name="response" value="2"><b>Animal Alliance of Canada</b>' + anti;
+			
+			displayNgo1(ngo1, ngo1_select);
+			displayNgo2(ngo2, ngo2_select);
+		}else{
+			ngo2 = '<a href="/allocation/ccac">Canadian Council on Animal Care</a>' + pro;
+			ngo1 = '<a href="/allocation/aac">Animal Alliance of Canada</a>' + anti;
+			
+			ngo2_select = '<input type="radio" name="response" value="1"><b>Canadian Council on Animal Care</b>' + pro;
+			ngo1_select = '<input type="radio" name="response" value="2"><b>Animal Alliance of Canada</b>' + anti;
+			displayNgo1(ngo1, ngo1_select);
+			displayNgo2(ngo2, ngo2_select);
 		}
+	}
+	
+	function displayNgo1(ngo1, ngo1_select){
+		
+		$('#ngo1').html(ngo1);
+		$('#ngo_select1').html(ngo1_select)
+	}
+	
+	function displayNgo2(ngo2, ngo2_select){
+		
+		$('#ngo2').html(ngo2);
+		$('#ngo_select2').html(ngo2_select);
+	}
 
 		
-		$( document ).ready(function() {
-//	    	refreshPage();
-		});
+	$( document ).ready(function() {
+		ngos = $.shuffle(ngos);
+		//console.log(ngos);
+		displayNgos();
+	});
 		
 		
 	</script>	
@@ -102,20 +132,36 @@ the organizations by clicking on the appropriate link below.
 After making your decision, please select which of the two 
 organizations you might prefer to allocate some of your tokens. 
 </p>
+
+<p id="ngo1">
+	
+</p>
+<p id="ngo2">
+	
+</p>
+<div class='clear spacer_twenty'></div>
+<div class='clear spacer_twenty'></div>
 <p>
 Select one only.
 </p>
 <p>
-<a href="/allocation/norml">NORML</a>
+<%- partial('../layout/allocation/select_ngo') %>
 </p>
+<br/>
 <p>
-<a href="/allocation/dfk">Drug Free Kids</a>
+<a href="#" onclick="selectNGO()">When Ready - Select an organization, click this link and you will be forwarded to the next Page</a>
+</p>
+<br/><br/>
+<p>
+<div id='popup'></div>
+<div id='error_message' class='red'>
+</div>
+<div id='assistance' class='green'></div>
+
+
 </p>
 
-<a href="/allocation/allocation1">When Ready - Proceed to next Page</a>
 
-<div id='popup'>
-</div>
 
 </body>
 </html>

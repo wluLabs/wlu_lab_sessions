@@ -15,19 +15,14 @@ module.exports = {
 	gender: {type: 'string', required: 'true'},
     age : {type: 'int', required: 'true'},
     year : {type: 'int', required: 'true'},
-    major: {type: 'int', required: 'true'},
-    business_area : {type: 'int', required: 'true'},
+    major: {type: 'string', required: 'true'},
+    business_area : {type: 'string', required: 'true'},
     game_hours: {type: 'int', required: 'true'},
     work_ex_months: {type: 'int', required: 'true'},
     username: {
         type: 'string',
         required: 'true',
         unique: true // Yes unique one
-    },
-
-    toJSON: function () {
-
-      return obj;
     }
   }
 

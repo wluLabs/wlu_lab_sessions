@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+	<head>
+	  <meta charset="utf-8">
+	  <meta name="viewport" content="width=device-width, initial-scale=1">
+	  <title>jQuery UI Datepicker - Default functionality</title>
+	  <link rel="stylesheet" href="/css/display_schedule.css" type="text/css" />
+	  <link rel="stylesheet" href="/css/button.css" type="text/css" />
+	  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+	  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	  <script>
+	  		
+			$( function() {
+			  $( "#datepicker" ).datepicker();
+			});
+		  
+		  	$( function() {
+			    var availableTags = [ "10:30", "11:30", "12:30","1:30", "2:30" ];
+			    $( "#tags" ).autocomplete({
+			    	minLength: 0,
+			    	source: function (request, response) {
+			            response(availableTags);
+			        }
+			    });
+			});
+		  	
+		  	function getSessions(){
+				path = "/session/findSessionsForUser" ;
+				var request= {
+		            action : path,
+		            rand : Math.floor(Math.random()*100000)
+		        };
+				
+				$.post(path,  request,   function(data, status, xhr){	
+					//console.log(data);
+					displaySessions(data.rows);
+					
+				}, "json");	
+			
+			}
+		  	
+		  	function displaySessions(sessions){
+		  		if(sessions){
+		  			$('#sessions').empty();
+		  			var value = $(' input[name=session_choice]:checked', '#session_choice').val();
+		  			if(typeof value === 'undefined'){
+		  				
+		  			}else{
+		  				$('#datepicker').val("");
+		  			}
+		  			
+		  			$('#tags').val("");
+		  			if(sessions.length > 0){
+		  				buildSessionTableHeader();
+		  			}
+		  			
+			  		$.each(sessions, function (index, session) { 
+			  			
+			  			buildSessionRow(session, index);
+			  		});
+			  		
+			  		$("#sessions .row:even").css("background-color","#FBF693");
+					$("#sessions .row:odd").css("background-color","#FFFFCE");
+		  		}
+		  	}
+		  	
+		  	function buildSessionRow(session, index){
+		  		//console.log(session);
+		  		var date = session.date;
+		  		index = index + 1;
+		  		date = date.substring(0,10);
+		  		var row = 	'<div class="left cell1 center"><input type="radio" name ="session_choice" '
+		  					+'session_id='+ session.id + ' id="use_date"></div>'
+		  					+ '<div class="left cell2 center">' + index + '</div><div class="left cell3">' + date 
+				  			+ '</div><div class="left cell4">' + session.time + '</div><div class="left cell4 center">' 
+				  			+ session.max + '</div>';
+		  		newdiv = document.createElement( "div" );
+		  		$(newdiv).addClass('row clear')
+		  		$('#sessions').append(newdiv);
+		  		$(newdiv).append(row);
+		  		$(newdiv).append('<div class = "clear"></div>');
+		  		
+		  	}
+		  	
+		  	function buildSessionTableHeader(){
+		  		
+		  		var date_header = document.createTextNode('DATE');;
+		  		var time_header= document.createTextNode('TIME');;
+		  		var delSession = document.createTextNode('DELETE');;
+		  		var max = document.createTextNode('MAX');;
+		  		var row = 	'<div class="left cell1 center">Select </br> Session</div>'
+		  					+ '<div class="left cell2 center">' + '<b>#</b>' + '</div><div class="left cell3">' + '<b>DATE</b>'
+				  			+ '</div><div class="left cell4">' + '<b>TIME</b>' + '</div><div class="left cell5">' 
+				  			+ '<b>SESSION SIZE</b>' + '</div><div">';
+		  		newdiv = document.createElement( "div" );
+		  		$(newdiv).addClass('row clear')
+		  		$('#sessions').append(newdiv);
+		  		$(newdiv).append(row);
+		  		$(newdiv).append('<div class = "clear"></div>');
+		  		$(newdiv).append("<div class='vertical_spacer_ten'></div>").css("background-color","#FFFFCE");
+		  		
+		  	}
+		  	
+		  	function displayPopup(message){
+		  		console.log(message);
+		  		$( "#popup" ).dialog({
+					autoOpen: true,
+					resizable: false,
+					position: { my: "left bottom", at: "left+100 bottom-100", of: '#tags' },
+				    height: 350,
+				    width: 300,
+				    
+				    modal: true,
+				    buttons: {
+				        "OK": function() {
+				          $( this ).dialog( "close" );
+					    }
+				    }
+				});
+				
+				$( "#popup" ).html(
+					message
+				);
+		  		
+		  	}
+		  	
+		  	function scheduleSession(){
+		  		var session_id = $(' input[name=session_choice]:checked', '#session_choice').attr('session_id');
+		  		var user_id = 1;
+		  		
+	  			if(typeof session_id === 'undefined'){
+	  				var message = 'Please select a time by checking one of the session checkboxes!!';
+	  				displayPopup(message);
+	  			}else{
+	  				path = "/sessionuser/create" ;
+	  				var request= {
+				            action : path,
+				            session_id: session_id,
+				            rand : Math.floor(Math.random()*100000)
+				        };
+						
+						$.post(path,  request,   function(data, status, xhr){	
+							console.log(data.session.session_id);
+							if(data.message){
+								console.log('if');
+								displayPopup(JSON.stringify(data.message));
+							}else if (data.session.rowCount == 1 || (data.session.user_id && data.session.session_id)){
+								var location = "/page/question"; 
+								window.location.href = location ;
+							}
+							
+						}, "json");	
+	  				
+	  			}
+			}
+		  	
+			$( document ).ready(function() {
+				getSessions();
+			});
+	  </script>
+	</head>
+	<body>
+		<div class='hundred center'><h2>Select Session User Page</h2></div>
+		<p>
+		Our study requires that you to attend a session in a computer lab after completion of the online survey.  
+		The lab session takes roughly 35-40 minutes. The sessions will start right on time. 
+		Please select a session from the following list that you would like to attend:
+		<div class='vertical_spacer_ten'></div>
+	 	<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
+		
+		
+		
+		<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
+		<form id='session_choice'>
+	 	<%- partial('../layout/session/displaySessions') %>
+	 	</form>
+	 	<div class='vertical_spacer_ten'></div>
+		<div class='hundred button_height '>
+			<div class='ninety'>
+				 <a href="#" onclick="scheduleSession()" class="fifty_w_h  left button dark_grey "><div class="center_text">Schedule Session</div></a>
+			</div>
+		</div>
+	</body>
+</html>
+
+

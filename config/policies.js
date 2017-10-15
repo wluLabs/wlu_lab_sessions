@@ -26,19 +26,23 @@ module.exports.policies = {
   'ConsentController': {
 	    '*': true // We dont need authorization here, allowing public access
   },
-  'SessionUserController': {
-	    '*': true // We dont need authorization here, allowing public access
-  }
-  
-  ,
-  'PageController': {
-	    'pickSession': true,
-	    'showUserSession': true// We dont need authorization here, allowing public access
+  'ConfirmController': {
+	  	'end2': true,
+	    'end1': true// We dont need authorization here, allowing public access
   },
-  'WelcomeController': {
-	    'home': true // We dont need authorization here, allowing public access
+  'PageController': {
+	    'showUserSession': true// We dont need authorization here, allowing public access
   },
   'SessionController':{
 	  'findSessionsForUser': true
+  },
+  'Session2Controller':{
+	  'welcome': true
+  },
+  'SessionUserController': {
+	    '*': true // We dont need authorization here, allowing public access
+  },
+  'WelcomeController': {
+	    'home': true // We dont need authorization here, allowing public access
   }
 };

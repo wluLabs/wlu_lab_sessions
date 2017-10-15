@@ -3,35 +3,19 @@
 	<link rel="stylesheet" href="/css/answer.css" type="text/css" />
 	<link rel="stylesheet" href="/css/question.css" type="text/css" />
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	<script src="/scripts/jquery_shuffle.js"></script>
 	
 	<script>
 		// global variables
 		var QuestionNumber = 0;
-		var MaxQuestions;
-		var answered = false;
 		
-		function nextQuestion(){
-			var value = $('input[name=response]:checked', '#response').val();
-			if(typeof value === 'undefined'){
-				$( "#popup" ).dialog({
-					dialogClass: "alert",
-					  buttons: [
-					    {
-					      text: "Ok",
-					      click: function() {
-					        $( this ).dialog( "close" );
-					      }
-					    }
-					  ]
-				});
-				$( "#popup" ).html('Please select one of the eight radio buttons to select a value!');
-				return;
-			}else{
-				saveAnswer(QuestionNumber, value);
-			}
-		}
+		var answered = false;
+		// questions to be displayed. Array is 
+		// reordered on load to be randomized.
+		var arr = [1,2,3,4,5,6,7,8];
+		var MaxQuestions = arr.length;
 		
 		function saveAnswer(question, value){
 		
@@ -52,6 +36,10 @@
 					$("input:radio[name='response']").each(function(i) {
 				       this.checked = false;
 					});
+					// ensure the Question Number is not greater than the array
+					if(QuestionNumber < arr.length){
+						QuestionNumber = QuestionNumber + 1;
+					}
 					getQuestion(); 
 				}else{
 					console.log(data.message_error);
@@ -61,16 +49,40 @@
 		
 		}
 		
-		
+		function nextQuestion(){
+			
+			console.log('nextQuestion ' + QuestionNumber);
+			var value = $('input[name=response]:checked', '#response').val();
+			if(typeof value === 'undefined'){
+				$( "#popup" ).dialog({
+					dialogClass: "alert",
+					  buttons: [
+					    {
+					      text: "Ok",
+					      click: function() {
+					        $( this ).dialog( "close" );
+					      }
+					    }
+					  ]
+				});
+				$( "#popup" ).html('Please select one of the eight radio buttons to select a value!');
+				return;
+			}else{
+				saveAnswer(arr[QuestionNumber], value);
+			}
+		}
 		
 		function previousQuestion(){
-			if(QuestionNumber === 0 || QuestionNumber === 1){
-				QuestionNumber = 1;
+			console.log('previousQuestion ' + QuestionNumber);
+			if( QuestionNumber === 0){
+				QuestionNumber = 0;
+			}else if (QuestionNumber == arr.length){
+				QuestionNumber = QuestionNumber - 2;
 			}else{
 				QuestionNumber = QuestionNumber - 1;
 			}
-			
-			getQuestionNumber(QuestionNumber);		
+			console.log('QuestionNumber ' + QuestionNumber);
+			getQuestionNumber(arr[QuestionNumber]);		
 		}
 		
 		function getQuestionNumber(number){
@@ -95,24 +107,23 @@
 		function setQuestion(content){
 			//console.log(content);
 			$('#question').html(content);
+			//QuestionNumber = QuestionNumber + 1;
 		}
 		
 		function getQuestion(){
-			if(MaxQuestions && QuestionNumber < MaxQuestions){
-				//console.log('here');
-				QuestionNumber = QuestionNumber + 1;
-				getQuestionNumber(QuestionNumber);
-			}else if(MaxQuestions && QuestionNumber == MaxQuestions) {
+			
+			var question = arr[QuestionNumber];
+			console.log('getQuestion: QuestionNumber  ' + QuestionNumber + " MaxQuestions " + MaxQuestions);
+			
+			if(QuestionNumber < arr.length ){
+				getQuestionNumber(question);	
+			}else{
 				console.log('Last Question');
 				lastQuestionPopup();
-				
-				
-			}else if(QuestionNumber == 0){
-				getQuestionNumber(0);
-			}	
+			}
 		}
 		
-		function lastQuestionPopup(){
+		function lastQuestionPopup(question){
 			$( "#popup" ).dialog({
 				dialogClass: "alert",
 				  buttons: [
@@ -127,7 +138,7 @@
 				    	text: "cancel",
 					      click: function() {
 					        $( this ).dialog( "close" );
-					        getQuestionNumber(MaxQuestions);
+					        getQuestionNumber(arr[QuestionNumber]);
 					      }
 				    }
 				  ]
@@ -136,22 +147,23 @@
 			return;
 		}
 		
-		function countQuestion(){
-				var path = "/countquestions/count";
-			
-				var request= {
-		            action : path,
-		            rand : Math.floor(Math.random()*100000)
-		        };
-				
-				$.post(path,  request,   function(data, status, xhr){	
-					//console.log(data);
-					
-					MaxQuestions = Number(data);
-					getQuestion();
-				}, "json");	
-			
-		}
+//		function countQuestion(){
+//				var path = "/countquestions/count";
+//			
+//				var request= {
+//		            action : path,
+//		            rand : Math.floor(Math.random()*100000)
+//		        };
+//				
+//				$.post(path,  request,   function(data, status, xhr){	
+//					//console.log(data);
+//					
+//					MaxQuestions = Number(data);
+//					console.log(arr.length);
+//					getQuestion();
+//				}, "json");	
+//			
+//		}
 		
 		function findAnswer(question){
 				path = "/opinion/find" ;
@@ -184,7 +196,12 @@
 		  } );
 		
 		$( document ).ready(function() {
-	    	countQuestion()
+			
+	    	//countQuestion();
+	    	
+	    	arr = $.shuffle(arr);
+	    	getQuestionNumber(arr[0]);
+	    	console.log(arr);
 		});
 	
 	

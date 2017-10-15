@@ -5,14 +5,15 @@
 	<link rel="stylesheet" href="/css/login.css" type="text/css" />
 	<link rel="stylesheet" href="/css/button.css" type="text/css" />
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 	
 	<script type="text/javascript">
 		
 		function createUser(){
-			username = $('#tags').val();
+			
 			email = $('#email').val();
+			username = email;
 			password = $('#password').val();
 			confirmPassword  = $('#confirm_password').val();
 			path = "/user/createUser" ;
@@ -79,9 +80,9 @@
 					}
 					if(data.error_message){
 						console.log(data.message);
-						$('#logged_in').show()
-						$('#logged_in').text(data.error_message);
-						setTimeout(function() { $('#logged_in').fadeOut(3000); }, 5000);
+						$('#error_message').show()
+						$('#error_message').text(data.error_message);
+						setTimeout(function() { $('#error_message').fadeOut(3000); }, 5000);
 					}
 					
 					
@@ -128,47 +129,47 @@
 		}
 	
 	
-	  	$( function() {
-		    var dwarfs = [  
-		    	"Grumpy", "Sleepy", "Sneezy","Doc", "Bashful", "Dopey", "Happy"
-		    	];
-		    var planets = [  
-		    	"Mercury", "Venus", "Earth","Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"
-		    	];
+//	  	$( function() {
+//		    var dwarfs = [  
+//		    	"Grumpy", "Sleepy", "Sneezy","Doc", "Bashful", "Dopey", "Happy"
+//		    	];
+//		    var planets = [  
+//		    	"Mercury", "Venus", "Earth","Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"
+//		    	];
 		    
-		    function randomIntFromInterval(min,max)
-		    {
-		        return Math.floor(Math.random()*(max-min+1)+min);
-		    }
+//		    function randomIntFromInterval(min,max)
+//		    {
+//		        return Math.floor(Math.random()*(max-min+1)+min);
+//		    }
 		    
-		    function generateTags(){
-		    	availableTags = [];
+//		    function generateTags(){
+//		    	availableTags = [];
 		    
-		    	for(i = 0; i < 10; i++){
-		    		var dwarf = randomIntFromInterval(0,6);
-			    	var planet = randomIntFromInterval(0,9);
-			    	availableTags.push(dwarfs[dwarf] + planets[planet] + randomIntFromInterval(100,999));
-		    	}
+//		    	for(i = 0; i < 10; i++){
+//		    		var dwarf = randomIntFromInterval(0,6);
+//			    	var planet = randomIntFromInterval(0,9);
+//			    	availableTags.push(dwarfs[dwarf] + planets[planet] + randomIntFromInterval(100,999));
+//		    	}
 		    	
-		    	return availableTags;
-		    }
+//		    	return availableTags;
+//		    }
 		    
-		    $( "#tags" ).autocomplete({
-		    	minLength: 0,
-		    	source: function (request, response) {
-		    		availableTags = generateTags();
-		            response(availableTags);
-		        }
-		    });
-		});
+//		    $( "#tags" ).autocomplete({
+//		    	minLength: 0,
+//		    	source: function (request, response) {
+//		    		availableTags = generateTags();
+//		            response(availableTags);
+//		        }
+//		    });
+//		});
 
 		
 		$( document ).ready(function() {
-			$("#tags").bind('focus', function(){
-				  if($(this).val()=="" || $(this).val() != ""){ 
-				     $(this).autocomplete("search");
-				  } 
-			});
+//			$("#tags").bind('focus', function(){
+//				  if($(this).val()=="" || $(this).val() != ""){ 
+//				     $(this).autocomplete("search");
+//				  } 
+//			});
 		});
 		
 		
@@ -184,23 +185,9 @@
 		</div>
 	
 	<form method="post" action="../login/login">
-		<div class='cellContainer'>
-			<div class='innercellContainer'>
-				<div class="ui-widget">
-				  <label for="tags">Select a Username: </label>
-				  <input id="tags">
-				</div>
-			</div>	
-		</div>
+		
 		<p>
-		<div class='cellContainer'>
-			<div class='hundred button_height '>
-				<div class='ninety'>
-				<div class='spacer_right right'></div>		 
-					 <a id='pb' href="#" onclick="checkAvailability();" class="fifty_w_h  right button dark_grey "><div class="center_text">Confirm Username Available</div></a>
-				</div>
-			</div>
-		</div>
+		
 		</p>
 		<div class='clear spacer_twenty'></div>
 		<div class='clear spacer_twenty'></div>
@@ -227,6 +214,11 @@
 	</form>
 		<div class='vertical_spacer_ten'></div>
 		<div class='vertical_spacer_ten'></div>
+			<b>Please make up a password consisting of 3 characters or more that you can easily remember.</b>
+		<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
 		<div class='vertical_spacer_ten'></div>
 		<div class='vertical_spacer_ten'></div>
 		<div class='cellContainer'>
@@ -246,6 +238,7 @@
 		<div id='logged_in' class='green'></div>
 		<div id='username_available' class='green'></div>
 		<div id='username_not_available' class='red'></div>
+		<div id='error_message' class='red'></div>
 	</div>
 </body>
 </html>

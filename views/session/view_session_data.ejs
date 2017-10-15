@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+	<head>
+	  <meta charset="utf-8">
+	  <meta name="viewport" content="width=device-width, initial-scale=1">
+	  <title>jQuery UI Datepicker - Default functionality</title>
+	  <link rel="stylesheet" href="/css/view_session_data.css" type="text/css" />
+	  <link rel="stylesheet" href="/css/button.css" type="text/css" />
+	  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+	  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	  <script>
+	  		var validDate = false;
+			var validTime = false;
+			
+			function setValidDate(valid){
+				validDate = valid;
+			}
+			
+			function setValidTime(valid){
+				validTime = valid;
+			}
+	  
+			$( function() {
+			  $( "#datepicker" ).datepicker();
+			});
+		  
+		  	$( function() {
+			    var availableTags = [ "10:30", "11:30", "12:30","1:30", "2:30" ];
+			    $( "#tags" ).autocomplete({
+			    	minLength: 0,
+			    	source: function (request, response) {
+			            response(availableTags);
+			        }
+			    });
+			});
+		  	
+		  	function getSessions(){
+				path = "/session/find" ;
+				var request= {
+		            action : path,
+		            rand : Math.floor(Math.random()*100000)
+		        };
+				
+				$.post(path,  request,   function(data, status, xhr){	
+					console.log(data);
+					displaySessions(data.rows);
+					
+				}, "json");	
+			
+			}
+		  	
+		  	function displaySessions(sessions){
+		  		if(sessions){
+		  			$('#sessions').empty();
+		  			var value = $(' input[name=use_date]:checked', '#use_date').val();
+		  			if(typeof value === 'undefined'){
+		  				
+		  			}else{
+		  				$('#datepicker').val("");
+		  			}
+		  			
+		  			$('#tags').val("");
+		  			if(sessions.length > 0){
+		  				buildSessionTableHeader();
+		  			}
+		  			
+			  		$.each(sessions, function (index, session) { 
+			  			
+			  			buildSessionRow(session, index);
+			  		});
+			  		
+			  		$("#sessions .row:even").css("background-color","#FBF693");
+					$("#sessions .row:odd").css("background-color","#FFFFCE");
+		  		}
+		  	}
+		  	
+		  	function buildSessionRow(session, index){
+		  		console.log(session);
+		  		var date = session.date;
+		  		index = index + 1;
+		  		date = date.substring(0,10);
+		  		var row = '<div class="left cell center">' + index + '</div><div class="left cell2">' + date 
+				  			+ '</div><div class="left cell">' + session.time + '</div><div class="left cell">' 
+				  			+ session.max + '</div><a href="#" onclick="deleteSession(' + session.id + ')" class="left cell red center">' + 'x' + '</a>';
+		  		newdiv = document.createElement( "div" );
+		  		$(newdiv).addClass('row clear')
+		  		$('#sessions').append(newdiv);
+		  		$(newdiv).append(row);
+		  		$(newdiv).append('<div class = "clear"></div>');
+		  		
+		  	}
+		  	
+		  	function buildSessionTableHeader(){
+		  		
+		  		var date_header = document.createTextNode('DATE');;
+		  		var time_header= document.createTextNode('TIME');;
+		  		var delSession = document.createTextNode('DELETE');;
+		  		var max = document.createTextNode('MAX');;
+		  		var row = '<div class="left cell center">' + '<b>#</b>' + '</div><div class="left cell2">' + '<b>DATE</b>'
+				  			+ '</div><div class="left cell">' + '<b>TIME</b>' + '</div><div class="left cell">' 
+				  			+ '<b>MAX</b>' + '</div><div">' + '<b>DELETE</b>' + '</div>';
+		  		newdiv = document.createElement( "div" );
+		  		$(newdiv).addClass('row clear')
+		  		$('#sessions').append(newdiv);
+		  		$(newdiv).append(row);
+		  		$(newdiv).append('<div class = "clear"></div>');
+		  		$(newdiv).append("<div class='vertical_spacer_ten'></div>").css("background-color","#FFFFCE");
+		  		
+		  	}
+		  	
+		  	function displayPopup(message){
+		  		console.log(message);
+		  		$( "#popup" ).dialog({
+					autoOpen: true,
+					resizable: false,
+					position: { my: "left bottom", at: "left+100 bottom-100", of: '#tags' },
+				    height: 350,
+				    width: 300,
+				    
+				    modal: true,
+				    buttons: {
+				        "OK": function() {
+				          $( this ).dialog( "close" );
+					    }
+				    }
+				});
+				
+				$( "#popup" ).html(
+					message
+				);
+		  		
+		  	}
+		  	
+		  	function createSession(){
+				path = "/session/create" ;
+				date = $('#datepicker').val();
+				
+				if(!date === ''){
+					var splitDate = date.split("/");
+					date = splitDate[2] + ',' + splitDate[1] + ',' + splitDate[0];
+					console.log('date ' + date);
+				}
+				console.log('date ' + date);
+				
+				time = $('#tags').val();
+				if(!time === ''){
+					
+				}
+				console.log('time ' + time); 
+
+				if(	date.length > 0 && time.length > 0	
+				){
+					console.log('trying to create a session');
+					var request= {
+				            action : path,
+				            date: date,
+				            time: time,
+				            rand : Math.floor(Math.random()*100000)
+				        };
+						
+						$.post(path,  request,   function(data, status, xhr){	
+							
+							if(data.message){
+								displayPopup(JSON.stringify(data.message));
+							}else{
+								getSessions();
+							}
+							
+						}, "json");	
+					
+				}else{
+					if(date === ''){
+						console.log('enter a valid date');
+					}
+					if(time === ''){
+						console.log('enter a valid time');
+					}
+				}
+			}
+		  	
+		  	function deleteSession(id){
+				path = "/session/remove" ;
+				
+				var request= {
+			            action : path,
+			            id: id,
+			            rand : Math.floor(Math.random()*100000)
+			        };
+					
+					$.post(path,  request,   function(data, status, xhr){	
+						console.log(data);
+						getSessions();
+						
+					}, "json");	
+					
+			}
+		  	
+			$( document ).ready(function() {
+				$("#tags").bind('focus', function(){
+					  if($(this).val()=="" || $(this).val() != ""){ 
+					     $(this).autocomplete("search");
+					  } 
+				});
+				
+				getSessions();
+				
+			});
+	  </script>
+	</head>
+	<body>
+		<a class="left" href="/admin/home">&lt;&nbsp;Back</a>
+		<div class='vertical_spacer_ten'></div>
+	 	<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
+		
+		<div class='hundred center'><h2>View Session Data Select Session to View Page</h2></div>
+		<div class='vertical_spacer_ten'></div>
+	 	<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
+		<p>Select a Date: <input type="text" id="datepicker"></p> <form id='use_date'><input type="checkbox" name ='use_date' id="use_date"><span class='small_txt'>Clear Date After Submission</span></form>
+		<div class='vertical_spacer_ten'></div>
+		
+		<div class='vertical_spacer_ten'></div>
+		<div class='hundred button_height '>
+			<div class='ninety'>
+				 <a href="#" onclick="createSession()" class="fifty_w_h  left button dark_grey "><div class="center_text">Schedule Session</div></a>
+			</div>
+		</div>
+		<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
+	 	Select a Session to View the User Data:
+	 	<div class='vertical_spacer_ten'></div>
+	 	<div id='sessions'>
+	 	</div>
+	 	<div id='popup'>
+		</div>
+	</body>
+</html>

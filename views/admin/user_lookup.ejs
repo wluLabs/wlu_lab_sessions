@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+	<head>
+	  <meta charset="utf-8">
+	  <meta name="viewport" content="width=device-width, initial-scale=1">
+	  <title>User Lookup</title>
+	  <link rel="stylesheet" href="/css/schedule.css" type="text/css" />
+	  <link rel="stylesheet" href="/css/button.css" type="text/css" />
+	  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+	  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	  <script>
+			$( function() {
+			  $( "#datepicker" ).datepicker();
+			});
+			
+			var usernames = new Array();
+		  
+		  	$( function() {
+			    //unsvar availableTags = getUserByEmail(email);
+			    $( "#tags" ).autocomplete({
+			    	minLength: 3,
+			    	source: function (request, response) {
+			    		jQuery.get("findUserByEmail", {
+			                email: request.term
+			            }, function (data) {
+			                var emails = new Array();
+			                $(data).each(function(index, user){
+			                	emails.push({label: data[index].email, username: data[index].username});
+			                
+			                });			          
+			                response(emails);
+			            });
+			        },
+			        select: function(e, ui){			        	
+			        	var username = ui.item.username;
+			        	$('#user_intro').show();
+			        	$('#username').empty();
+			        	$('#username').html(username);
+			        	//var user_data = getUserSessionByUsername(username);
+			        	//console.log(user_data);
+			        }
+			    });
+			});
+		  	
+		  	function getUserSessionByUsername(username){
+		  		console.log('here');
+				path = "/sessionuser/find" ;
+				var request= {
+		            action : path,
+		            username, username,
+		            rand : Math.floor(Math.random()*100000)
+		        };
+				console.log('here');
+				$.post(path,  request,   function(data, status, xhr){	
+					if(data.session_id){
+						console.log('here');
+						$('#session_data').empty();
+			        	$('#session_data').html(data.session_id);
+			        	getUserSessionById(data.session_i);
+					}else{
+						
+					}
+				}, "json");	
+			
+			}
+		  	
+		  	function getUserSessionById(id){
+				path = "/session/findById" ;
+				var request= {
+		            action : path,
+		            id, id,
+		            rand : Math.floor(Math.random()*100000)
+		        };
+				
+				$.post(path,  request,   function(data, status, xhr){	
+					if(data){
+						$('#session_data').empty();
+			        	$('#session_data').html(data.session_id);
+						
+					}
+				}, "json");	
+			
+			}
+		  	
+		  	function getUserSessionByUsername(username){
+				path = "/sessionuser/find" ;
+				var request= {
+		            action : path,
+		            username, username,
+		            rand : Math.floor(Math.random()*100000)
+		        };
+				
+				$.post(path,  request,   function(data, status, xhr){	
+					$('#session_data').empty();
+		        	$('#session_data').html(data);
+					
+				}, "json");	
+			
+			}
+		  	
+		  	function displaySessions(sessions){
+		  		if(sessions){
+		  			$('#sessions').empty();
+		  			var value = $(' input[name=session_choice]:checked', '#session_choice').val();
+		  			if(typeof value === 'undefined'){
+		  				
+		  			}else{
+		  				$('#datepicker').val("");
+		  			}
+		  			
+		  			$('#tags').val("");
+		  			if(sessions.length > 0){
+		  				buildSessionTableHeader();
+		  			}
+		  			
+			  		$.each(sessions, function (index, session) { 
+			  			
+			  			buildSessionRow(session, index);
+			  		});
+			  		
+			  		$("#sessions .row:even").css("background-color","#FBF693");
+					$("#sessions .row:odd").css("background-color","#FFFFCE");
+		  		}
+		  	}
+		  	
+		  	function buildSessionRow(session, index){
+		  		console.log(session);
+		  		var date = session.date;
+		  		index = index + 1;
+		  		date = date.substring(0,10);
+		  		var row = 	'<div class="left cell center"><input type="checkbox" name ="session_choice" '
+		  					+'session_id='+ session.id + ' id="use_date"></div>'
+		  					+ '<div class="left cell center">' + index + '</div><div class="left cell2">' + date 
+				  			+ '</div><div class="left cell">' + session.time + '</div><div class="left cell">' 
+				  			+ session.max + '</div>';
+		  		newdiv = document.createElement( "div" );
+		  		$(newdiv).addClass('row clear')
+		  		$('#sessions').append(newdiv);
+		  		$(newdiv).append(row);
+		  		$(newdiv).append('<div class = "clear"></div>');
+		  		
+		  	}
+		  	
+		  	function buildSessionTableHeader(){
+		  		
+		  		var date_header = document.createTextNode('DATE');;
+		  		var time_header= document.createTextNode('TIME');;
+		  		var delSession = document.createTextNode('DELETE');;
+		  		var max = document.createTextNode('MAX');;
+		  		var row = 	'<div class="left cell center">Select a Session</div>'
+		  					+ '<div class="left cell center">' + '<b>#</b>' + '</div><div class="left cell2">' + '<b>DATE</b>'
+				  			+ '</div><div class="left cell">' + '<b>TIME</b>' + '</div><div class="left cell">' 
+				  			+ '<b>MAX</b>' + '</div><div">';
+		  		newdiv = document.createElement( "div" );
+		  		$(newdiv).addClass('row clear')
+		  		$('#sessions').append(newdiv);
+		  		$(newdiv).append(row);
+		  		$(newdiv).append('<div class = "clear"></div>');
+		  		$(newdiv).append("<div class='vertical_spacer_ten'></div>").css("background-color","#FFFFCE");
+		  		
+		  	}
+		  	
+		  	function displayPopup(message){
+		  		console.log(message);
+		  		$( "#popup" ).dialog({
+					autoOpen: true,
+					resizable: false,
+					position: { my: "left bottom", at: "left+100 bottom-100", of: '#tags' },
+				    height: 350,
+				    width: 300,
+				    
+				    modal: true,
+				    buttons: {
+				        "OK": function() {
+				          $( this ).dialog( "close" );
+					    }
+				    }
+				});
+				
+				$( "#popup" ).html(
+					message
+				);
+		  		
+		  	}
+		  	
+		  	function scheduleSession(){
+		  		var session_id = $(' input[name=session_choice]:checked', '#session_choice').attr('session_id');
+		  		var user_id = 1;
+		  		
+	  			if(typeof session_id === 'undefined'){
+	  				var message = 'Please select a time by checking one of the session checkboxes!!';
+	  				displayPopup(message);
+	  			}else{
+	  				path = "/sessionuser/create" ;
+	  				var request= {
+				            action : path,
+				            session_id: session_id,
+				            username: username,
+				            rand : Math.floor(Math.random()*100000)
+				        };
+						
+						$.post(path,  request,   function(data, status, xhr){	
+							console.log(data.session.session_id);
+							if(data.message){
+								console.log('if');
+								displayPopup(JSON.stringify(data.message));
+							}else if (data.session.rowCount == 1 || (data.session.user_id && data.session.session_id)){
+								var location = "/page/showUserSession"; 
+								window.location.href = location ;
+							}
+							
+						}, "json");	
+	  				
+	  			}
+			}
+		  	
+			$( document ).ready(function() {
+				
+				$("#tags").bind('focus', function(){
+					  if($(this).val()=="" || $(this).val() != ""){ 
+					     $(this).autocomplete("search");
+					  } 
+				});
+				
+				$('#username').bind('onchange', function(){
+					alert(1);
+					var username = $('#username').html();
+					if(username){
+						getUserSessionByUsername(username);
+					}
+					
+				});
+				
+			});
+	  </script>
+	</head>
+	<body>
+		<a class="left" href="/admin/home">&lt;&nbsp;Back</a>
+		<div class='vertical_spacer_ten'></div>
+	 	<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
+	 	<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
+		<div class='hundred center'><h2>Find User Admin Page</h2></div>
+		<span id='user_intro' class='green '> The username associated with this email is: <span id='username' class='vertical_spacer_ten'></span></span>
+		<div id='session_data' class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
+	 	<div class='vertical_spacer_ten'></div>
+	 	<div class='vertical_spacer_ten'></div>
+	 	<div class='vertical_spacer_ten'></div>
+	 	<div class='vertical_spacer_ten'></div>
+	 	<div class='vertical_spacer_ten'></div>
+		<div class='cellContainer'>
+			<div class='innercellContainer'>
+				<div class="ui-widget">
+				  <label for="tags">Find User by Email: </label>
+				  <input id="tags">
+				</div>
+			</div>	
+		</div>
+			 	<div class='vertical_spacer_ten'></div>
+	 	<div class='vertical_spacer_ten'></div>
+	 	<div class='vertical_spacer_ten'></div>
+	 	<div class='vertical_spacer_ten'></div>
+	 	<div class='vertical_spacer_ten'></div>
+	 	
+	 	<div class='vertical_spacer_ten'></div>
+		<div class='hundred button_height '>
+			<div class='ninety'>
+				 <a href="#" onclick="" class="fifty_w_h  left button dark_grey "><div class="center_text">Future Button</div></a>
+			</div>
+		</div>
+		
+		Session data coming
+		
+	</body>
+</html>
+
+

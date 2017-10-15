@@ -15,7 +15,8 @@ module.exports = {
 	        	// username is added to the session
 	        	// this is used to track the user thoughout the application using a unique 
 	        	// username
-	        	req.session.username = user.username;
+	        	//req.session.username = user.username;
+	        	//console.log('in compare: ' + user);
 	        	var page_view = req.session.requesting_page;
 	        	res.redirect(page_view);
 	        }

@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+	<head>
+	  <meta charset="utf-8">
+	  <meta name="viewport" content="width=device-width, initial-scale=1">
+	  <title>jQuery UI Datepicker - Default functionality</title>
+	  <link rel="stylesheet" href="/css/view_session_data.css" type="text/css" />
+	  <link rel="stylesheet" href="/css/button.css" type="text/css" />
+	  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+	  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	  <script>
+		  	
+		  	function getSessions(){
+				path = "/session/find" ;
+				var request= {
+		            action : path,
+		            rand : Math.floor(Math.random()*100000)
+		        };
+				
+				$.post(path,  request,   function(data, status, xhr){	
+					displaySessions(data.rows);
+					
+				}, "json");	
+			
+			}
+		  	
+		  	function displaySessions(sessions){
+		  		if(sessions){
+			  		$.each(sessions, function (index, session) { 
+			  			buildSessionRow(session, index);
+			  		});
+			  		$("#user_table tr:even").css("background-color","#FBF693");
+					$("#user_table tr:odd").css("background-color","#FFFFCE");
+		  		}
+		  	}
+		  	
+		  	function addViewSession(session_id){
+		  		path = "/sessionuser/count" ;
+				var request= {
+		            action : path,
+		            session_id: session_id,
+		            rand : Math.floor(Math.random()*100000)
+		        };
+				
+				$.post(path,  request,   function(data, status, xhr){	
+					if(data[0].count){
+						$('#count_' + session_id).html(data[0].count);
+					}
+					if(data[0].count > 0){
+						console.log(data[0].count);
+						
+					}else{
+						$('#view_link_' + session_id).hide();
+					}
+				}, "json");	
+		  		
+		  	}
+		  	
+		  	function buildSessionRow(session, index){
+		  		
+		  		index = index + 1;
+	  			
+				var tr = '<tr id="tr_' + index + '">';
+				var index = '<td class="c1 center">' + index + '</td>';
+				var date = session.date;
+				var datef = '<td class="c2 ">' + date.substring(0, date.indexOf('T')) + '</td>';
+				var time = '<td class="c3 ">' + session.time + '</td>';
+				var max = '<td class="c4 center">' + session.max + '</td>';
+				var count = '<td class="c4 center" id="count_' + session.id + '"></td>';
+				
+				var link = '<td class="center"><div class=" green"><a id="view_link_' + session.id + '" href="#" class=""'  + 
+				'" onclick="selectSession(' + "'" + session.id + "'" + ')" value="1">v</a></div></td>';
+				
+				var table_row = tr + index + datef + time + max + count + link + '</tr>';	  		
+				$('#user_table tbody:last-child').append(table_row);
+				addViewSession(session.id);
+		  	}
+		  	
+		  	function displayPopup(message){
+		  		console.log(message);
+		  		$( "#popup" ).dialog({
+					autoOpen: true,
+					resizable: false,
+					position: { my: "left bottom", at: "left+100 bottom-100", of: '#tags' },
+				    height: 350,
+				    width: 300,
+				    
+				    modal: true,
+				    buttons: {
+				        "OK": function() {
+				          $( this ).dialog( "close" );
+					    }
+				    }
+				});
+				
+				$( "#popup" ).html(
+					message
+				);
+		  		
+		  	}
+		  	
+		  	function selectSession(id){
+				var location = "/admin/show_user_data?session_id=" + id;
+				window.location.href = location ;
+			}
+		  	
+			$( document ).ready(function() {
+				$("#tags").bind('focus', function(){
+					  if($(this).val()=="" || $(this).val() != ""){ 
+					     $(this).autocomplete("search");
+					  } 
+				});
+				
+				getSessions();
+				
+			});
+	  </script>
+	</head>
+	<body>
+		<a class="left" href="/admin/home">&lt;&nbsp;Back</a>
+		<div class='vertical_spacer_ten'></div>
+	 	<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
+		
+		<div class='hundred center'><h2>View Session Data Select Session to View Page</h2></div>
+		<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
+	 	Select a Session to View the User Data:
+	 	<div class='vertical_spacer_ten'></div>
+	 	<div class='vertical_spacer_ten'></div>
+	 	<div class='vertical_spacer_ten'></div>
+	 	<%- partial('../layout/admin/select_user_session_data_table') %>
+	 	<div id='popup'>
+		</div>
+	</body>
+</html>

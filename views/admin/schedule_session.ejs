@@ -3,8 +3,8 @@
 	<head>
 	  <meta charset="utf-8">
 	  <meta name="viewport" content="width=device-width, initial-scale=1">
-	  <title>jQuery UI Datepicker - Default functionality</title>
-	  <link rel="stylesheet" href="/css/schedule.css" type="text/css" />
+	  <title>Admin Schedule Session</title>
+	  <link rel="stylesheet" href="/css/schedule_session.css" type="text/css" />
 	  <link rel="stylesheet" href="/css/button.css" type="text/css" />
 	  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 	  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
@@ -12,6 +12,11 @@
 	  <script>
 	  		var validDate = false;
 			var validTime = false;
+			
+		  	function reloadPage(){
+		  		var location = "/admin/schedule_session";
+				window.location.href = location ;
+		  	}
 			
 			function setValidDate(valid){
 				validDate = valid;
@@ -43,9 +48,10 @@
 		        };
 				
 				$.post(path,  request,   function(data, status, xhr){	
-					console.log(data);
-					displaySessions(data.rows);
-					
+					//console.log(data);
+					if(data.rows){
+						displaySessions(data.rows);
+					}
 				}, "json");	
 			
 			}
@@ -61,56 +67,113 @@
 		  			}
 		  			
 		  			$('#tags').val("");
-		  			if(sessions.length > 0){
-		  				buildSessionTableHeader();
-		  			}
 		  			
 			  		$.each(sessions, function (index, session) { 
-			  			
 			  			buildSessionRow(session, index);
 			  		});
 			  		
-			  		$("#sessions .row:even").css("background-color","#FBF693");
-					$("#sessions .row:odd").css("background-color","#FFFFCE");
+			  		
+					$("tr:even").css("background-color","#FFFFCE");
+					$("tr:odd").css("background-color","#FBF693");
 		  		}
 		  	}
 		  	
+		  	function viewSession(id){
+				var location = "/admin/view_session?session_id=" + id;
+				window.location.href = location ;
+		  	}
+		  	
 		  	function buildSessionRow(session, index){
-		  		console.log(session);
+		  		
+		  		//console.log(session);
 		  		var date = session.date;
 		  		index = index + 1;
 		  		date = date.substring(0,10);
-		  		var row = '<div class="left cell center">' + index + '</div><div class="left cell2">' + date 
-				  			+ '</div><div class="left cell">' + session.time + '</div><div class="left cell">' 
-				  			+ session.max + '</div><a href="#" onclick="deleteSession(' + session.id + ')" class="left cell red center">' + 'x' + '</a>';
-		  		newdiv = document.createElement( "div" );
-		  		$(newdiv).addClass('row clear')
-		  		$('#sessions').append(newdiv);
-		  		$(newdiv).append(row);
-		  		$(newdiv).append('<div class = "clear"></div>');
+		  		
+		  		var vs = '<a href="#" onclick="viewSession(' 
+		  			+ session.id + ')" class="  cell green center">v</a>';
+		  			
+	  			var ds = '<a href="#" onclick="deleteSession(' 
+		  			+ session.id + ')" class="  cell red center">x</a>';
+		  			
+		  		var radios = 
+		  				"<form id='response" + session.id + "'>" +
+		  				'<div class="radio_w left"><input id="st_' + session.id + '_1" class="radio_w" type="radio" name="session' + 
+		  					session.id + '" onclick="updateSessionType(' + session.id +', 1)" value="1">1</div>' +
+		  				'<div class="radio_w left"><input id="st_' + session.id + '_2" class="radio_w" type="radio" name="session' + 
+		  					session.id + '" onclick="updateSessionType(' + session.id +',2)" value="2" >2</div>' +
+		  				'<div class="radio_w left"><input id="st_' + session.id + '_3" class="radio_w" type="radio" name="session' + 
+		  					session.id + '" onclick="updateSessionType(' + session.id +',3)" value="3" >3</div>' +
+		  				'<div class="radio_w left hidden"><input id="st_' + session.id + '_4" class="radio_w" type="radio" name="session' + 
+		  					session.id + '" onclick="updateSessionType(' + session.id +',4)" value="4" >4</div>' +
+		  				'<div class="radio_w left"><input id="st_' + session.id + '_5" class="radio_w" type="radio" name="session' + 
+		  					session.id + '" onclick="updateSessionType(' + session.id +',5)" value="5" >4</div>' +
+		  				'<div class="radio_w left"><input id="st_' + session.id + '_6" class="radio_w" type="radio" name="session' + 
+		  					session.id + '" onclick="updateSessionType(' + session.id +',6)" value="6" >5</div>' +
+		  				'</form>';
+					  		
+				var tr = '<tr id="tr_' + session.id + '">';
+				var num = '<td class="cell_id cp">' + index + '</td>';
+				var td_date = '<td class="cell1 cp">' + date + '</td>';
+				var time = '<td class="cell center cp">' + session.time + '</td>';
+				var max = '<td class="m_cell center cp">' + session.max + '</td>';
+				var status = '<td id="session_' + session.id + '" class="v_cell cp center">' + index + '</td>';
+				
+				var session_type = '<td class="cell_st cp">' + radios + '</td></tr>';
+				
+				var table_row = tr + num + td_date + time + max + status + session_type;	  		
+				$('#session_table tbody:last-child').append(table_row);
+				
+				var st = new Number(session.session_type);
+				$('#st_' + session.id + '_' + st).prop('checked', true);
+		  		
+		  		addViewSession(session.id, vs, ds);
+		  	}
+		  	
+		  	function addViewSession(session_id, vs, ds){
+		  		path = "/sessionuser/count" ;
+				var request= {
+		            action : path,
+		            session_id: session_id,
+		            rand : Math.floor(Math.random()*100000)
+		        };
+				
+				$.post(path,  request,   function(data, status, xhr){	
+					//console.log(data);
+					if(data[0].count > 0){
+						//console.log(data[0].count);
+						$('#session_' + session_id).html(vs);
+					}else{
+						addDeleteSession(session_id, ds);
+					}
+				}, "json");	
 		  		
 		  	}
 		  	
-		  	function buildSessionTableHeader(){
+		  	function updateSessionType(session_id, session_type){
+		  		path = "" + "/session/update_session_type" ;
+				var request= {
+		            action : path,
+		            session_id: session_id,
+		            session_type: session_type,
+		            rand : Math.floor(Math.random()*100000)
+		        };
+				
+				$.post(path,  request,   function(data, status, xhr){	
+					//console.log(data);
+					if(data.success_message){
+						reloadPage();
+					}
+				}, "json");	
 		  		
-		  		var date_header = document.createTextNode('DATE');;
-		  		var time_header= document.createTextNode('TIME');;
-		  		var delSession = document.createTextNode('DELETE');;
-		  		var max = document.createTextNode('MAX');;
-		  		var row = '<div class="left cell center">' + '<b>#</b>' + '</div><div class="left cell2">' + '<b>DATE</b>'
-				  			+ '</div><div class="left cell">' + '<b>TIME</b>' + '</div><div class="left cell">' 
-				  			+ '<b>MAX</b>' + '</div><div">' + '<b>DELETE</b>' + '</div>';
-		  		newdiv = document.createElement( "div" );
-		  		$(newdiv).addClass('row clear')
-		  		$('#sessions').append(newdiv);
-		  		$(newdiv).append(row);
-		  		$(newdiv).append('<div class = "clear"></div>');
-		  		$(newdiv).append("<div class='vertical_spacer_ten'></div>").css("background-color","#FFFFCE");
-		  		
+		  	}
+		  	
+		  	function addDeleteSession(session_id, ds){
+		  		$('#session_' + session_id).html(ds);
 		  	}
 		  	
 		  	function displayPopup(message){
-		  		console.log(message);
+		  		//console.log(message);
 		  		$( "#popup" ).dialog({
 					autoOpen: true,
 					resizable: false,
@@ -139,19 +202,19 @@
 				if(!date === ''){
 					var splitDate = date.split("/");
 					date = splitDate[2] + ',' + splitDate[1] + ',' + splitDate[0];
-					console.log('date ' + date);
+					//console.log('date ' + date);
 				}
-				console.log('date ' + date);
+				//console.log('date ' + date);
 				
 				time = $('#tags').val();
 				if(!time === ''){
 					
 				}
-				console.log('time ' + time); 
+				//console.log('time ' + time); 
 
 				if(	date.length > 0 && time.length > 0	
 				){
-					console.log('trying to create a session');
+					//console.log('trying to create a session');
 					var request= {
 				            action : path,
 				            date: date,
@@ -164,17 +227,17 @@
 							if(data.message){
 								displayPopup(JSON.stringify(data.message));
 							}else{
-								getSessions();
+								reloadPage();
 							}
 							
 						}, "json");	
 					
 				}else{
 					if(date === ''){
-						console.log('enter a valid date');
+						//console.log('enter a valid date');
 					}
 					if(time === ''){
-						console.log('enter a valid time');
+						//console.log('enter a valid time');
 					}
 				}
 			}
@@ -189,26 +252,29 @@
 			        };
 					
 					$.post(path,  request,   function(data, status, xhr){	
-						console.log(data);
-						getSessions();
-						
+						reloadPage();
 					}, "json");	
-					
 			}
 		  	
 			$( document ).ready(function() {
 				$("#tags").bind('focus', function(){
+					
 					  if($(this).val()=="" || $(this).val() != ""){ 
 					     $(this).autocomplete("search");
 					  } 
 				});
-				
 				getSessions();
-				
 			});
 	  </script>
 	</head>
 	<body>
+		<a class="left" href="/admin/home">&lt;&nbsp;Back</a>
+		<div class='vertical_spacer_ten'></div>
+	 	<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
+	 	<div class='vertical_spacer_ten'></div>
+		<div class='vertical_spacer_ten'></div>
 		<div class='hundred center'><h2>Create Session Admin Page</h2></div>
 		<div class='vertical_spacer_ten'></div>
 	 	<div class='vertical_spacer_ten'></div>
@@ -220,14 +286,27 @@
 		  <input id="tags">
 		</div>
 		<div class='vertical_spacer_ten'></div>
-		<div class='hundred button_height '>
+		Select a date and time then press "Schedule Session" button to create a new session. Press red <span class='red' >x</span> 
+		under view/del to delete a session and <span class='green'><b>v</b></span> to view a session
+		<div class='vertical_spacer_ten'></div>
+		Select a radio button to update session type
+		<div class='vertical_spacer_ten'></div>
+		
+			<div class='vertical_spacer_ten'></div>
+		<div class='hundred button_height padding-top-button'>
 			<div class='ninety'>
-				 <a href="#" onclick="createSession()" class="fifty_w_h  left button dark_grey "><div class="center_text">Schedule Session</div></a>
+				 <a href="#" onclick="createSession()" class="fifty_w_h  left button dark_grey "><div class="center_text">Schedule A New Session</div></a>
 			</div>
 		</div>
 		<div class='vertical_spacer_ten'></div>
+		Radio button values: 1-Always Stay, 2-Always Switch, 3-Pay to Stay, 4-Pay to Quit, 5-Free to Switch
 		<div class='vertical_spacer_ten'></div>
-	 	Sessions scheduled:
+		
+		Sessions scheduled:
+		<div class='vertical_spacer_ten'></div>
+			<%- partial('../layout/admin/session_table') %>
+			<div class='vertical_spacer_ten'></div>
+	 	
 	 	<div class='vertical_spacer_ten'></div>
 	 	<div id='sessions'>
 	 	</div>

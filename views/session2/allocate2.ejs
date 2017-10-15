@@ -1,0 +1,326 @@
+<html>
+<head>
+	<title>Demo 1 : Convert All Textareas</title>
+	<link rel="stylesheet" href="/css/allocation.css" type="text/css" />
+	<link rel="stylesheet" href="/css/button.css" type="text/css" />
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	
+	<script type="text/javascript">
+		var username = '<%= req.session.username %>';
+		var keypress_string = '';
+		function KeyCounter(){};
+		
+		function allocateTokens(){
+			var myself = validateMyself();
+		}
+		
+		function validateMyself(){
+			//console.log('here');
+			var keep = $('#myself').val();
+			var keep_num = parseInt(keep);
+			var keepIsNum = $.isNumeric(keep_num);
+			
+			if(keepIsNum && keep_num >= 0 && keep_num <= 15){
+				console.log('inside if myself here');
+				validateDonate(keep_num);	
+			}else{
+				var message = 'Please enter a valid number from 0 to 15 in the Non Government Organization input!';
+				var cl = 'red';
+				sendAssistanceMessage(message, cl);
+			}
+			
+		}
+		
+		function validateDonate(keep_num){
+			var donate = $('#donate').val();
+			console.log('donate: ' + donate);
+			var donate_num = parseInt(donate); 
+			keep_num = parseInt(keep_num);
+			var total = keep_num + donate_num;
+			console.log(total);
+			console.log('total ' + total);
+			var donateIsNum = $.isNumeric(donate_num);
+			if(donateIsNum && donate_num >= 0 && donate_num <= 15){
+				console.log('inside if validateDonate');
+				console.log('inside if check sum ' + keep_num + ' donate_num ' + donate_num + (keep_num + donate_num));
+				console.log((total == 15));
+				console.log(total === 15);
+				if((total == 15)){
+					console.log('inside if validateDonate adds to 15')
+					createTokens(keep_num, donate_num);
+				}
+			}else{
+				var message = 'Please enter a valid number from 0 to 15 in the Non Government Organization input!';
+				var cl = 'red';
+				sendAssistanceMessage(message, cl);
+			}
+			
+		}
+		
+		function sendAssistanceMessage(message, cl){
+			
+			$('#allocate_assistant').empty();
+			$('#allocate_assistant').show()
+			$('#allocate_assistant').addClass(cl);
+			$('#allocate_assistant').html(message);
+			
+			setTimeout(function() { $('#allocate_assistant').fadeOut(3000); }, 1500);
+			
+		}
+		
+		function nextPage(){
+			chooseClickSessions();
+		}
+		
+		function chooseClickSessions(){
+			path = '/clickSessionChoices/create';
+			
+			var request= {
+		            action : path,
+		            rand : Math.floor(Math.random()*100000)
+		        };
+				
+				$.get(path,  request,   function(data, status, xhr){
+					if(data.error_message){
+						
+					}else{
+						console.log('next');
+						next();
+					}
+				}, "json");	
+		}
+		
+		function next(){
+			var location = "/session2/payment";
+			window.location.href = location ;
+		}
+		
+		
+		function createTokens(myself, donate){
+			console.log('inside createTokens')
+				var path = "/allocate2/create";	
+			
+				var request= {
+		            action : path,
+		            myself: myself,
+		            donate: donate,
+		            rand : Math.floor(Math.random()*100000)
+		        };
+				
+				$.get(path,  request,   function(data, status, xhr){
+					if(data.error_message){
+						$('#error_message').show()
+						$('#error_message').text(JSON.stringify(data.error_message));
+						setTimeout(function() { $('#error_message').fadeOut(3000); }, 5000);
+						$('#assistance').show()
+						$('#assistance').text('If this error persists, please ask for asistance');
+						setTimeout(function() { $('#assistance').fadeOut(3000); }, 10000);
+						
+					}else{
+						$('#popup').show()
+						$('#popup').text('Your choice has been saved. You will be forwarded to the next page in 3 seconds');
+						setTimeout(function() { $('#popup').fadeOut(2000); }, 3000);
+						setTimeout(function() { nextPage(); }, 3000);
+					}
+				}, "json");	
+			
+		}
+		
+		function getScenario(){
+			
+			var path = "/scenario/" + 2;
+		
+			var request= {
+	            action : path,
+	            rand : Math.floor(Math.random()*100000)
+	        };
+			
+			$.get(path,  request,   function(data, status, xhr){
+				var question = data.text;	
+				//$('#questionNumber').html(data.id);
+				//findAnswer(data.id);
+		        setScenario(question);   
+			}, "json");	
+		
+		}
+		
+		function setQuestion(content){
+			//console.log(content);
+			$('#quiz_text').html(content);
+			$('').each(function (){
+				
+			});
+		}
+		
+		function setScenario(content){
+			//console.log(content);
+			$('#scenario_text').html(content);
+		}
+		
+		function getQuestion(){
+			if(MaxQuestions && QuestionNumber < MaxQuestions){
+				//console.log('here');
+				QuestionNumber = QuestionNumber + 1;
+				getQuestionNumber(QuestionNumber);
+			}else if(MaxQuestions && QuestionNumber == MaxQuestions) {
+				console.log('Last Question');
+				lastQuestionPopup();
+				
+				
+			}else if(QuestionNumber == 0){
+				getQuestionNumber(0);
+			}	
+		}
+		
+		function lastQuestionPopup(){
+			$( "#popup" ).dialog({
+				dialogClass: "alert",
+				  buttons: [
+				    {
+				      text: "Ok",
+				      click: function() {
+				    	var location = "/allocation/allocate";
+						window.location.href = location ;
+				      }
+				    },
+				    {
+				    	text: "cancel",
+					      click: function() {
+					        $( this ).dialog( "close" );
+					        getQuestionNumber(MaxQuestions);
+					      }
+				    }
+				  ]
+			});
+			$( "#popup" ).html('You have reached the end of this scenario. Please press <h5>OK</h5> to proceed to the next page.');
+			return;
+		}
+			
+		function findAnswer(question){
+				
+			$('input[name=response]', '#response').each(function(index, value){
+				this.checked = false;
+				var value = answers[QuestionNumber-1][index];
+				console.log('value: ' + value);
+				$('#answer' + index).empty();
+				$('#answer' + index).html(value);
+			});	
+		}
+		
+		$( function() {
+		    $( "#dialog" ).dialog();
+		  } );
+		
+		function findNgo(){
+			
+			var path = "/Ngo_Choice4/find";
+		
+			var request= {
+	            action : path,
+	            rand : Math.floor(Math.random()*100000)
+	        };
+			
+			$.get(path,  request,   function(data, status, xhr){
+				if(data){
+					var ngo = data.ngo;	
+					
+					$('.ngo').html(ngo.name);
+				}
+				  
+			}, "json");	
+		
+		} 
+		
+
+		
+		$( document ).ready(function() {
+			findNgo();
+			var counter = new KeyCounter();
+			counter['counter'] = 0;
+			$('#myself').keyup( function(e){
+				keypress_string = keypress_string + e.key;
+				var keep = $('#myself').val();
+				var keep_num = parseInt(keep);
+				var keepIsNum = $.isNumeric(keep_num);
+				if(keepIsNum && keep_num >= 0 && keep_num <= 15){
+					var donateto = 15 - keep_num;
+					$('#donate').val(donateto);
+				}else{
+					var message = 'Please enter a valid number from 0 to 15 in the for myself input!';
+					var cl = 'red';
+					sendAssistanceMessage(message, cl);
+				}
+
+			});
+			$('#donate').keyup( function(e){
+				keypress_string = keypress_string + e.key;
+				
+				var donate = $('#donate').val();
+				console.log('donate: ' + donate);
+				var donate_num = parseInt(donate); 
+				
+				var donateIsNum = $.isNumeric(donate_num);
+				if(donateIsNum && donate_num >= 0 && donate_num <= 15){
+					var keepto = 15 - donate_num;
+					$('#myself').val(keepto);
+				}else{
+					var message = 'Please enter a valid number from 0 to 15 in the Non Government Organization input!';
+					var cl = 'red';
+					sendAssistanceMessage(message, cl);
+				}
+
+			});
+
+		});
+	  	
+	  	
+		
+		
+	</script>	
+	
+</head>
+<body>
+<div class='height_70'>
+	<div id='allocate_assistant'  ></div>
+	<div id='assistance' class='red'></div>
+	<div id='error_message' class='red'></div>
+</div>
+
+<div class='center'><h4>Allocation Game</h4></div>
+
+<p>
+Once all of the participants in our study have completed the survey, one out of every 10 
+participants will be randomly selected to implement their allocation decisions. That is, 
+if you are chosen, the dollar value of any tokens you kept for yourself will be paid to 
+you at the second part of this study in the computer lab and the dollar value of any tokens 
+you transferred to <span class='ngo'></span> will be mailed to it.  
+</p>
+<p>
+<div id='scenario_text'></div>
+	<b>You have 15 tokens. How would you allocate them?</b>
+</p>
+
+<p>
+<%- partial('../layout/scenario/allocation_answer') %>
+</p>
+
+
+<p>
+<div class='hundred button_height '>
+	<div class='hundred left35'>
+		 <a id='emailer' href="#" onclick="allocateTokens()" class=" fifty_left35  left button dark_grey "><div class="center_text">Allocate Tokens</div></a>
+	</div>
+</div>
+<div class = 'after_left'></div>
+</p>
+<div id='popup' class ='green'>
+</div>
+
+<p>
+<%- partial('../layout/allocation/table') %>
+</p>
+
+</body>
+</html>
